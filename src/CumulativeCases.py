@@ -14,12 +14,16 @@ class CumulativeCases(object):
     def create_plots(self):
         cumulative_cases = pd.read_csv("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv")
         boards = cumulative_cases.columns.tolist()
-        f, ax = plt.subplots(figsize=(20, 20))
+        dates = cumulative_cases["Date"].tolist()
+        f, ax = plt.subplots(figsize=(25, 15))
         for i in range(1, len(boards)):
             board = boards[i]
             plt.subplot(5, 3, i)
             ax = sns.lineplot(data=cumulative_cases, x="Date", y=board)
             ax.set_title(board)
+            x_values = dates[::7]
+            ax.set_xticks(x_values)
+            ax.set_xticklabels(x_values, rotation="vertical")
             ax.set_yticks([y * 2000 for y in range(1, 10)])
             ax.set_ylabel("Cumulative Cases")
         plt.subplots_adjust(wspace=1, hspace=1)
