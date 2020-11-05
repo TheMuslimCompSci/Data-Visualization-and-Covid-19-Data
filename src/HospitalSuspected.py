@@ -19,17 +19,16 @@ class HospitalSuspected(object):
         for i in range(1, len(boards)):
             board = boards[i]
             plt.subplot(4, 4, i)
-            ax = sns.barplot(data=hospital_suspected, x="Date", y=board)
+            ax = sns.lineplot(data=hospital_suspected, x="Date", y=board)
             ax.set_title(board)
-            x_values = dates[::5]
-            #ax.set_xticks(x_values)
-            #ax.set_xticklabels(x_values, rotation="vertical")
+            x_values = dates[::7]
+            ax.set_xticks(x_values)
+            ax.set_xticklabels(x_values, rotation="vertical")
             ax.set_yticks([y * 50 for y in range(1, 11)])
             ax.set_ylabel("Hospital Patients")
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle("The daily number of suspected COVID-19 inpatients in hospital at midnight, by board in Scotland")
         plt.show()
 
-#change classes, csv variables, subplot size somtimes, plot sometimes, xticks sometimes,
-# yticks sometimes, ylabels sometimes and title
+
 HospitalSuspected()

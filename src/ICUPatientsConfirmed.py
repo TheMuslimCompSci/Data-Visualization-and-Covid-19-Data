@@ -19,11 +19,11 @@ class ICUPatientsConfirmed(object):
         for i in range(1, len(boards)):
             board = boards[i]
             plt.subplot(4, 4, i)
-            ax = sns.barplot(data=icu_patients_confirmed, x="Date", y=board)
+            ax = sns.lineplot(data=icu_patients_confirmed, x="Date", y=board)
             ax.set_title(board)
-            x_values = dates[::5]
-            #ax.set_xticks(x_values)
-            #ax.set_xticklabels(x_values, rotation="vertical")
+            x_values = dates[::7]
+            ax.set_xticks(x_values)
+            ax.set_xticklabels(x_values, rotation="vertical")
             ax.set_yticks([y * 20 for y in range(1, 12)])
             ax.set_ylabel("ICU Patients")
         plt.subplots_adjust(wspace=1, hspace=1)
