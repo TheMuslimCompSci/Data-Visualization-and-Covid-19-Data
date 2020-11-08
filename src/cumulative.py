@@ -8,24 +8,31 @@ import seaborn as sns
 
 class CumulativeCases(object):
 
-    def __init__(self):
+    def __init__(self, plots_data, plots_title, plots_ylabel, plots_yticks):
+        self.plots_data = plots_data
+        self.plots_title = plots_title
+        self.plots_ylabel = plots_ylabel
+        self.plots_yticks = plots_yticks
         self.create_plots()
 
     def create_plots(self):
-        cumulative_cases = pd.read_csv("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv")
+        cumulative_cases = pd.read_csv(self.plots_data)
+        print("lol")
         boards = cumulative_cases.columns.tolist()
         dates = cumulative_cases["Date"].tolist()
         f, ax = plt.subplots(figsize=(25, 15))
         for i in range(1, len(boards)):
             board = boards[i]
-            plt.subplot(5, 3, i)
+            plt.subplot(4, 4, i)
             ax = sns.lineplot(data=cumulative_cases, x="Date", y=board)
             ax.set_title(board)
             x_values = dates[::7]
             ax.set_xticks(x_values)
             ax.set_xticklabels(x_values, rotation="vertical")
-            ax.set_yticks([y * 2000 for y in range(1, 10)])
-            ax.set_ylabel("Cumulative Cases")
+            ax.set_yticks(self.plots_yticks) #[y * 2000 for y in range(1, 10)]
+            ax.set_ylabel(self.plots_ylabel)
         plt.subplots_adjust(wspace=1, hspace=1)
-        f.suptitle("The cumulative number of cases with positive tests for COVID-19, by board in Scotland")
+        f.suptitle(self.plots_title)
         plt.show()
+
+lol = CumulativeCases("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv", "Cumulative Cases Graphs by Boards", "Cumulative Cases", [y * 2000 for y in range(1, 10)])
