@@ -15,6 +15,26 @@ class DashboardUI(tk.Frame):
         self.cumulative_cases["command"] = CumulativeCases
         self.cumulative_cases.pack(side="top")
 
+        self.icu_patients_confirmed = tk.Button(self)
+        self.icu_patients_confirmed["text"] = "ICU Patients Confirmed"
+        self.icu_patients_confirmed["command"] = CumulativeCases
+        self.icu_patients_confirmed.pack(side="top")
+
+        self.icu_patients_suspected = tk.Button(self)
+        self.icu_patients_suspected["text"] = "ICU Patients Suspected"
+        self.icu_patients_suspected["command"] = CumulativeCases
+        self.icu_patients_suspected.pack(side="top")
+
+        self.hospital_confirmed = tk.Button(self)
+        self.hospital_confirmed["text"] = "Hospital Confirmed"
+        self.hospital_confirmed["command"] = CumulativeCases
+        self.hospital_confirmed.pack(side="top")
+
+        self.hospital_suspected = tk.Button(self)
+        self.hospital_suspected["text"] = "Hospital Suspected"
+        self.hospital_suspected["command"] = CumulativeCases
+        self.hospital_suspected.pack(side="top")
+
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)
         self.quit.pack(side="bottom")
