@@ -29,6 +29,3 @@ class ICUPatientsConfirmed(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle("The daily number of COVID-19 inpatients (confirmed) in ICU at midnight, by board in Scotland")
         plt.show()
-
-
-ICUPatientsConfirmed()

@@ -1,5 +1,6 @@
 import tkinter as tk
-from cumulative import CumulativeCases as cc
+from cumulative import CumulativeCases
+from ICUPatientsConfirmed import ICUPatientsConfirmed
 
 class DashboardUI(tk.Frame):
 
@@ -12,11 +13,15 @@ class DashboardUI(tk.Frame):
     def create_widgets(self):
         self.cumulative_cases = tk.Button(self)
         self.cumulative_cases["text"] = "Cumulative Cases"
-        self.cumulative_cases["command"] = cc("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv", "Cumulative Cases Graphs by Boards", "Cumulative Cases", [y * 2000 for y in range(1, 10)])
+        self.cd = CumulativeCases("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv",
+                      "The cumulative number of cases with positive tests for COVID-19, by board in Scotland",
+                      "Cumulative Cases", [y * 2000 for y in range(1, 10)])
+        self.cumulative_cases["command"] = self.cd.create_plots
+        # just using class name works somehow
         #cum.__init__("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv", "Cumulative Cases Graphs by Boards", "Cumulative Cases", [y * 2000 for y in range(1, 10)])
         self.cumulative_cases.pack(side="top")
 
-        self.icu_patients_confirmed = tk.Button(self)
+        """self.icu_patients_confirmed = tk.Button(self)
         self.icu_patients_confirmed["text"] = "ICU Patients Confirmed"
         #self.icu_patients_confirmed["command"] = CumulativeCases
         self.icu_patients_confirmed.pack(side="top")
@@ -34,7 +39,7 @@ class DashboardUI(tk.Frame):
         self.hospital_suspected = tk.Button(self)
         self.hospital_suspected["text"] = "Hospital Suspected"
         #self.hospital_suspected["command"] = CumulativeCases
-        self.hospital_suspected.pack(side="top")
+        self.hospital_suspected.pack(side="top")"""
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)

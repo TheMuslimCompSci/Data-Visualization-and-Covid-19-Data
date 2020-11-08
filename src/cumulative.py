@@ -29,10 +29,13 @@ class CumulativeCases(object):
             x_values = dates[::7]
             ax.set_xticks(x_values)
             ax.set_xticklabels(x_values, rotation="vertical")
-            ax.set_yticks(self.plots_yticks) #[y * 2000 for y in range(1, 10)]
+            ax.set_yticks(self.plots_yticks)
             ax.set_ylabel(self.plots_ylabel)
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle(self.plots_title)
         plt.show()
 
-lol = CumulativeCases("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv", "Cumulative Cases Graphs by Boards", "Cumulative Cases", [y * 2000 for y in range(1, 10)])
+
+lol = CumulativeCases("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv",
+                      "The cumulative number of cases with positive tests for COVID-19, by board in Scotland",
+                      "Cumulative Cases", [y * 2000 for y in range(1, 10)])
