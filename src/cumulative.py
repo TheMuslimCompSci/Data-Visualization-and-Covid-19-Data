@@ -13,7 +13,6 @@ class CumulativeCases(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_plots()
 
     def create_plots(self):
         cumulative_cases = pd.read_csv(self.plots_data)
@@ -34,8 +33,3 @@ class CumulativeCases(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle(self.plots_title)
         plt.show()
-
-
-lol = CumulativeCases("../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv",
-                      "The cumulative number of cases with positive tests for COVID-19, by board in Scotland",
-                      "Cumulative Cases", [y * 2000 for y in range(1, 10)])
