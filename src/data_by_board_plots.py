@@ -6,7 +6,7 @@ import seaborn as sns
 - as reported from dates 07/03/20 to 22/07/20 on SG website"""
 
 
-class CumulativeCases(object):
+class DataByBoardPlots(object):
 
     def __init__(self, plots_data, plots_title, plots_ylabel, plots_yticks):
         self.plots_data = plots_data
@@ -16,7 +16,6 @@ class CumulativeCases(object):
 
     def create_plots(self):
         cumulative_cases = pd.read_csv(self.plots_data)
-        print("lol")
         boards = cumulative_cases.columns.tolist()
         dates = cumulative_cases["Date"].tolist()
         f, ax = plt.subplots(figsize=(25, 15))
