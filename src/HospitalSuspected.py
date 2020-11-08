@@ -29,6 +29,9 @@ class HospitalSuspected(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle("The daily number of suspected COVID-19 inpatients in hospital at midnight, by board in Scotland")
         plt.show()
-
+# you press a button e.g. view cumulative cases
+# each button instantiates the class with the specific graph parameters
+# e.g. user.press("cumu")
+# this launches class Graphs() as plot(graphcsv, ylabel, yticks, suptitle)
 
 HospitalSuspected()

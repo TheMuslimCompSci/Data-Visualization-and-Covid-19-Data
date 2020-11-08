@@ -29,6 +29,3 @@ class CumulativeCases(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle("The cumulative number of cases with positive tests for COVID-19, by board in Scotland")
         plt.show()
-
-
-CumulativeCases()

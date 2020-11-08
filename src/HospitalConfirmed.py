@@ -19,7 +19,7 @@ class HospitalConfirmed(object):
         for i in range(1, len(boards)):
             board = boards[i]
             plt.subplot(4, 4, i)
-            ax = sns.barplot(data=hospital_confirmed, x="Date", y=board)
+            ax = sns.lineplot(data=hospital_confirmed, x="Date", y=board)
             ax.set_title(board)
             x_values = dates[::7]
             ax.set_xticks(x_values)
