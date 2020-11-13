@@ -2,7 +2,7 @@ import tkinter as tk
 from data_by_board_plots import DataByBoardPlots
 
 
-class DashboardUI(tk.Frame):
+class DataByBoardDashboard(tk.Frame):
 
     def __init__(self, master=None):
         super().__init__(master)
@@ -62,5 +62,5 @@ class DashboardUI(tk.Frame):
 
 
 root = tk.Tk()
-app = DashboardUI(master=root)
+app = DataByBoardDashboard(master=root)
 app.mainloop()
