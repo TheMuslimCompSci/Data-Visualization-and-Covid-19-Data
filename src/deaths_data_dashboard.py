@@ -92,6 +92,15 @@ class DeathsDataDashboard(tk.Frame):
         self.deaths_by_date_and_registration["command"] = self.deaths_by_date_and_registration_plots.create_plots
         self.deaths_by_date_and_registration.pack(side="top")
 
+        self.deaths_by_date_and_registration = tk.Button(self)
+        self.deaths_by_date_and_registration["text"] = "Deaths By Date Of Death vs Date Of Registration"
+        self.deaths_by_date_and_registration_plots = DeathsDataPlots(
+            "../covid deaths data week 30/Figure 8 data.csv",
+            "Deaths involving COVID-19, date of death vs date of registration",
+            "Number of deaths", [y * 500 for y in range(1, 10)])
+        self.deaths_by_date_and_registration["command"] = self.deaths_by_date_and_registration_plots.create_plots
+        self.deaths_by_date_and_registration.pack(side="top")
+
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)
         self.quit.pack(side="bottom")
