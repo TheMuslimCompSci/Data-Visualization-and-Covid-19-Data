@@ -8,9 +8,10 @@ class DataByBoardDashboard(tk.Frame):
         super().__init__(master)
         self.master = master
         self.pack()
-        self.create_widgets()
+        self.buttons_dict = self.create_buttons_dict()
+        self.create_widgets(self.buttons_dict)
 
-    def create_widgets(self):
+    def create_buttons_dict(self):
         self.buttons = {
             "Cumulative Cases": ["../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv",
                                  "The cumulative number of cases with positive tests for COVID-19, by board in Scotland",
@@ -29,7 +30,10 @@ class DataByBoardDashboard(tk.Frame):
                                    "Hospital Patients", [y * 50 for y in range(1, 11)]]
         }
 
-        for button_text, button_command_values in self.buttons.items():
+        return self.buttons
+
+    def create_widgets(self, buttons):
+        for button_text, button_command_values in buttons.items():
             button = tk.Button(self)
             button["text"] = button_text
             button_plots = DataByBoardPlots(
