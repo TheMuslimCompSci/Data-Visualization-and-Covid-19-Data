@@ -29,7 +29,6 @@ class DataByBoardDashboard(tk.Frame):
                                    "The daily number of suspected COVID-19 inpatients in hospital at midnight, by board in Scotland",
                                    "Hospital Patients", [y * 50 for y in range(1, 11)]]
         }
-
         return self.buttons
 
     def create_widgets(self, buttons):
