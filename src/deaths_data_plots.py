@@ -5,11 +5,8 @@ import seaborn as sns
 
 class DeathsDataPlots(object):
 
-    def __init__(self, plots_path, plots_title, plots_ylabel, plots_yticks):
-        self.plots_path = plots_path
-        self.plots_title = plots_title
-        self.plots_ylabel = plots_ylabel
-        self.plots_yticks = plots_yticks
+    def __init__(self):
+        self.create_cumulative_deaths_different_data_plots()
 
     def create_plots(self):
         plots_data = pd.read_csv(self.plots_path)
@@ -29,3 +26,36 @@ class DeathsDataPlots(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle(self.plots_title)
         plt.show()
+
+    def create_cumulative_deaths_plots(self):
+        plots_data = pd.read_csv("../covid deaths data week 30/Figure 1 data.csv")
+        dates = plots_data["Date"].tolist()
+        x_values = dates[::7]
+        ax = sns.lineplot(data=plots_data, x="Date", y="Count", marker="o")
+        ax.set_title("Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020")
+        sns.despine(top=True, right=True)
+        ax.set_xticks(x_values)
+        ax.set_xticklabels(x_values, rotation="vertical")
+        ax.set_yticks([y * 500 for y in range(1, 10)])
+        ax.set_ylabel("Cumulative number of deaths")
+        plt.show()
+
+    def create_cumulative_deaths_different_data_plots(self):
+        plots_data = pd.read_csv("../covid deaths data week 30/Figure 2 data.csv")
+        hps_source_data = plots_data.iloc[:int(len(plots_data)/2)]
+        nrs_source_data = plots_data.iloc[int(len(plots_data)/2):]
+        dates = hps_source_data["Date"].tolist()
+        x_values = dates[::7]
+        ax = sns.lineplot(data=hps_source_data, x="Date", y="Cumulative Count")
+        ax2 = sns.lineplot(data=nrs_source_data, x="Date", y="Cumulative Count")
+        ax.set_title("Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020")
+        sns.despine(top=True, right=True)
+        ax.set_xticks(x_values)
+        ax.set_xticklabels(x_values, rotation="vertical")
+        ax.set_yticks([y * 500 for y in range(1, 10)])
+        ax.set_ylabel("Cumulative number of deaths")
+        plt.show()
+
+
+
+DeathsDataPlots()

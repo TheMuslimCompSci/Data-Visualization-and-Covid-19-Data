@@ -15,11 +15,11 @@ class DataByBoardPlots(object):
         plots_data = pd.read_csv(self.plots_path)
         boards = plots_data.columns.tolist()
         dates = plots_data["Date"].tolist()
+        x_values = dates[::7]
         f, ax = plt.subplots(figsize=(25, 15))
         for i in range(1, len(boards)):
             board = boards[i]
             plt.subplot(4, 4, i)
-            x_values = dates[::7]
             if self.plots_ylabel == "Cumulative Cases":
                 ax = sns.lineplot(data=plots_data, x="Date", y=board)
                 ax.set_xticks(x_values)
