@@ -1,6 +1,31 @@
-Week number,Week 1,Week 2,Week 3,Week 4,Week 5,Week 6,Week 7,Week 8,Week 9,Week 10,Week 11,Week 12,Week 13,Week 14,Week 15,Week 16,Week 17,Week 18,Week 19,Week 20,Week 21,Week 22,Week 23,Week 24,Week 25,Week 26,Week 27,Week 28,Week 29,Week 30
-Week,30 Dec,6 Jan,13 Jan,20 Jan,27 Jan,03 Feb,10 Feb,17 Feb,24 Feb,02 Mar,09 Mar,16 Mar,23 Mar,30 Mar,06 Apr,13 Apr,20 Apr,27 Apr,04 May,11 May,18 May,25 May,1st June,8th June,15th June,22nd June,28th June,6th July,13th July,20th July
-Total deaths 2020,1161,1567,1322,1226,1188,1216,1162,1162,1171,1208,1198,1196,1079,1744,1978,1916,1836,1679,1435,1421,1226,1128,1093,1034,1065,1008,983,976,1033,953
-Average for previous 5 years,1276,1560,1382,1317,1280,1254,1259,1247,1165,1229,1169,1120,1118,1098,1100,1067,1087,1079,1034,1064,1045,1017,1056,1000,1019,1026,1018,1025,996,977
-COVID-19 deaths 2020,0,0,0,0,0,0,0,0,0,0,0,11,62,282,609,650,661,527,415,336,230,131,89,69,49,35,18,13,6,8
-COVID-19 deaths as a % of total deaths,0,0,0,0,0,0,0,0,0,0,0,1,6,16,31,34,36,31,29,24,19,12,8,7,5,3,2,1,1,1
+Week number,Week,Total deaths 2020,Average for previous 5 years,COVID-19 deaths 2020,COVID-19 deaths as a % of total deaths
+Week 1,30 Dec,1161,1276,0,0
+Week 2, 6 Jan,1567,1560,0,0
+Week 3,13 Jan,1322,1382,0,0
+Week 4,20 Jan,1226,1317,0,0
+Week 5,27 Jan,1188,1280,0,0
+Week 6,03 Feb,1216,1254,0,0
+Week 7,10 Feb,1162,1259,0,0
+Week 8,17 Feb,1162,1247,0,0
+Week 9,24 Feb,1171,1165,0,0
+Week 10,02 Mar,1208,1229,0,0
+Week 11,09 Mar,1198,1169,0,0
+Week 12,16 Mar,1196,1120,11,1
+Week 13,23 Mar,1079,1118,62,6
+Week 14,30 Mar,1744,1098,282,16
+Week 15,06 Apr,1978,1100,609,31
+Week 16,13 Apr,1916,1067,650,34
+Week 17,20 Apr,1836,1087,661,36
+Week 18,27 Apr,1679,1079,527,31
+Week 19,04 May,1435,1034,415,29
+Week 20,11 May,1421,1064,336,24
+Week 21,18 May,1226,1045,230,19
+Week 22,25 May,1128,1017,131,12
+Week 23,1st June,1093,1056,89,8
+Week 24,8th June,1034,1000,69,7
+Week 25,15th June,1065,1019,49,5
+Week 26,22nd June,1008,1026,35,3
+Week 27,28th June,983,1018,18,2
+Week 28,6th July,976,1025,13,1
+Week 29,13th July,1033,996,6,1
+Week 30,20th July,953,977,8,1

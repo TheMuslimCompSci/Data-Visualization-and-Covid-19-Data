@@ -89,18 +89,9 @@ class DeathsDataPlots(object):
 
     def create_deaths_by_week_plot(self):
         plots_data = pd.read_csv("../covid deaths data week 30/Figure 5 data.csv")
-        print(plots_data)
-        columns = plots_data.columns.tolist()
-        weeks = columns[1:]
-        all_deaths_row = plots_data.iloc[[0]]
-        all_deaths_avg_previous_years_row = plots_data.iloc[[1]]
-        covid_deaths_row = plots_data.iloc[[2]]
-        all_deaths = all_deaths_row[1:]
-        all_deaths_avg_previous_years = all_deaths_avg_previous_years_row[1:]
-        covid_deaths = covid_deaths_row[1:]
-        ax = sns.lineplot(data=plots_data, x=weeks, y=all_deaths)
-        ax2 = sns.lineplot(data=plots_data, x=weeks, y=all_deaths_avg_previous_years)
-        ax3 = sns.lineplot(data=plots_data, x=weeks, y=covid_deaths)
+        ax = sns.lineplot(data=transposed_data, x=index_column, y=transposed_data[1])
+        #ax2 = sns.lineplot(data=transposed_data, x=index_column, y=transposed_data[1])
+        #ax3 = sns.lineplot(data=transposed_data, x=index_column, y=transposed_data[2])
         ax.set_title("Deaths by week of registration, Scotland, 2020")
         sns.despine(top=True, right=True)
         ax.set_yticks([y * 500 for y in range(1, 6)])
