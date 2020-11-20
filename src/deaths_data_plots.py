@@ -6,7 +6,7 @@ import seaborn as sns
 class DeathsDataPlots(object):
 
     def __init__(self):
-        self.create_all_deaths_by_age_plot()
+        self.create_deaths_by_week_plot()
 
     def create_plots(self):
         plots_data = pd.read_csv(self.plots_path)
@@ -75,5 +75,36 @@ class DeathsDataPlots(object):
         ax.set_ylabel("Number of deaths")
         plt.show()
 
+    def create_deaths_by_board_plot(self):
+        plots_data = pd.read_csv("../covid deaths data week 30/Figure 4 data.csv")
+        ax = sns.barplot(data=plots_data, x="Health board", y="COVID-19 deaths to date")
+        ax.set_title("COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland")
+        sns.despine(top=True, right=True)
+        ax.set_yticks([y * 200 for y in range(1, 8)])
+        ax.set_ylabel("Number of deaths")
+        health_boards = plots_data["Health board"].tolist()
+        ax.set_xticks(range(len(health_boards)))
+        ax.set_xticklabels(health_boards, rotation="45")
+        plt.show()
+
+    def create_deaths_by_week_plot(self):
+        plots_data = pd.read_csv("../covid deaths data week 30/Figure 5 data.csv")
+        print(plots_data)
+        columns = plots_data.columns.tolist()
+        weeks = columns[1:]
+        all_deaths_row = plots_data.iloc[[0]]
+        all_deaths_avg_previous_years_row = plots_data.iloc[[1]]
+        covid_deaths_row = plots_data.iloc[[2]]
+        all_deaths = all_deaths_row[1:]
+        all_deaths_avg_previous_years = all_deaths_avg_previous_years_row[1:]
+        covid_deaths = covid_deaths_row[1:]
+        ax = sns.lineplot(data=plots_data, x=weeks, y=all_deaths)
+        ax2 = sns.lineplot(data=plots_data, x=weeks, y=all_deaths_avg_previous_years)
+        ax3 = sns.lineplot(data=plots_data, x=weeks, y=covid_deaths)
+        ax.set_title("Deaths by week of registration, Scotland, 2020")
+        sns.despine(top=True, right=True)
+        ax.set_yticks([y * 500 for y in range(1, 6)])
+        ax.set_ylabel("Number of deaths")
+        plt.show()
 
 DeathsDataPlots()
