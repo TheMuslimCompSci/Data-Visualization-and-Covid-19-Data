@@ -6,7 +6,7 @@ import seaborn as sns
 class DeathsDataPlots(object):
 
     def __init__(self):
-        self.create_deaths_by_week_plot()
+        self.create_deaths_by_cause_plot()
 
     def create_plots(self):
         plot_data = pd.read_csv(self.plots_path)
@@ -100,6 +100,22 @@ class DeathsDataPlots(object):
         week_numbers = plot_data["Week number"].tolist()
         ax.set_xticks(range(len(week_numbers)))
         ax.set_xticklabels(week_numbers, rotation="vertical")
+        plt.show()
+
+    def create_deaths_by_cause_plot(self):
+        plot_data = pd.read_csv("../covid deaths data week 30/Figure 6 data.csv")
+        registered_deaths_2020 = plot_data.iloc[6:13]
+        registered_deaths_five_year_avg = plot_data.iloc[0:6]
+        columns
+        ax = sns.barplot(data=registered_deaths_2020, x="Location of death", y="Hospital")
+        ax.set_title("Deaths by underlying cause of death and location, week 12 to 30, 2020")
+        #ax.legend(["All deaths 2020", "All deaths, average of previous 5 years", "COVID-19 deaths 2020"])
+        sns.despine(top=True, right=True)
+        ax.set_yticks([y * 500 for y in range(1, 21)])
+        ax.set_ylabel("Number of deaths")
+        #week_numbers = plot_data["Week number"].tolist()
+        #ax.set_xticks(range(len(week_numbers)))
+        #ax.set_xticklabels(week_numbers, rotation="vertical")
         plt.show()
 
 DeathsDataPlots()

@@ -38,7 +38,7 @@ class DeathsDataDashboard(tk.Frame):
                                "Number of deaths", [y * 500 for y in range(1, 6)]],
 
             "Deaths By Cause": ["../covid deaths data week 30/Figure 6 data.csv",
-                                "Excess Deaths by underlying cause of death1 and location, week 12 to 30, 2020",
+                                "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020",
                                 "Number of deaths", [y * 5000 for y in range(1, 6)]],
 
             "Deaths By Location": ["../covid deaths data week 30/Figure 7 data.csv",
