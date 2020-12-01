@@ -38,6 +38,11 @@ class DeathsDataPlots(object):
         elif self.plot_ylabel == "Number of deaths":
             if self.plot_title == "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland" or self.plot_title == "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland":
                 ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+            elif self.plot_title == "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland":
+                ax = sns.barplot(data=plot_data, x="Health board", y=self.plot_y_values)
+                health_boards = plot_data["Health board"].tolist()
+                ax.set_xticks(range(len(health_boards)))
+                ax.set_xticklabels(health_boards, rotation="45")
             elif self.plot_title == "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020":
                 week_numbers = plot_data.columns.tolist()
                 week_numbers = week_numbers[1:]
@@ -129,27 +134,4 @@ class DeathsDataPlots(object):
         ax.set_xticklabels(x_values, rotation="vertical")
         ax.set_xlabel("Number of deaths")
         plt.subplots_adjust(wspace=1, hspace=1)
-        plt.show()
-
-    def create_deaths_by_location_plot(self):
-        plot_data = pd.read_csv("../covid deaths data week 30/Figure 7 data.csv")
-        week_numbers = plot_data.columns.tolist()
-        week_numbers = week_numbers[1:]
-        care_home_deaths = plot_data.loc[0].values.tolist()
-        care_home_deaths = care_home_deaths[1:]
-        home_deaths = plot_data.loc[1].values.tolist()
-        home_deaths = home_deaths[1:]
-        hospital_deaths = plot_data.loc[2].values.tolist()
-        hospital_deaths = hospital_deaths[1:]
-
-        ax = sns.lineplot(x=week_numbers, y=care_home_deaths)
-        ax2 = sns.lineplot(x=week_numbers, y=home_deaths)
-        ax3 = sns.lineplot(x=week_numbers, y=hospital_deaths)
-        ax.set_title("Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020")
-        ax.legend(["Care Home", "Home / Non-institution", "Hospital"])
-        sns.despine(top=True, right=True)
-        ax.set_yticks([y * 50 for y in range(1, 9)])
-        ax.set_ylabel("Number of deaths")
-        ax.set_xticks(range(len(week_numbers)))
-        ax.set_xticklabels(week_numbers, rotation="vertical")
         plt.show()

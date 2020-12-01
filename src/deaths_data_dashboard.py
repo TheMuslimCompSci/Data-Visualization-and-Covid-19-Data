@@ -31,7 +31,7 @@ class DeathsDataDashboard(tk.Frame):
 
             "Deaths By Board": ["../covid deaths data week 30/Figure 4 data.csv",
                                 "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland",
-                                "Number of deaths", [y * 2000 for y in range(1, 8)], "COVID-19 deaths to date"],
+                                "Number of deaths", [y * 200 for y in range(1, 8)], "COVID-19 deaths to date"],
 
             "Deaths By Week": ["../covid deaths data week 30/Figure 5 data.csv",
                                "Deaths by week of registration, Scotland, 2020",
@@ -63,7 +63,7 @@ class DeathsDataDashboard(tk.Frame):
             elif button_text == "COVID Deaths By Age" or button_text == "All Deaths By Age":
                 button["command"] = button_plots.create_cumulative_deaths_plot
             elif button_text == "Deaths By Board":
-                button["command"] = button_plots.create_deaths_by_board_plot
+                button["command"] = button_plots.create_cumulative_deaths_plot
             elif button_text == "Deaths By Week":
                 button["command"] = button_plots.create_deaths_by_week_plot
             elif button_text == "Deaths By Cause":
