@@ -6,7 +6,7 @@ import seaborn as sns
 class DeathsDataPlots(object):
 
     def __init__(self):
-        self.create_deaths_by_dates_plot()
+        pass
 
     def create_plots(self):
         plot_data = pd.read_csv(self.plots_path)
@@ -177,6 +177,7 @@ class DeathsDataPlots(object):
         ax = sns.lineplot(data=plot_data, x="Date", y="Cumulative deaths by date of death")
         ax = sns.lineplot(data=plot_data, x="Date", y="Cumulative deaths by date of registration")
         ax.set_title("Deaths involving COVID-19, date of death vs date of registration")
+        ax.xaxis.grid(True)
         ax.legend(["Cumulative deaths by date of death", "Cumulative deaths by date of registration"])
         sns.despine(top=True, right=True)
         ax.set_xticks(x_values)

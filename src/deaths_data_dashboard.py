@@ -55,10 +55,25 @@ class DeathsDataDashboard(tk.Frame):
         for button_text, button_command_values in buttons.items():
             button = tk.Button(self)
             button["text"] = button_text
-            button_plots = DeathsDataPlots(
-                button_command_values[0], button_command_values[1],
-                button_command_values[2], button_command_values[3])
-            button["command"] = button_plots.create_plots
+            button_plots = DeathsDataPlots()
+            if button_text == "Cumulative Deaths":
+                button["command"] = button_plots.create_cumulative_deaths_plot
+            elif button_text == "Cumulative Deaths Different Data":
+                button["command"] = button_plots.create_cumulative_deaths_different_data_plot
+            elif button_text == "COVID Deaths By Age":
+                button["command"] = button_plots.create_covid_deaths_by_age_plot
+            elif button_text == "All Deaths By Age":
+                button["command"] = button_plots.create_all_deaths_by_age_plot
+            elif button_text == "Deaths By Board":
+                button["command"] = button_plots.create_deaths_by_board_plot
+            elif button_text == "Deaths By Week":
+                button["command"] = button_plots.create_deaths_by_week_plot
+            elif button_text == "Deaths By Cause":
+                button["command"] = button_plots.create_deaths_by_cause_plot
+            elif button_text == "Deaths By Location":
+                button["command"] = button_plots.create_deaths_by_location_plot
+            elif button_text == "Deaths By Date Of Death vs Date Of Registration":
+                button["command"] = button_plots.create_deaths_by_dates_plot
             button.pack(side="top")
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
