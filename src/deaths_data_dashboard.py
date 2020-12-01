@@ -69,7 +69,7 @@ class DeathsDataDashboard(tk.Frame):
             elif button_text == "Deaths By Cause":
                 button["command"] = button_plots.create_deaths_by_cause_plot
             elif button_text == "Deaths By Location":
-                button["command"] = button_plots.create_deaths_by_location_plot
+                button["command"] = button_plots.create_cumulative_deaths_plot
             elif button_text == "Deaths By Date Of Death vs Date Of Registration":
                 button["command"] = button_plots.create_cumulative_deaths_plot
             button.pack(side="top")

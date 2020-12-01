@@ -36,7 +36,23 @@ class DeathsDataPlots(object):
             ax.set_xticks(x_values)
             ax.set_xticklabels(x_values, rotation="vertical")
         elif self.plot_ylabel == "Number of deaths":
-            ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+            if self.plot_title == "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland" or self.plot_title == "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland":
+                ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+            elif self.plot_title == "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020":
+                week_numbers = plot_data.columns.tolist()
+                week_numbers = week_numbers[1:]
+                care_home_deaths = plot_data.loc[0].values.tolist()
+                care_home_deaths = care_home_deaths[1:]
+                home_deaths = plot_data.loc[1].values.tolist()
+                home_deaths = home_deaths[1:]
+                hospital_deaths = plot_data.loc[2].values.tolist()
+                hospital_deaths = hospital_deaths[1:]
+                ax = sns.lineplot(x=week_numbers, y=care_home_deaths)
+                ax2 = sns.lineplot(x=week_numbers, y=home_deaths)
+                ax3 = sns.lineplot(x=week_numbers, y=hospital_deaths)
+                ax.legend(["Care Home", "Home / Non-institution", "Hospital"])
+                ax.set_xticks(range(len(week_numbers)))
+                ax.set_xticklabels(week_numbers, rotation="vertical")
         ax.set_title(self.plot_title)
         ax.set_yticks(self.plot_yticks)
         ax.set_ylabel(self.plot_ylabel)
@@ -136,20 +152,4 @@ class DeathsDataPlots(object):
         ax.set_ylabel("Number of deaths")
         ax.set_xticks(range(len(week_numbers)))
         ax.set_xticklabels(week_numbers, rotation="vertical")
-        plt.show()
-
-    def create_deaths_by_dates_plot(self):
-        plot_data = pd.read_csv("../covid deaths data week 30/Figure 8 data.csv")
-        dates = plot_data["Date"].tolist()
-        x_values = dates[::7]
-        ax = sns.lineplot(data=plot_data, x="Date", y="Cumulative deaths by date of death")
-        ax = sns.lineplot(data=plot_data, x="Date", y="Cumulative deaths by date of registration")
-        ax.set_title("Deaths involving COVID-19, date of death vs date of registration")
-        ax.xaxis.grid(True)
-        ax.legend(["Cumulative deaths by date of death", "Cumulative deaths by date of registration"])
-        sns.despine(top=True, right=True)
-        ax.set_xticks(x_values)
-        ax.set_xticklabels(x_values, rotation="vertical")
-        ax.set_yticks([y * 500 for y in range(1, 10)])
-        ax.set_ylabel("Cumulative number of deaths")
         plt.show()
