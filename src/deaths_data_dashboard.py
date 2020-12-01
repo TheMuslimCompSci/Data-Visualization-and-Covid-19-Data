@@ -47,7 +47,7 @@ class DeathsDataDashboard(tk.Frame):
 
             "Deaths By Date Of Death vs Date Of Registration": ["../covid deaths data week 30/Figure 8 data.csv",
                                                                 "Deaths involving COVID-19, date of death vs date of registration",
-                                                                "Number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"]]
+                                                                "Cumulative number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"]]
         }
         return self.buttons
 
@@ -71,7 +71,7 @@ class DeathsDataDashboard(tk.Frame):
             elif button_text == "Deaths By Location":
                 button["command"] = button_plots.create_deaths_by_location_plot
             elif button_text == "Deaths By Date Of Death vs Date Of Registration":
-                button["command"] = button_plots.create_deaths_by_dates_plot
+                button["command"] = button_plots.create_cumulative_deaths_plot
             button.pack(side="top")
 
         self.quit = tk.Button(self, text="QUIT", fg="red",

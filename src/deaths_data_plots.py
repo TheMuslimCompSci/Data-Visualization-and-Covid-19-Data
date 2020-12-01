@@ -26,6 +26,12 @@ class DeathsDataPlots(object):
                 ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
                 ax2 = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
                 ax.legend(["HPS", "NRS"])
+            elif self.plot_title == "Deaths involving COVID-19, date of death vs date of registration":
+                dates = plot_data["Date"].tolist()
+                ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+                ax2 = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+                ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+                ax.xaxis.grid(True)
             x_values = dates[::7]
             ax.set_xticks(x_values)
             ax.set_xticklabels(x_values, rotation="vertical")
@@ -37,21 +43,10 @@ class DeathsDataPlots(object):
         sns.despine(top=True, right=True)
         plt.show()
 
-    def create_deaths_by_age_plot(self):
-        plt.close("all")
-        plot_data = pd.read_csv("../covid deaths data week 30/Figure 3a and 3b data.csv")
-        ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
-        ax.set_title(self.plot_title)
-        ax.set_yticks(self.plot_yticks)
-        ax.set_ylabel("Number of deaths")
-        sns.despine(top=True, right=True)
-        plt.show()
-
     def create_deaths_by_board_plot(self):
         plot_data = pd.read_csv("../covid deaths data week 30/Figure 4 data.csv")
         ax = sns.barplot(data=plot_data, x="Health board", y="COVID-19 deaths to date")
-        ax.set_title(
-            "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland")
+        ax.set_title("COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland")
         sns.despine(top=True, right=True)
         ax.set_yticks([y * 200 for y in range(1, 8)])
         ax.set_ylabel("Number of deaths")
