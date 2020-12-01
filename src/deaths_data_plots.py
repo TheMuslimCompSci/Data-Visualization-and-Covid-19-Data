@@ -5,8 +5,10 @@ import seaborn as sns
 
 class DeathsDataPlots(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, plot_title, plot_yticks, plot_y_values):
+        self.plot_title = plot_title
+        self.plot_yticks = plot_yticks
+        self.plot_y_values = plot_y_values
 
     def create_plots(self):
         plot_data = pd.read_csv(self.plots_path)
@@ -57,7 +59,7 @@ class DeathsDataPlots(object):
         ax.set_ylabel("Cumulative number of deaths")
         plt.show()
 
-    def create_covid_deaths_by_age_plot(self):
+    """def create_covid_deaths_by_age_plot(self):
         plot_data = pd.read_csv("../covid deaths data week 30/Figure 3a and 3b data.csv")
         ax = sns.barplot(data=plot_data, x="Age group", y="Covid deaths to date")
         ax.set_title("COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland")
@@ -72,6 +74,15 @@ class DeathsDataPlots(object):
         ax.set_title("All deaths registered between weeks 1 and 30, 2020 by age group, Scotland")
         sns.despine(top=True, right=True)
         ax.set_yticks([y * 2000 for y in range(1, 8)])
+        ax.set_ylabel("Number of deaths")
+        plt.show()"""
+
+    def create_deaths_by_age_plot(self):
+        plot_data = pd.read_csv("../covid deaths data week 30/Figure 3a and 3b data.csv")
+        ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+        ax.set_title(self.plot_title)
+        sns.despine(top=True, right=True)
+        ax.set_yticks(self.plot_yticks)
         ax.set_ylabel("Number of deaths")
         plt.show()
 
@@ -185,6 +196,3 @@ class DeathsDataPlots(object):
         ax.set_yticks([y * 500 for y in range(1, 10)])
         ax.set_ylabel("Cumulative number of deaths")
         plt.show()
-
-
-DeathsDataPlots()
