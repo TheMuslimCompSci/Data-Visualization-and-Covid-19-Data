@@ -5,29 +5,12 @@ import seaborn as sns
 
 class DeathsDataPlots(object):
 
-    def __init__(self, plot_title, plot_yticks, plot_y_values):
+    def __init__(self, plot_path, plot_title, plot_ylabel, plot_yticks, plot_y_values):
+        self.plot_path = plot_path
         self.plot_title = plot_title
+        self.plot_ylabel = plot_ylabel
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
-
-    def create_plots(self):
-        plot_data = pd.read_csv(self.plots_path)
-        boards = plot_data.columns.tolist()
-        dates = plot_data["Date"].tolist()
-        f, ax = plt.subplots(figsize=(25, 15))
-        for i in range(1, len(boards)):
-            board = boards[i]
-            plt.subplot(4, 4, i)
-            ax = sns.lineplot(data=plot_data, x="Date", y=board)
-            ax.set_title(board)
-            x_values = dates[::7]
-            ax.set_xticks(x_values)
-            ax.set_xticklabels(x_values, rotation="vertical")
-            ax.set_yticks(self.plots_yticks)
-            ax.set_ylabel(self.plots_ylabel)
-        plt.subplots_adjust(wspace=1, hspace=1)
-        f.suptitle(self.plots_title)
-        plt.show()
 
     def create_cumulative_deaths_plot(self):
         plot_data = pd.read_csv("../covid deaths data week 30/Figure 1 data.csv")
@@ -40,6 +23,27 @@ class DeathsDataPlots(object):
         ax.set_xticklabels(x_values, rotation="vertical")
         ax.set_yticks([y * 500 for y in range(1, 10)])
         ax.set_ylabel("Cumulative number of deaths")
+        plt.show()
+
+    def create_cumulative_deaths(self):
+        plot_data = pd.read_csv(self.plot_path)
+        if self.plot_title == "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020":
+            dates = plot_data["Date"].tolist()
+            ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        elif self.plot_title == "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020":
+            hps_source_data = plot_data.iloc[:int(len(plot_data) / 2)]
+            nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
+            dates = hps_source_data["Date"].tolist()
+            ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
+            ax2 = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
+            ax.legend(["HPS", "NRS"])
+        x_values = dates[::7]
+        ax.set_title(self.plot_title)
+        ax.set_xticks(x_values)
+        ax.set_xticklabels(x_values, rotation="vertical")
+        ax.set_yticks(self.plot_yticks)
+        ax.set_ylabel(self.plot_ylabel)
+        sns.despine(top=True, right=True)
         plt.show()
 
     def create_cumulative_deaths_different_data_plot(self):
@@ -58,24 +62,6 @@ class DeathsDataPlots(object):
         ax.set_yticks([y * 500 for y in range(1, 10)])
         ax.set_ylabel("Cumulative number of deaths")
         plt.show()
-
-    """def create_covid_deaths_by_age_plot(self):
-        plot_data = pd.read_csv("../covid deaths data week 30/Figure 3a and 3b data.csv")
-        ax = sns.barplot(data=plot_data, x="Age group", y="Covid deaths to date")
-        ax.set_title("COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland")
-        sns.despine(top=True, right=True)
-        ax.set_yticks([y * 200 for y in range(1, 11)])
-        ax.set_ylabel("Number of deaths")
-        plt.show()
-
-    def create_all_deaths_by_age_plot(self):
-        plot_data = pd.read_csv("../covid deaths data week 30/Figure 3a and 3b data.csv")
-        ax = sns.barplot(data=plot_data, x="Age group", y="Total deaths to date")
-        ax.set_title("All deaths registered between weeks 1 and 30, 2020 by age group, Scotland")
-        sns.despine(top=True, right=True)
-        ax.set_yticks([y * 2000 for y in range(1, 8)])
-        ax.set_ylabel("Number of deaths")
-        plt.show()"""
 
     def create_deaths_by_age_plot(self):
         plot_data = pd.read_csv("../covid deaths data week 30/Figure 3a and 3b data.csv")
@@ -156,6 +142,7 @@ class DeathsDataPlots(object):
         ax.set_xticks(x_values)
         ax.set_xticklabels(x_values, rotation="vertical")
         ax.set_xlabel("Number of deaths")
+        plt.subplots_adjust(wspace=1, hspace=1)
         plt.show()
 
     def create_deaths_by_location_plot(self):
