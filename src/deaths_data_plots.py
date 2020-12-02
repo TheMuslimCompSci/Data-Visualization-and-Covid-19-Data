@@ -31,41 +31,7 @@ class DeathsDataPlots(object):
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.create_plot_titles_list()
         if self.plot_title == plot_titles[6]:
-            cause_of_death_column = plot_data["Location of death"]
-            cause_of_death_column = cause_of_death_column.iloc[6:13]
-            cause_of_death_column_list = cause_of_death_column.tolist()
-            cause_of_death_list = []
-            for cause in cause_of_death_column_list:
-                cause_of_death_list.append([cause] * 4)
-            cause_of_death_list = [item for sublist in cause_of_death_list for item in sublist]
-            location_of_death_data = plot_data.drop(columns=["Location of death"])
-            location_of_death_columns = location_of_death_data.columns.tolist()
-            location_of_death_list = location_of_death_columns * 7
-            registered_deaths_five_year_avg_covid_19_row = pd.DataFrame([[0, 0, 0, 0]], columns=location_of_death_columns)
-            registered_deaths_five_year_avg_data = location_of_death_data.iloc[0:6]
-            registered_deaths_five_year_avg_data = registered_deaths_five_year_avg_data.append(registered_deaths_five_year_avg_covid_19_row, ignore_index=True)
-            registered_deaths_five_year_avg_list = registered_deaths_five_year_avg_data.values.tolist()
-            registered_deaths_five_year_avg_list = [item for sublist in registered_deaths_five_year_avg_list for item in sublist]
-            registered_deaths_2020_data = location_of_death_data.iloc[6:13]
-            registered_deaths_2020_list = registered_deaths_2020_data.values.tolist()
-            registered_deaths_2020_list = [item for sublist in registered_deaths_2020_list for item in sublist]
-            plt.subplot(1, 2, 1)
-            ax = sns.barplot(x=registered_deaths_2020_list, hue=cause_of_death_list, y=location_of_death_list)
-            ax.set_title("Deaths by underlying cause of death and location, week 12 to 30, 2020")
-            sns.despine(top=True, right=True)
-            x_values = [y * 500 for y in range(1, 21)]
-            ax.set_xticks(x_values)
-            ax.set_xticklabels(x_values, rotation="vertical")
-            ax.set_xlabel("Number of deaths")
-            plt.subplot(1, 2, 2)
-            ax = sns.barplot(x=registered_deaths_five_year_avg_list, hue=cause_of_death_list, y=location_of_death_list)
-            ax.set_title("Deaths by underlying cause of death and location, five year average")
-            sns.despine(top=True, right=True)
-            x_values = [y * 500 for y in range(1, 21)]
-            ax.set_xticks(x_values)
-            ax.set_xticklabels(x_values, rotation="vertical")
-            ax.set_xlabel("Number of deaths")
-            plt.subplots_adjust(wspace=1, hspace=1)
+            plot = self.create_death_by_cause_plot(plot_data)
         else:
             if self.plot_ylabel == "Cumulative number of deaths":
                 if self.plot_title == plot_titles[0]:
@@ -123,3 +89,49 @@ class DeathsDataPlots(object):
             ax.set_title(self.plot_title)
             sns.despine(top=True, right=True)
         plt.show()
+
+    def create_death_by_cause_plot(self, plot_data):
+        plot_values = self.format_death_by_cause_data(plot_data)
+        registered_deaths_2020_list = plot_values[0]
+        registered_deaths_five_year_avg_list = plot_values[1]
+        location_of_death_list = plot_values[2]
+        cause_of_death_list = plot_values[3]
+        plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020")
+        plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, five year average")
+        plt.subplots_adjust(wspace=1, hspace=1)
+        return plot
+
+    def format_death_by_cause_data(self, plot_data):
+        cause_of_death_column = plot_data["Location of death"]
+        cause_of_death_column = cause_of_death_column.iloc[6:13]
+        cause_of_death_column_list = cause_of_death_column.tolist()
+        cause_of_death_list = []
+        for cause in cause_of_death_column_list:
+            cause_of_death_list.append([cause] * 4)
+        cause_of_death_list = [item for sublist in cause_of_death_list for item in sublist]
+        location_of_death_data = plot_data.drop(columns=["Location of death"])
+        location_of_death_columns = location_of_death_data.columns.tolist()
+        location_of_death_list = location_of_death_columns * 7
+        registered_deaths_five_year_avg_covid_19_row = pd.DataFrame([[0, 0, 0, 0]], columns=location_of_death_columns)
+        registered_deaths_five_year_avg_data = location_of_death_data.iloc[0:6]
+        registered_deaths_five_year_avg_data = registered_deaths_five_year_avg_data.append(
+            registered_deaths_five_year_avg_covid_19_row, ignore_index=True)
+        registered_deaths_five_year_avg_list = registered_deaths_five_year_avg_data.values.tolist()
+        registered_deaths_five_year_avg_list = [item for sublist in registered_deaths_five_year_avg_list for item in
+                                                sublist]
+        registered_deaths_2020_data = location_of_death_data.iloc[6:13]
+        registered_deaths_2020_list = registered_deaths_2020_data.values.tolist()
+        registered_deaths_2020_list = [item for sublist in registered_deaths_2020_list for item in sublist]
+        plot_values = [registered_deaths_2020_list, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list]
+        return plot_values
+
+    def format_death_by_cause_plot(self, subplot_index, plot_x_values, plot_y_values, plot_hue, plot_title):
+        plt.subplot(1, 2, subplot_index)
+        ax = sns.barplot(x=plot_x_values, y=plot_y_values, hue=plot_hue)
+        ax.set_title(plot_title)
+        x_values = [y * 500 for y in range(1, 21)]
+        ax.set_xticks(x_values)
+        ax.set_xticklabels(x_values, rotation="vertical")
+        ax.set_xlabel("Number of deaths")
+        sns.despine(top=True, right=True)
+        return ax
