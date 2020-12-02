@@ -26,7 +26,7 @@ class DeathsDataPlots(object):
         ]
         return plot_titles
 
-    def create_plot(self):
+    def create_visualization(self):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.create_plot_titles_list()
@@ -35,60 +35,71 @@ class DeathsDataPlots(object):
         else:
             if self.plot_ylabel == "Cumulative number of deaths":
                 if self.plot_title == plot_titles[0]:
-                    dates = plot_data["Date"].tolist()
-                    ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+                    plot = self.create_cumulative_deaths_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
                 elif self.plot_title == plot_titles[1]:
-                    hps_source_data = plot_data.iloc[:int(len(plot_data) / 2)]
-                    nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
-                    dates = hps_source_data["Date"].tolist()
-                    ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
-                    ax2 = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
-                    ax.legend(["HPS", "NRS"])
+                    plot = self.create_cumulative_deaths_different_data_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
                 elif self.plot_title == plot_titles[8]:
-                    dates = plot_data["Date"].tolist()
-                    ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
-                    ax2 = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
-                    ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
-                    ax.xaxis.grid(True)
+                    plot = self.create_deaths_by_dates_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
                 x_values = dates[::7]
                 ax.set_xticks(x_values)
                 ax.set_xticklabels(x_values, rotation="vertical")
             elif self.plot_ylabel == "Number of deaths":
                 if self.plot_title == plot_titles[2] or self.plot_title == plot_titles[3]:
-                    ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+                    ax = self.create_deaths_by_age_plot(plot_data)
                 elif self.plot_title == plot_titles[4]:
-                    ax = sns.barplot(data=plot_data, x="Health board", y=self.plot_y_values)
-                    health_boards = plot_data["Health board"].tolist()
-                    ax.set_xticks(range(len(health_boards)))
-                    ax.set_xticklabels(health_boards, rotation="45")
+                    ax = self.create_deaths_by_board_plot(plot_data)
                 elif self.plot_title == plot_titles[5]:
-                    week_numbers = plot_data["Week number"].tolist()
-                    ax = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[0])
-                    ax2 = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[1])
-                    ax3 = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[2])
-                    ax.legend(["All deaths 2020", "All deaths, average of previous 5 years", "COVID-19 deaths 2020"])
-                    ax.set_xticks(range(len(week_numbers)))
-                    ax.set_xticklabels(week_numbers, rotation="vertical")
+                    ax = self.create_death_by_week_plot(plot_data)
                 elif self.plot_title == plot_titles[7]:
-                    week_numbers = plot_data.columns.tolist()
-                    week_numbers = week_numbers[1:]
-                    care_home_deaths = plot_data.loc[0].values.tolist()
-                    care_home_deaths = care_home_deaths[1:]
-                    home_deaths = plot_data.loc[1].values.tolist()
-                    home_deaths = home_deaths[1:]
-                    hospital_deaths = plot_data.loc[2].values.tolist()
-                    hospital_deaths = hospital_deaths[1:]
-                    ax = sns.lineplot(x=week_numbers, y=care_home_deaths)
-                    ax2 = sns.lineplot(x=week_numbers, y=home_deaths)
-                    ax3 = sns.lineplot(x=week_numbers, y=hospital_deaths)
-                    ax.legend(["Care Home", "Home / Non-institution", "Hospital"])
-                    ax.set_xticks(range(len(week_numbers)))
-                    ax.set_xticklabels(week_numbers, rotation="vertical")
+                    ax = self.create_death_by_location_plot(plot_data)
             ax.set_yticks(self.plot_yticks)
             ax.set_ylabel(self.plot_ylabel)
             ax.set_title(self.plot_title)
             sns.despine(top=True, right=True)
         plt.show()
+
+    def create_cumulative_deaths_plot(self, plot_data):
+        dates = plot_data["Date"].tolist()
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        plot = [ax, dates]
+        return plot
+
+    def create_cumulative_deaths_different_data_plot(self, plot_data):
+        hps_source_data = plot_data.iloc[:int(len(plot_data) / 2)]
+        nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
+        dates = hps_source_data["Date"].tolist()
+        ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
+        ax = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
+        ax.legend(["HPS", "NRS"])
+        plot = [ax, dates]
+        return plot
+
+    def create_deaths_by_age_plot(self, plot_data):
+        plot = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+        return plot
+
+    def create_deaths_by_board_plot(self, plot_data):
+        plot = sns.barplot(data=plot_data, x="Health board", y=self.plot_y_values)
+        health_boards = plot_data["Health board"].tolist()
+        plot.set_xticks(range(len(health_boards)))
+        plot.set_xticklabels(health_boards, rotation="45")
+        return plot
+
+    def create_death_by_week_plot(self, plot_data):
+        week_numbers = plot_data["Week number"].tolist()
+        plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[0])
+        plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[1])
+        plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[2])
+        plot.legend(["All deaths 2020", "All deaths, average of previous 5 years", "COVID-19 deaths 2020"])
+        plot.set_xticks(range(len(week_numbers)))
+        plot.set_xticklabels(week_numbers, rotation="vertical")
+        return plot
 
     def create_death_by_cause_plot(self, plot_data):
         plot_values = self.format_death_by_cause_data(plot_data)
@@ -135,3 +146,29 @@ class DeathsDataPlots(object):
         ax.set_xlabel("Number of deaths")
         sns.despine(top=True, right=True)
         return ax
+
+    def create_death_by_location_plot(self, plot_data):
+        week_numbers = plot_data.columns.tolist()
+        week_numbers = week_numbers[1:]
+        care_home_deaths = plot_data.loc[0].values.tolist()
+        care_home_deaths = care_home_deaths[1:]
+        home_deaths = plot_data.loc[1].values.tolist()
+        home_deaths = home_deaths[1:]
+        hospital_deaths = plot_data.loc[2].values.tolist()
+        hospital_deaths = hospital_deaths[1:]
+        plot = sns.lineplot(x=week_numbers, y=care_home_deaths)
+        plot = sns.lineplot(x=week_numbers, y=home_deaths)
+        plot = sns.lineplot(x=week_numbers, y=hospital_deaths)
+        plot.legend(["Care Home", "Home / Non-institution", "Hospital"])
+        plot.set_xticks(range(len(week_numbers)))
+        plot.set_xticklabels(week_numbers, rotation="vertical")
+        return plot
+
+    def create_deaths_by_dates_plot(self, plot_data):
+        dates = plot_data["Date"].tolist()
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        ax.xaxis.grid(True)
+        plot = [ax, dates]
+        return plot
