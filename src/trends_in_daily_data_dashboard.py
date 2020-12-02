@@ -27,7 +27,7 @@ class TrendsInDailyDataDashboard(tk.Frame):
 
             "Ambulance Attendances": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of Attendances (total and COVID-19 suspected)",
-                                      "Number of attendances", [y * 2000 for y in range(1, 11)]],
+                                      "Number of attendances", [y * 200 for y in range(1, 11)]],
 
             "Ambulance To Hospital": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of suspected COVID-19 patients taken to hospital by ambulance",
