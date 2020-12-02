@@ -12,10 +12,25 @@ class DeathsDataPlots(object):
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
 
+    def create_plot_titles_list(self):
+        plot_titles = [
+            "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
+            "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020",
+            "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
+            "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
+            "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland",
+            "Deaths by week of registration, Scotland, 2020",
+            "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020",
+            "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020",
+            "Deaths involving COVID-19, date of death vs date of registration"
+        ]
+        return plot_titles
+
     def create_plot(self):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
-        if self.plot_title == "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020":
+        plot_titles = self.create_plot_titles_list()
+        if self.plot_title == plot_titles[6]:
             cause_of_death_column = plot_data["Location of death"]
             cause_of_death_column = cause_of_death_column.iloc[6:13]
             cause_of_death_column_list = cause_of_death_column.tolist()
@@ -53,17 +68,17 @@ class DeathsDataPlots(object):
             plt.subplots_adjust(wspace=1, hspace=1)
         else:
             if self.plot_ylabel == "Cumulative number of deaths":
-                if self.plot_title == "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020":
+                if self.plot_title == plot_titles[0]:
                     dates = plot_data["Date"].tolist()
                     ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
-                elif self.plot_title == "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020":
+                elif self.plot_title == plot_titles[1]:
                     hps_source_data = plot_data.iloc[:int(len(plot_data) / 2)]
                     nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
                     dates = hps_source_data["Date"].tolist()
                     ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
                     ax2 = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
                     ax.legend(["HPS", "NRS"])
-                elif self.plot_title == "Deaths involving COVID-19, date of death vs date of registration":
+                elif self.plot_title == plot_titles[8]:
                     dates = plot_data["Date"].tolist()
                     ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
                     ax2 = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
@@ -73,14 +88,14 @@ class DeathsDataPlots(object):
                 ax.set_xticks(x_values)
                 ax.set_xticklabels(x_values, rotation="vertical")
             elif self.plot_ylabel == "Number of deaths":
-                if self.plot_title == "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland" or self.plot_title == "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland":
+                if self.plot_title == plot_titles[2] or self.plot_title == plot_titles[3]:
                     ax = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
-                elif self.plot_title == "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland":
+                elif self.plot_title == plot_titles[4]:
                     ax = sns.barplot(data=plot_data, x="Health board", y=self.plot_y_values)
                     health_boards = plot_data["Health board"].tolist()
                     ax.set_xticks(range(len(health_boards)))
                     ax.set_xticklabels(health_boards, rotation="45")
-                elif self.plot_title == "Deaths by week of registration, Scotland, 2020":
+                elif self.plot_title == plot_titles[5]:
                     week_numbers = plot_data["Week number"].tolist()
                     ax = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[0])
                     ax2 = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[1])
@@ -88,7 +103,7 @@ class DeathsDataPlots(object):
                     ax.legend(["All deaths 2020", "All deaths, average of previous 5 years", "COVID-19 deaths 2020"])
                     ax.set_xticks(range(len(week_numbers)))
                     ax.set_xticklabels(week_numbers, rotation="vertical")
-                elif self.plot_title == "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020":
+                elif self.plot_title == plot_titles[7]:
                     week_numbers = plot_data.columns.tolist()
                     week_numbers = week_numbers[1:]
                     care_home_deaths = plot_data.loc[0].values.tolist()
