@@ -10,7 +10,7 @@ class TrendsInDailyDataPlots(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_delayed_discharges_plot()
+        self.create_deaths_plot()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
@@ -99,6 +99,21 @@ class TrendsInDailyDataPlots(object):
         ax.set_xticklabels(x_values, rotation="vertical")
         ax.set_yticks([y * 200 for y in range(1, 10)])
         ax.set_ylabel("Number of discharges")
+        sns.despine(top=True, right=True)
+        plt.show()
+
+    def create_people_tested_plot(self):
+
+    def create_deaths_plot(self):
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv")
+        dates = plot_data["Date"].tolist()
+        x_values = dates[::7]
+        ax = sns.lineplot(data=plot_data, x="Date", y="Number of COVID-19 confirmed deaths registered to date")
+        ax.set_title("Number of COVID-19 confirmed deaths registered to date")
+        ax.set_xticks(x_values)
+        ax.set_xticklabels(x_values, rotation="45")
+        ax.set_yticks([y * 500 for y in range(1, 7)])
+        ax.set_ylabel("Number of deaths")
         sns.despine(top=True, right=True)
         plt.show()
 
