@@ -11,7 +11,7 @@ class TrendsInDailyDataPlots(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_workforce_plot()
+        self.create_daily_positive_cases_plot()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
@@ -143,10 +143,34 @@ class TrendsInDailyDataPlots(object):
         plt.show()
 
     def create_daily_positive_cases_plot(self):
-        pass
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
+        dates = plot_data["Date notified"].tolist()
+        weekly_dates = [""] * len(dates)
+        weekly_dates[::7] = dates[::7]
+        daily_positive_cases = plot_data["(ii) Daily"].tolist()
+        weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
+        weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
+        lol = [weekly_positive_cases_average[i // 7] for i in range(7 * len(weekly_positive_cases_average))]
+        lol = lol[4:]
+        x = [1,2,3,4]
+        y = [20, "",20, ""]
+        sns.lineplot(x=x,y=y)
+        """ax = sns.lineplot(data=plot_data, x="Date notified", y=lol)
+        ax = sns.barplot(data=plot_data, x="Date notified", y="(ii) Daily")
+        ax.set_title("Number of daily new positive cases and 7-day rolling average")
+        ax.yaxis.grid(True)
+        ax.legend(["7 day average"])
+        ax.set_xticks(weekly_dates)
+        ax.set_xticklabels(weekly_dates, rotation="45")
+        ax.set_yticks([y * 50 for y in range(1, 11)])
+        ax.set_ylabel("Number of cases")
+        sns.despine(top=True, right=True)"""
+        plt.show()
 
     def create_workforce_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv")
+        dates = plot_data["Date"].tolist()
+        weekly_dates = dates[::7]
         absences = plot_data.columns.tolist()
         workforce_absences_average = []
         for i in range(1, len(absences)):
@@ -154,8 +178,6 @@ class TrendsInDailyDataPlots(object):
             weekly_staff_absences = [staff_absences[x:x + 7] for x in range(0, len(staff_absences), 7)]
             weekly_staff_absences_average = [np.average(x) for x in weekly_staff_absences]
             workforce_absences_average.append(weekly_staff_absences_average)
-        dates = plot_data["Date"].tolist()
-        weekly_dates = dates[::7]
         nursing_and_midwifery_absences_average = workforce_absences_average[0]
         medical_and_dental_staff_absences_average = workforce_absences_average[1]
         other_staff_absences_average = workforce_absences_average[2]
