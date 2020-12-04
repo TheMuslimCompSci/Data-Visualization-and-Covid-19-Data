@@ -70,7 +70,7 @@ class TrendsInDailyDataDashboard(tk.Frame):
             button_plots = TrendsInDailyDataPlots(
                 button_command_values[0], button_command_values[1],
                 button_command_values[2], button_command_values[3])
-            button["command"] = button_plots.create_plots
+            button["command"] = button_plots.create_visualiztion
             button.pack(side="top")
 
         self.quit = tk.Button(self, text="QUIT", fg="red",

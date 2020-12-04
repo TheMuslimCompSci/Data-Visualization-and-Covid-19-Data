@@ -11,12 +11,11 @@ class TrendsInDailyDataPlots(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_care_homes_plot()
+        self.create_hospital_confirmed_plot()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
         dates = plot_data["Date"].tolist()
-        x_values = dates[::4]
         ax = sns.lineplot(data=plot_data, x="Date", y="NHS24 111 Calls")
         ax = sns.lineplot(data=plot_data, x="Date", y="Coronavirus Helpline Calls")
         ax.set_title("Daily number of calls to NHS24 111 and the Coronavirus helpline")
@@ -33,12 +32,13 @@ class TrendsInDailyDataPlots(object):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv")
         plot_data = plot_data.iloc[9:]
         dates = plot_data["Date"].tolist()
-        x_values = dates[::7]
+        weekly_dates = [""] * len(dates)
+        weekly_dates[::7] = dates[::7]
         ax = sns.barplot(data=plot_data, x="Date", y="(ii) Confirmed")
         ax.set_title("Daily number of confirmed COVID-19 patients in hospital")
         ax.yaxis.grid(True)
-        ax.set_xticks(range(len(x_values)))
-        ax.set_xticklabels(x_values, rotation="vertical")
+        ax.set_xticks(range(len(weekly_dates)))
+        ax.set_xticklabels(weekly_dates, rotation="vertical")
         ax.set_yticks([y * 200 for y in range(1, 9)])
         ax.set_ylabel("Number of patients")
         sns.despine(top=True, right=True)
@@ -48,12 +48,13 @@ class TrendsInDailyDataPlots(object):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv")
         plot_data = plot_data.iloc[9:]
         dates = plot_data["Date"].tolist()
-        x_values = dates[::7]
+        weekly_dates = [""] * len(dates)
+        weekly_dates[::7] = dates[::7]
         ax = sns.barplot(data=plot_data, x="Date", y="(i) Confirmed")
         ax.set_title("Daily number of confirmed COVID-19 patients in ICU or combined ICU/HDU")
         ax.yaxis.grid(True)
-        ax.set_xticks(range(len(x_values)))
-        ax.set_xticklabels(x_values, rotation="vertical")
+        ax.set_xticks(range(len(weekly_dates)))
+        ax.set_xticklabels(weekly_dates, rotation="vertical")
         ax.set_yticks([y * 50 for y in range(1, 6)])
         ax.set_ylabel("Number of patients")
         sns.despine(top=True, right=True)
