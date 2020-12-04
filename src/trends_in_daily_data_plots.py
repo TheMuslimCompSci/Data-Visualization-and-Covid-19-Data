@@ -1,6 +1,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+import numpy as np
 
 
 class TrendsInDailyDataPlots(object):
@@ -10,7 +11,7 @@ class TrendsInDailyDataPlots(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_number_of_tests_plot()
+        self.create_workforce_plot()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
@@ -145,7 +146,32 @@ class TrendsInDailyDataPlots(object):
         pass
 
     def create_workforce_plot(self):
-        pass
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv")
+        absences = plot_data.columns.tolist()
+        workforce_absences_average = []
+        for i in range(1, len(absences)):
+            staff_absences = plot_data[absences[i]].tolist()
+            weekly_staff_absences = [staff_absences[x:x + 7] for x in range(0, len(staff_absences), 7)]
+            weekly_staff_absences_average = [np.average(x) for x in weekly_staff_absences]
+            workforce_absences_average.append(weekly_staff_absences_average)
+        print(workforce_absences_average)
+        nursing_and_midwifery_absences = plot_data["Nursing and midwifery absences"].tolist()
+        weekly_nursing_and_midwifery_absences = [nursing_and_midwifery_absences[x:x + 7] for x in range(0, len(nursing_and_midwifery_absences), 7)]
+        weekly_nursing_and_midwifery_absences_average = [np.average(x) for x in weekly_nursing_and_midwifery_absences]
+
+        medical_and_dental_staff_absences = plot_data["Medical and dental staff absences"].tolist()
+        weekly_medical_and_dental_staff_absences = [medical_and_dental_staff_absences[x:x + 7] for x in range(0, len(medical_and_dental_staff_absences), 7)]
+        weekly_nursing_and_midwifery_absences_average = [np.average(x) for x in weekly_nursing_and_midwifery_absences]
+
+
+        other_staff_absences = plot_data["Other staff absences"].tolist()
+        weekly_other_staff_absences = [other_staff_absences[x:x + 7] for x in range(0, len(other_staff_absences), 7)]
+        weekly_nursing_and_midwifery_absences_average = [np.average(x) for x in weekly_nursing_and_midwifery_absences]
+
+
+        all_staff_absences = plot_data["All staff absences"].tolist()
+        weekly_all_staff_absences = [all_staff_absences[x:x + 7] for x in range(0, len(all_staff_absences), 7)]
+        weekly_nursing_and_midwifery_absences_average = [np.average(x) for x in weekly_nursing_and_midwifery_absences]
 
     def create_care_homes_plot(self):
         pass
