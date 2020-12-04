@@ -11,7 +11,7 @@ class TrendsInDailyDataPlots(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_daily_positive_cases_plot()
+        self.create_care_homes_plot()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
@@ -150,21 +150,26 @@ class TrendsInDailyDataPlots(object):
         daily_positive_cases = plot_data["(ii) Daily"].tolist()
         weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
         weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
-        lol = [weekly_positive_cases_average[i // 7] for i in range(7 * len(weekly_positive_cases_average))]
-        lol = lol[4:]
-        x = [1,2,3,4]
-        y = [20, "",20, ""]
-        sns.lineplot(x=x,y=y)
-        """ax = sns.lineplot(data=plot_data, x="Date notified", y=lol)
+        plt.subplot(1, 2, 1)
         ax = sns.barplot(data=plot_data, x="Date notified", y="(ii) Daily")
         ax.set_title("Number of daily new positive cases and 7-day rolling average")
         ax.yaxis.grid(True)
         ax.legend(["7 day average"])
-        ax.set_xticks(weekly_dates)
+        ax.set_xticks(range(len(weekly_dates)))
         ax.set_xticklabels(weekly_dates, rotation="45")
         ax.set_yticks([y * 50 for y in range(1, 11)])
         ax.set_ylabel("Number of cases")
-        sns.despine(top=True, right=True)"""
+        sns.despine(top=True, right=True)
+        plt.subplot(1, 2, 2)
+        ax = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
+        ax.set_title("Number of daily new positive cases and 7-day rolling average")
+        ax.yaxis.grid(True)
+        ax.legend(["7 day average"])
+        ax.set_xticks(dates[::7])
+        ax.set_xticklabels(dates[::7], rotation="45")
+        ax.set_yticks([y * 50 for y in range(1, 11)])
+        ax.set_ylabel("Number of cases")
+        sns.despine(top=True, right=True)
         plt.show()
 
     def create_workforce_plot(self):
@@ -197,7 +202,35 @@ class TrendsInDailyDataPlots(object):
         plt.show()
 
     def create_care_homes_plot(self):
-        pass
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 7a - Care Homes.csv")
+        dates = plot_data["Date"].tolist()
+        care_homes_key = "Daily number of new suspected COVID-19 cases in adult care homes"
+        care_homes_cases = plot_data[care_homes_key].tolist()
+        weekly_care_home_cases = [care_homes_cases[x:x + 7] for x in range(0, len(care_homes_cases), 7)]
+        weekly_care_home_cases_average = [np.average(x) for x in weekly_care_home_cases]
+        plt.subplot(1, 2, 1)
+        ax = sns.barplot(data=plot_data, x="Date", y=care_homes_key)
+        ax.set_title("Daily number of new suspected Covid-19 cases reported in Scottish adult care homes")
+        ax.yaxis.grid(True)
+        ax.legend(["7 day average"])
+        ax.set_xticks(range(len(dates[::2])))
+        ax.set_xticklabels(dates[::2], rotation="45")
+        ax.set_yticks([y * 50 for y in range(1, 6)])
+        ax.set_ylabel("Number of cases")
+        sns.despine(top=True, right=True)
+        plt.subplot(1, 2, 2)
+        print(len(dates[::7]))
+        print(len(weekly_care_home_cases_average))
+        ax = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
+        ax.set_title("Daily number of new suspected Covid-19 cases reported in Scottish adult care homes")
+        ax.yaxis.grid(True)
+        ax.legend(["7 day average"])
+        ax.set_xticks(dates[::7])
+        ax.set_xticklabels(dates[::7], rotation="45")
+        ax.set_yticks([y * 50 for y in range(1, 6)])
+        ax.set_ylabel("Number of cases")
+        sns.despine(top=True, right=True)
+        plt.show()
 
     def create_deaths_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv")
