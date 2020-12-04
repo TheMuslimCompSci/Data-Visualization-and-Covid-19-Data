@@ -10,7 +10,7 @@ class TrendsInDailyDataPlots(object):
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
         self.plots_yticks = plots_yticks
-        self.create_deaths_plot()
+        self.create_number_of_tests_plot()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
@@ -103,6 +103,52 @@ class TrendsInDailyDataPlots(object):
         plt.show()
 
     def create_people_tested_plot(self):
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
+        dates = plot_data["Date notified"].tolist()
+        dates[1::2] = ["" for date in dates[1::2]]
+        people_tested_positive = plot_data["(i) Positive"].tolist()
+        people_tested_negative = plot_data["(i) Negative"].tolist()
+        ax = plt.subplot()
+        plt.bar(range(len(dates)), people_tested_positive)
+        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
+        plt.title("Number of people tested for COVID-19 in Scotland to date, by results")
+        plt.legend(["Positive", "Negative"])
+        plt.ylabel("Number of people tested")
+        ax.set_xticks(range(len(dates)))
+        ax.set_xticklabels(dates, rotation="vertical")
+        ax.set_yticks([y * 50000 for y in range(1, 8)])
+        sns.despine(top=True, right=True)
+        plt.show()
+
+
+    def create_number_of_tests_plot(self):
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
+        plot_data = plot_data.iloc[30:]
+        dates = plot_data["Date notified"].tolist()
+        weekly_dates = [""] * len(dates)
+        weekly_dates[::7] = dates[::7]
+        number_of_tests_nhs_labs = plot_data["(iii) Cumulative"].tolist()
+        number_of_tests_regional_testing_centres = plot_data["(iv) Cumulative"].tolist()
+        ax = plt.subplot()
+        plt.bar(range(len(dates)), number_of_tests_nhs_labs)
+        plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
+        plt.title("Cumulative number of COVID-19 Tests carried out in Scotland")
+        plt.legend(["NHS Labs", "Regional Testing Centres"])
+        plt.ylabel("Number of tests")
+        ax.set_xticks(range(len(weekly_dates)))
+        ax.set_xticklabels(weekly_dates, rotation="45")
+        ax.set_yticks([y * 100000 for y in range(1, 8)])
+        sns.despine(top=True, right=True)
+        plt.show()
+
+    def create_daily_positive_cases_plot(self):
+        pass
+
+    def create_workforce_plot(self):
+        pass
+
+    def create_care_homes_plot(self):
+        pass
 
     def create_deaths_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv")
@@ -116,5 +162,6 @@ class TrendsInDailyDataPlots(object):
         ax.set_ylabel("Number of deaths")
         sns.despine(top=True, right=True)
         plt.show()
+
 
 TrendsInDailyDataPlots(1,2,3,4)
