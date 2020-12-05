@@ -72,9 +72,9 @@ class DeathsDataPlots(object):
                     plot = self.create_deaths_by_dates_plot(plot_data)
                     ax = plot[0]
                     dates = plot[1]
-                x_values = dates[::7]
-                ax.set_xticks(x_values)
-                ax.set_xticklabels(x_values, rotation="vertical")
+                weekly_dates = dates[::7]
+                ax.set_xticks(weekly_dates)
+                ax.set_xticklabels(weekly_dates, rotation="vertical")
             elif self.plot_ylabel == "Number of deaths":
                 if self.plot_title == plot_titles["COVID Deaths By Age"][1] or self.plot_title == plot_titles["All Deaths By Age"][1]:
                     ax = self.create_deaths_by_age_plot(plot_data)
@@ -194,7 +194,7 @@ class DeathsDataPlots(object):
         dates = plot_data["Date"].tolist()
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
-        ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        ax.legend(self.plot_y_values)
         ax.xaxis.grid(True)
         plot = [ax, dates]
         return plot
