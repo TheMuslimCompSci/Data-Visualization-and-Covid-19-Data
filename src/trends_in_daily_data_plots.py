@@ -18,7 +18,7 @@ class TrendsInDailyDataPlots(object):
             "NHS 24": ["../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv",
                        "Daily number of calls to NHS24 111 and the Coronavirus helpline",
                        "Number of calls", [y * 2000 for y in range(1, 8)],
-                       ["NHS 111 Calls", "Coronavirus Helpline Calls"]],
+                       ["NHS24 111 Calls", "Coronavirus Helpline Calls"]],
 
             "Hospital Confirmed": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
                                    "Daily number of confirmed COVID-19 patients in hospital",
@@ -40,37 +40,37 @@ class TrendsInDailyDataPlots(object):
                                       "Number of patients", [y * 50 for y in range(1, 9)],
                                       "Number of suspected COVID-19 patients taken to hospital"],
 
-            "Delayed Discharges": ["../COVID-19 data by NHS Board 22 July 2020/Table 4 - Delayed Discharges.csv",
+            "Delayed Discharges": ["../Trends in daily COVID-19 data 22 July 2020/Table 4 - Delayed Discharges.csv",
                                    "Daily Delayed Discharges",
                                    "Number of delayed discharges", [y * 200 for y in range(1, 10)],
                                    "Number of delayed discharges"],
 
-            "People Tested": ["../COVID-19 data by NHS Board 22 July 2020/Table 5 - Testing.csv",
+            "People Tested": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                               "Number of people tested for COVID-19 in Scotland to date, by results",
                               "Number of people tested", [y * 50000 for y in range(1, 8)],
                               ["(i) Positive", "(i) Negative"]],
 
-            "Number Of Tests": ["../COVID-19 data by NHS Board 22 July 2020/Table 5 - Testing.csv",
+            "Number Of Tests": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                                 "Cumulative number of COVID-19 Tests carried out in Scotland",
                                 "Number of tests", [y * 100000 for y in range(1, 8)],
                                 ["(iii) Cumulative", "(iv) Cumulative"]],
 
-            "Daily Positive Cases": ["../COVID-19 data by NHS Board 22 July 2020/Table 5 - Testing.csv",
+            "Daily Positive Cases": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                                      "Number of daily new positive cases and 7-day rolling average",
                                      "Number of cases", [y * 50 for y in range(1, 11)],
                                      "(ii) Daily"],
 
-            "Workforce": ["../COVID-19 data by NHS Board 22 July 2020/Table 6 - Workforce.csv",
+            "Workforce": ["../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv",
                           "Number of NHS staff reporting as absent due to Covid-19",
                           "Number of staff", [y * 1000 for y in range(1, 11)],
                           ""],
 
-            "Care Homes": ["../COVID-19 data by NHS Board 22 July 2020/Table 7a - Care Homes.csv",
+            "Care Homes": ["../Trends in daily COVID-19 data 22 July 2020/Table 7a - Care Homes.csv",
                            "Daily number of new suspected Covid-19 cases reported in Scottish adult care homes",
                            "Number of cases", [y * 50 for y in range(1, 6)],
                            "Daily number of new suspected COVID-19 cases in adult care homes"],
 
-            "Deaths": ["../COVID-19 data by NHS Board 22 July 2020/Table 8 - Deaths.csv",
+            "Deaths": ["../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv",
                        "Number of COVID-19 confirmed deaths registered to date",
                        "Number of deaths", [y * 500 for y in range(1, 7)],
                        "Number of COVID-19 confirmed deaths registered to date"],
@@ -85,26 +85,19 @@ class TrendsInDailyDataPlots(object):
         plot_titles = self.get_plots_info()
         if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
             plot = self.create_double_line_plot(plot_data)
-        elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1]:
+        elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
             plot = self.create_single_line_plot(plot_data)
         plot.set_title(self.plot_title)
-        plot.set_xticks(weekly_dates)
-        plot.set_xticklabels(weekly_dates, rotation="vertical")
         plot.set_yticks(self.plot_yticks)
         plot.set_ylabel(self.plot_ylabel)
-        plot.yaxis.grid(True)
+        plot.set_xticks(weekly_dates)
+        if self.plot_title == plot_titles["Deaths"][1]:
+            plot.set_xticklabels(weekly_dates, rotation="45")
+        else:
+            plot.set_xticklabels(weekly_dates, rotation="vertical")
+            plot.yaxis.grid(True)
         sns.despine(top=True, right=True)
         plt.show()
-
-    def create_double_line_plot(self, plot_data):
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
-        ax.legend(self.plot_y_values)
-        return ax
-
-    def create_single_line_plot(self, plot_data):
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
-        return ax
 
     def create_deaths_plot(self, plot_data):
         plot_data = pd.read_csv(self.plot_path)
@@ -118,6 +111,16 @@ class TrendsInDailyDataPlots(object):
         ax.set_ylabel(self.plot_ylabel)
         sns.despine(top=True, right=True)
         plt.show()
+
+    def create_double_line_plot(self, plot_data):
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        ax.legend(self.plot_y_values)
+        return ax
+
+    def create_single_line_plot(self, plot_data):
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        return ax
 
     def create_hospital_care_plot(self, plot_data):
         plot_data = pd.read_csv(self.plot_path)
