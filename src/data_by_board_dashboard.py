@@ -8,32 +8,9 @@ class DataByBoardDashboard(tk.Frame):
         super().__init__(master)
         self.master = master
         self.pack()
-        self.buttons_dict = self.create_buttons_dict()
-        self.create_widgets(self.buttons_dict)
-
-    def create_buttons_dict(self):
-        self.buttons = {
-            "Cumulative Cases": ["../COVID-19 data by NHS Board 22 July 2020/Table 1 - Cumulative cases.csv",
-                                 "The cumulative number of cases with positive tests for COVID-19, by board in Scotland",
-                                 "Cumulative Cases", [y * 2000 for y in range(1, 10)]],
-
-            "ICU Patients Confirmed": ["../COVID-19 data by NHS Board 22 July 2020/Table 2a - ICU patients.csv",
-                                       "The daily number of COVID-19 inpatients (confirmed) in ICU at midnight, by board in Scotland",
-                                       "ICU Patients", [y * 20 for y in range(1, 12)]],
-
-            "ICU Patients Suspected": ["../COVID-19 data by NHS Board 22 July 2020/Table 2b - ICU patients (Hist.).csv",
-                                       "The daily number of COVID-19 inpatients (suspected) in ICU at midnight, by board in Scotland",
-                                       "ICU Patients", [y * 20 for y in range(1, 12)]],
-
-            "Hospital Confirmed": ["../COVID-19 data by NHS Board 22 July 2020/Table 3a - Hospital Confirmed.csv",
-                                   "The daily number of confirmed COVID-19 inpatients in hospital at midnight, by board in Scotland",
-                                   "Hospital Patients", [y * 200 for y in range(1, 9)]],
-
-            "Hospital Suspected": ["../COVID-19 data by NHS Board 22 July 2020/Table 3b- Hospital Suspected.csv",
-                                   "The daily number of suspected COVID-19 inpatients in hospital at midnight, by board in Scotland",
-                                   "Hospital Patients", [y * 50 for y in range(1, 11)]]
-        }
-        return self.buttons
+        self.plots = DataByBoardPlots()
+        self.plots_info = self.plots.get_plots_info()
+        self.create_widgets(self.plots_info)
 
     def create_widgets(self, buttons):
         for button_text, button_command_values in buttons.items():
@@ -42,7 +19,7 @@ class DataByBoardDashboard(tk.Frame):
             button_plots = DataByBoardPlots(
                 button_command_values[0], button_command_values[1],
                 button_command_values[2], button_command_values[3])
-            button["command"] = button_plots.create_plots
+            button["command"] = button_plots.create_visualization
             button.pack(side="top")
 
         self.quit = tk.Button(self, text="QUIT", fg="red",

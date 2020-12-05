@@ -13,7 +13,7 @@ class DeathsDataPlots(object):
         self.plot_y_values = plot_y_values
 
     def get_plots_info(self):
-        plot_info = {
+        plots_info = {
             "Cumulative Deaths": ["../covid deaths data week 30/Figure 1 data.csv",
                                   "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
                                   "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Count"],
@@ -50,7 +50,7 @@ class DeathsDataPlots(object):
                                                                 "Deaths involving COVID-19, date of death vs date of registration",
                                                                 "Cumulative number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"]]
         }
-        return plot_info
+        return plots_info
 
     def create_visualization(self):
         plt.close("all")
