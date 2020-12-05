@@ -5,44 +5,70 @@ import seaborn as sns
 
 class DeathsDataPlots(object):
 
-    def __init__(self, plot_path, plot_title, plot_ylabel, plot_yticks, plot_y_values):
+    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None):
         self.plot_path = plot_path
         self.plot_title = plot_title
         self.plot_ylabel = plot_ylabel
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
 
-    def create_plot_titles_list(self):
-        plot_titles = [
-            "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
-            "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020",
-            "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
-            "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
-            "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland",
-            "Deaths by week of registration, Scotland, 2020",
-            "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020",
-            "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020",
-            "Deaths involving COVID-19, date of death vs date of registration"
-        ]
-        return plot_titles
+    def get_plots_info(self):
+        plot_info = {
+            "Cumulative Deaths": ["../covid deaths data week 30/Figure 1 data.csv",
+                                  "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
+                                  "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Count"],
+
+            "Cumulative Deaths Different Data": ["../covid deaths data week 30/Figure 2 data.csv",
+                                                 "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020",
+                                                 "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Cumulative Count"],
+
+            "COVID Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
+                                    "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
+                                    "Number of deaths", [y * 200 for y in range(1, 11)], "Covid deaths to date"],
+
+            "All Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
+                                  "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
+                                  "Number of deaths", [y * 2000 for y in range(1, 8)], "Total deaths to date"],
+
+            "Deaths By Board": ["../covid deaths data week 30/Figure 4 data.csv",
+                                "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland",
+                                "Number of deaths", [y * 200 for y in range(1, 8)], "COVID-19 deaths to date"],
+
+            "Deaths By Week": ["../covid deaths data week 30/Figure 5 data.csv",
+                               "Deaths by week of registration, Scotland, 2020",
+                               "Number of deaths", [y * 500 for y in range(1, 6)], ["Total deaths 2020", "Average for previous 5 years", "COVID-19 deaths 2020"]],
+
+            "Deaths By Cause": ["../covid deaths data week 30/Figure 6 data.csv",
+                                "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020",
+                                "Number of deaths", [y * 5000 for y in range(1, 6)], ""],
+
+            "Deaths By Location": ["../covid deaths data week 30/Figure 7 data.csv",
+                                   "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020",
+                                   "Number of deaths", [y * 50 for y in range(1, 9)], ""],
+
+            "Deaths By Date Of Death vs Date Of Registration": ["../covid deaths data week 30/Figure 8 data.csv",
+                                                                "Deaths involving COVID-19, date of death vs date of registration",
+                                                                "Cumulative number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"]]
+        }
+        return plot_info
 
     def create_visualization(self):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
-        plot_titles = self.create_plot_titles_list()
-        if self.plot_title == plot_titles[6]:
+        plot_titles = self.get_plots_info()
+        if self.plot_title == plot_titles["Deaths By Cause"][1]:
             plot = self.create_death_by_cause_plot(plot_data)
         else:
             if self.plot_ylabel == "Cumulative number of deaths":
-                if self.plot_title == plot_titles[0]:
+                if self.plot_title == plot_titles["Cumulative Deaths"][1]:
                     plot = self.create_cumulative_deaths_plot(plot_data)
                     ax = plot[0]
                     dates = plot[1]
-                elif self.plot_title == plot_titles[1]:
+                elif self.plot_title == plot_titles["Cumulative Deaths Different Data"][1]:
                     plot = self.create_cumulative_deaths_different_data_plot(plot_data)
                     ax = plot[0]
                     dates = plot[1]
-                elif self.plot_title == plot_titles[8]:
+                elif self.plot_title == plot_titles["Deaths By Date Of Death vs Date Of Registration"][1]:
                     plot = self.create_deaths_by_dates_plot(plot_data)
                     ax = plot[0]
                     dates = plot[1]
@@ -50,13 +76,13 @@ class DeathsDataPlots(object):
                 ax.set_xticks(x_values)
                 ax.set_xticklabels(x_values, rotation="vertical")
             elif self.plot_ylabel == "Number of deaths":
-                if self.plot_title == plot_titles[2] or self.plot_title == plot_titles[3]:
+                if self.plot_title == plot_titles["COVID Deaths By Age"][1] or self.plot_title == plot_titles["All Deaths By Age"][1]:
                     ax = self.create_deaths_by_age_plot(plot_data)
-                elif self.plot_title == plot_titles[4]:
+                elif self.plot_title == plot_titles["Deaths By Board"][1]:
                     ax = self.create_deaths_by_board_plot(plot_data)
-                elif self.plot_title == plot_titles[5]:
+                elif self.plot_title == plot_titles["Deaths By Week"][1]:
                     ax = self.create_death_by_week_plot(plot_data)
-                elif self.plot_title == plot_titles[7]:
+                elif self.plot_title == plot_titles["Deaths By Location"][1]:
                     ax = self.create_death_by_location_plot(plot_data)
             ax.set_yticks(self.plot_yticks)
             ax.set_ylabel(self.plot_ylabel)
