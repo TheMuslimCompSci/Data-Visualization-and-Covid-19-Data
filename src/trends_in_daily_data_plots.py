@@ -6,16 +6,89 @@ import numpy as np
 
 class TrendsInDailyDataPlots(object):
 
-    def __init__(self, plots_path, plots_title, plots_ylabel, plots_yticks):
-        self.plots_path = plots_path
-        self.plots_title = plots_title
-        self.plots_ylabel = plots_ylabel
-        self.plots_yticks = plots_yticks
-        self.create_hospital_confirmed_plot()
+    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None):
+        self.plot_path = plot_path
+        self.plot_title = plot_title
+        self.plot_ylabel = plot_ylabel
+        self.plot_yticks = plot_yticks
+        self.plot_y_values = plot_y_values
+
+    def get_plots_info(self):
+        plots_info = {
+            "NHS 24": ["../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv",
+                       "Daily number of calls to NHS24 111 and the Coronavirus helpline",
+                       "Number of calls", [y * 2000 for y in range(1, 8)],
+                       ["NHS 111 Calls", "Coronavirus Helpline Calls"]],
+
+            "Hospital Confirmed": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
+                                   "Daily number of confirmed COVID-19 patients in hospital",
+                                   "Number of patients", [y * 200 for y in range(1, 9)],
+                                   "(ii) Confirmed"],
+
+            "Hospital Care (ICU)": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
+                                    "Daily number of confirmed COVID-19 patients in ICU or combined ICU/HDU",
+                                    "Number of patients", [y * 50 for y in range(1, 6)],
+                                    "(i) Confirmed"],
+
+            "Ambulance Attendances": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
+                                      "Number of Attendances (total and COVID-19 suspected)",
+                                      "Number of attendances", [y * 200 for y in range(1, 11)],
+                                      ["Number of attendances", "Number of COVID-19 suspected attendances"]],
+
+            "Ambulance To Hospital": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
+                                      "Number of suspected COVID-19 patients taken to hospital by ambulance",
+                                      "Number of patients", [y * 50 for y in range(1, 9)],
+                                      "Number of suspected COVID-19 patients taken to hospital"],
+
+            "Delayed Discharges": ["../COVID-19 data by NHS Board 22 July 2020/Table 4 - Delayed Discharges.csv",
+                                   "Daily Delayed Discharges",
+                                   "Number of delayed discharges", [y * 200 for y in range(1, 10)],
+                                   "Number of delayed discharges"],
+
+            "People Tested": ["../COVID-19 data by NHS Board 22 July 2020/Table 5 - Testing.csv",
+                              "Number of people tested for COVID-19 in Scotland to date, by results",
+                              "Number of people tested", [y * 50000 for y in range(1, 8)],
+                              ["(i) Positive", "(i) Negative"]],
+
+            "Number Of Tests": ["../COVID-19 data by NHS Board 22 July 2020/Table 5 - Testing.csv",
+                                "Cumulative number of COVID-19 Tests carried out in Scotland",
+                                "Number of tests", [y * 100000 for y in range(1, 8)],
+                                ["(iii) Cumulative", "(iv) Cumulative"]],
+
+            "Daily Positive Cases": ["../COVID-19 data by NHS Board 22 July 2020/Table 5 - Testing.csv",
+                                     "Number of daily new positive cases and 7-day rolling average",
+                                     "Number of cases", [y * 50 for y in range(1, 11)],
+                                     "(ii) Daily"],
+
+            "Workforce": ["../COVID-19 data by NHS Board 22 July 2020/Table 6 - Workforce.csv",
+                          "Number of NHS staff reporting as absent due to Covid-19",
+                          "Number of staff", [y * 1000 for y in range(1, 11)],
+                          ""],
+
+            "Care Homes": ["../COVID-19 data by NHS Board 22 July 2020/Table 7a - Care Homes.csv",
+                           "Daily number of new suspected Covid-19 cases reported in Scottish adult care homes",
+                           "Number of cases", [y * 50 for y in range(1, 6)],
+                           "Daily number of new suspected COVID-19 cases in adult care homes"],
+
+            "Deaths": ["../COVID-19 data by NHS Board 22 July 2020/Table 8 - Deaths.csv",
+                       "Number of COVID-19 confirmed deaths registered to date",
+                       "Number of deaths", [y * 500 for y in range(1, 7)],
+                       "Number of COVID-19 confirmed deaths registered to date"],
+        }
+        return plots_info
+
+    def create_visualization(self):
+        plt.close("all")
+        plot_data = pd.read_csv(self.plot_path)
+        plot_titles = self.get_plots_info()
+        #insert logic here
+        sns.despine()
+        plt.show()
 
     def create_nhs_24_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
         dates = plot_data["Date"].tolist()
+        x_values = dates[::7]
         ax = sns.lineplot(data=plot_data, x="Date", y="NHS24 111 Calls")
         ax = sns.lineplot(data=plot_data, x="Date", y="Coronavirus Helpline Calls")
         ax.set_title("Daily number of calls to NHS24 111 and the Coronavirus helpline")
@@ -41,6 +114,22 @@ class TrendsInDailyDataPlots(object):
         ax.set_xticklabels(weekly_dates, rotation="vertical")
         ax.set_yticks([y * 200 for y in range(1, 9)])
         ax.set_ylabel("Number of patients")
+        sns.despine(top=True, right=True)
+        plt.show()
+
+    def create_hospital_care_plot(self):
+        plot_data = pd.read_csv(self.plot_path)
+        plot_data = plot_data.iloc[9:]
+        dates = plot_data["Date"].tolist()
+        weekly_dates = [""] * len(dates)
+        weekly_dates[::7] = dates[::7]
+        ax = sns.barplot(data=plot_data, x="Date", y=self.plot_y_values)
+        ax.set_title(self.plot_title)
+        ax.yaxis.grid(True)
+        ax.set_xticks(range(len(weekly_dates)))
+        ax.set_xticklabels(weekly_dates, rotation="vertical")
+        ax.set_yticks(self.plot_yticks)
+        ax.set_ylabel(self.plot_ylabel)
         sns.despine(top=True, right=True)
         plt.show()
 
