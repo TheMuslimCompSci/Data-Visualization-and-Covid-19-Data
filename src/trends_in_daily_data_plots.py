@@ -119,6 +119,20 @@ class TrendsInDailyDataPlots(object):
         sns.despine(top=True, right=True)
         plt.show()
 
+    def create_ambulance_to_hospital_and_delayed_discharges_plot(self):
+        plot_data = pd.read_csv(self.plot_path)
+        dates = plot_data["Date"].tolist()
+        weekly_dates = dates[::7]
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        ax.set_title(self.plot_title)
+        ax.yaxis.grid(True)
+        ax.set_xticks(weekly_dates)
+        ax.set_xticklabels(weekly_dates, rotation="vertical")
+        ax.set_yticks(self.plot_yticks)
+        ax.set_ylabel(self.plot_ylabel)
+        sns.despine(top=True, right=True)
+        plt.show()
+
     def create_ambulance_to_hospital_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv")
         dates = plot_data["Date"].tolist()
