@@ -13,6 +13,7 @@ class TrendsInDailyDataPlots(object):
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
         self.plot_type = plot_type
+        self.create_workforces_plot()
 
     def get_plots_info(self):
         plots_info = {
@@ -112,9 +113,13 @@ class TrendsInDailyDataPlots(object):
                 plot = self.create_workforce_plot(plot_data)
             elif self.plot_title == plot_titles["Care Homes"][1]:
                 plot = self.create_care_homes_plot(plot_data)
-            weekly_dates = [""] * len(dates)
-            weekly_dates[::7] = dates[::7]
-            plot.set_xticks(range(len(weekly_dates)))
+            if self.plot_title == plot_titles["People Tested"][1]:
+                weekly_dates = dates
+                weekly_dates[1::2] = ["" for date in dates[1::2]]
+            else:
+                weekly_dates = [""] * len(dates)
+                weekly_dates[::7] = dates[::7]
+                plot.set_xticks(range(len(weekly_dates)))
             if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1] or self.plot_title == plot_titles["People Tested"][1]:
                 plot.set_xticklabels(weekly_dates, rotation="vertical")
             else:
@@ -129,6 +134,16 @@ class TrendsInDailyDataPlots(object):
         plot_data = plot_data.iloc[9:]
         plot = sns.barplot(data=plot_data, x="Date", y=self.plot_y_values)
         plot.yaxis.grid(True)
+        return plot
+
+    def create_people_tested_plot(self, plot_data):
+        people_tested_positive = plot_data["(i) Positive"].tolist()
+        people_tested_negative = plot_data["(i) Negative"].tolist()
+        plot = plt.subplot()
+        plt.bar(range(len(people_tested_positive)), people_tested_positive)
+        plt.bar(range(len(people_tested_negative)), people_tested_negative, bottom=people_tested_positive)
+        plt.legend(["Positive", "Negative"])
+        plot.set_xticks(range(len(people_tested_positive)))
         return plot
 
     def create_number_of_tests_plot(self, plot_data):
@@ -170,25 +185,6 @@ class TrendsInDailyDataPlots(object):
         plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
         plot.legend(self.plot_y_values)
         return plot
-
-    def create_people_tested_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
-        dates = plot_data["Date notified"].tolist()
-        dates[1::2] = ["" for date in dates[1::2]]
-        people_tested_positive = plot_data["(i) Positive"].tolist()
-        people_tested_negative = plot_data["(i) Negative"].tolist()
-        ax = plt.subplot()
-        plt.bar(range(len(dates)), people_tested_positive)
-        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
-        plt.title("Number of people tested for COVID-19 in Scotland to date, by results")
-        plt.legend(["Positive", "Negative"])
-        plt.ylabel("Number of people tested")
-        ax.set_xticks(range(len(dates)))
-        ax.set_xticklabels(dates, rotation="vertical")
-        ax.set_yticks([y * 50000 for y in range(1, 8)])
-        sns.despine(top=True, right=True)
-        plt.show()
-
 
     def create_daily_positive_cases_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
@@ -248,6 +244,3 @@ class TrendsInDailyDataPlots(object):
         ax.set_ylabel("Number of cases")
         sns.despine(top=True, right=True)
         plt.show()
-
-
-TrendsInDailyDataPlots(1,2,3,4)
