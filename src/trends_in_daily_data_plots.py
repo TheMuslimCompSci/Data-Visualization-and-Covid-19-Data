@@ -78,15 +78,6 @@ class TrendsInDailyDataPlots(object):
         }
         return plots_info
 
-    def create_visualization(self):
-        plot_titles = self.get_plots_info()
-        plt.close("all")
-        plot_data = pd.read_csv(self.plot_path)
-
-
-        sns.despine()
-        plt.show()
-
     def create_nhs_24_and_ambulance_attendances_plot(self):
         plot_data = pd.read_csv(self.plot_path)
         dates = plot_data["Date"].tolist()
@@ -102,6 +93,35 @@ class TrendsInDailyDataPlots(object):
         ax.set_ylabel(self.plot_ylabel)
         sns.despine(top=True, right=True)
         plt.show()
+
+    def create_visualization(self):
+        plot_titles = self.get_plots_info()
+        plt.close("all")
+        plot_data = pd.read_csv(self.plot_path)
+        dates = plot_data["Date"].tolist()
+        weekly_dates = dates[::7]
+        if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
+            ax = self.create_double_line_plot(plot_data)
+        if self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
+            ax = self.create_single_line_plot(plot_data)
+        ax.set_title(self.plot_title)
+        ax.yaxis.grid(True)
+        ax.set_xticks(weekly_dates)
+        ax.set_xticklabels(weekly_dates, rotation="vertical")
+        ax.set_yticks(self.plot_yticks)
+        ax.set_ylabel(self.plot_ylabel)
+        sns.despine(top=True, right=True)
+        plt.show()
+
+    def create_single_line_plot(self, plot_data):
+        plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        return plot
+
+    def create_double_line_plot(self, plot_data):
+        plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+        plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        plot.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        return plot
 
     def create_hospital_care_plot(self):
         plot_data = pd.read_csv(self.plot_path)
@@ -119,7 +139,7 @@ class TrendsInDailyDataPlots(object):
         sns.despine(top=True, right=True)
         plt.show()
 
-    def create_ambulance_to_hospital_and_delayed_discharges_plot(self):
+    def create_ambulance_to_hospital_and_delayed_discharges_and_deaths_plot(self):
         plot_data = pd.read_csv(self.plot_path)
         dates = plot_data["Date"].tolist()
         weekly_dates = dates[::7]
@@ -261,18 +281,6 @@ class TrendsInDailyDataPlots(object):
         sns.despine(top=True, right=True)
         plt.show()
 
-    def create_deaths_plot(self):
-        plot_data = pd.read_csv(self.plot_path)
-        dates = plot_data["Date"].tolist()
-        weekly_dates = dates[::7]
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
-        ax.set_title(self.plot_title)
-        ax.set_xticks(weekly_dates)
-        ax.set_xticklabels(weekly_dates, rotation="45")
-        ax.set_yticks(self.plot_yticks)
-        ax.set_ylabel(self.plot_ylabel)
-        sns.despine(top=True, right=True)
-        plt.show()
 
 
 TrendsInDailyDataPlots(1,2,3,4,5,6)

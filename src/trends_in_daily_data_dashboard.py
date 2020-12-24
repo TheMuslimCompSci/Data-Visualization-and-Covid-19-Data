@@ -20,7 +20,7 @@ class TrendsInDailyDataDashboard(tk.Frame):
                 button_command_values[0], button_command_values[1],
                 button_command_values[2], button_command_values[3],
                 button_command_values[4], button_command_values[5])
-            button["command"] = button_plots.create_ambulance_to_hospital_and_delayed_discharges_plot
+            button["command"] = button_plots.create_visualization
             button.pack(side="top")
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
