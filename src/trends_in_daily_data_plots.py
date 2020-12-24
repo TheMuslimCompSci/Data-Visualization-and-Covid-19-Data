@@ -78,80 +78,59 @@ class TrendsInDailyDataPlots(object):
         }
         return plots_info
 
-    def create_nhs_24_and_ambulance_attendances_plot(self):
-        plot_data = pd.read_csv(self.plot_path)
-        dates = plot_data["Date"].tolist()
-        weekly_dates = dates[::7]
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
-        ax.set_title(self.plot_title)
-        ax.yaxis.grid(True)
-        ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
-        ax.set_xticks(weekly_dates)
-        ax.set_xticklabels(weekly_dates, rotation="vertical")
-        ax.set_yticks(self.plot_yticks)
-        ax.set_ylabel(self.plot_ylabel)
-        sns.despine(top=True, right=True)
-        plt.show()
-
     def create_visualization(self):
-        plot_titles = self.get_plots_info()
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
-        dates = plot_data["Date"].tolist()
-        weekly_dates = dates[::7]
+        plot_titles = self.get_plots_info()
         if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
-            ax = self.create_double_line_plot(plot_data)
-        if self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
-            ax = self.create_single_line_plot(plot_data)
+            plot = self.create_double_line_plot(plot_data)
+            ax = plot[0]
+            dates = plot[1]
+        if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1]:
+            plot = self.create_hospital_care_plot(plot_data)
+            ax = plot[0]
+            dates = plot[1]
+        elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
+            plot = self.create_single_line_plot(plot_data)
+            ax = plot[0]
+            dates = plot[1]
         ax.set_title(self.plot_title)
         ax.yaxis.grid(True)
-        ax.set_xticks(weekly_dates)
-        ax.set_xticklabels(weekly_dates, rotation="vertical")
+        if self.plot_type == "line":
+            weekly_dates = dates[::7]
+            ax.set_xticks(weekly_dates)
+            ax.set_xticklabels(weekly_dates, rotation="vertical")
+        elif self.plot_type == "bar":
+            weekly_dates = [""] * len(dates)
+            weekly_dates[::7] = dates[::7]
+            ax.set_xticks(range(len(weekly_dates)))
+            ax.set_xticklabels(weekly_dates, rotation="45")
         ax.set_yticks(self.plot_yticks)
         ax.set_ylabel(self.plot_ylabel)
         sns.despine(top=True, right=True)
         plt.show()
 
     def create_single_line_plot(self, plot_data):
-        plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        dates = plot_data["Date"].tolist()
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        plot = [ax, dates]
         return plot
 
     def create_double_line_plot(self, plot_data):
-        plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
-        plot = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
-        plot.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        dates = plot_data["Date"].tolist()
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        plot = [ax, dates]
         return plot
 
-    def create_hospital_care_plot(self):
-        plot_data = pd.read_csv(self.plot_path)
+    def create_hospital_care_plot(self, plot_data):
         plot_data = plot_data.iloc[9:]
         dates = plot_data["Date"].tolist()
-        weekly_dates = [""] * len(dates)
-        weekly_dates[::7] = dates[::7]
         ax = sns.barplot(data=plot_data, x="Date", y=self.plot_y_values)
-        ax.set_title(self.plot_title)
-        ax.yaxis.grid(True)
-        ax.set_xticks(range(len(weekly_dates)))
-        ax.set_xticklabels(weekly_dates, rotation="vertical")
-        ax.set_yticks(self.plot_yticks)
-        ax.set_ylabel(self.plot_ylabel)
-        sns.despine(top=True, right=True)
-        plt.show()
+        plot = [ax, dates]
+        return plot
 
-    def create_ambulance_to_hospital_and_delayed_discharges_and_deaths_plot(self):
-        plot_data = pd.read_csv(self.plot_path)
-        dates = plot_data["Date"].tolist()
-        weekly_dates = dates[::7]
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
-        ax.set_title(self.plot_title)
-        ax.yaxis.grid(True)
-        ax.set_xticks(weekly_dates)
-        ax.set_xticklabels(weekly_dates, rotation="vertical")
-        ax.set_yticks(self.plot_yticks)
-        ax.set_ylabel(self.plot_ylabel)
-        sns.despine(top=True, right=True)
-        plt.show()
 
     def create_people_tested_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
