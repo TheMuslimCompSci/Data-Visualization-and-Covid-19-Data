@@ -87,19 +87,19 @@ class TrendsInDailyDataPlots(object):
         sns.despine()
         plt.show()
 
-    def create_nhs_24_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv")
+    def create_nhs_24_and_ambulance_attendances_plot(self):
+        plot_data = pd.read_csv(self.plot_path)
         dates = plot_data["Date"].tolist()
-        x_values = dates[::7]
-        ax = sns.lineplot(data=plot_data, x="Date", y="NHS24 111 Calls")
-        ax = sns.lineplot(data=plot_data, x="Date", y="Coronavirus Helpline Calls")
-        ax.set_title("Daily number of calls to NHS24 111 and the Coronavirus helpline")
+        weekly_dates = dates[::7]
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        ax.set_title(self.plot_title)
         ax.yaxis.grid(True)
-        ax.legend(["NHS 111 Calls", "Coronavirus Helpline Calls"])
-        ax.set_xticks(x_values)
-        ax.set_xticklabels(x_values, rotation="vertical")
-        ax.set_yticks([y * 2000 for y in range(1, 8)])
-        ax.set_ylabel("Number of calls")
+        ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        ax.set_xticks(weekly_dates)
+        ax.set_xticklabels(weekly_dates, rotation="vertical")
+        ax.set_yticks(self.plot_yticks)
+        ax.set_ylabel(self.plot_ylabel)
         sns.despine(top=True, right=True)
         plt.show()
 
@@ -116,22 +116,6 @@ class TrendsInDailyDataPlots(object):
         ax.set_xticklabels(weekly_dates, rotation="vertical")
         ax.set_yticks(self.plot_yticks)
         ax.set_ylabel(self.plot_ylabel)
-        sns.despine(top=True, right=True)
-        plt.show()
-
-    def create_ambulance_attendances_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv")
-        dates = plot_data["Date"].tolist()
-        x_values = dates[::7]
-        ax = sns.lineplot(data=plot_data, x="Date", y="Number of attendances")
-        ax = sns.lineplot(data=plot_data, x="Date", y="Number of COVID-19 suspected attendances")
-        ax.set_title("Number of Attendances (total and COVID-19 suspected)")
-        ax.yaxis.grid(True)
-        ax.legend(["Number of attendances", "Number of COVID-19 suspected attendances"])
-        ax.set_xticks(x_values)
-        ax.set_xticklabels(x_values, rotation="vertical")
-        ax.set_yticks([y * 200 for y in range(1, 11)])
-        ax.set_ylabel("Number of attendances")
         sns.despine(top=True, right=True)
         plt.show()
 
@@ -306,3 +290,17 @@ class TrendsInDailyDataPlots(object):
 
 
 TrendsInDailyDataPlots(1,2,3,4,5,6)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
