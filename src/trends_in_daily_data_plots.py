@@ -13,7 +13,6 @@ class TrendsInDailyDataPlots(object):
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
         self.plot_type = plot_type
-        self.create_workforces_plot()
 
     def get_plots_info(self):
         plots_info = {
