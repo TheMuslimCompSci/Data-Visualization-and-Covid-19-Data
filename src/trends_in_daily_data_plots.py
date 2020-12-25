@@ -82,43 +82,52 @@ class TrendsInDailyDataPlots(object):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.get_plots_info()
-        if self.plot_ylabel == plot_titles["People Tested"][2] or self.plot_ylabel == plot_titles["Workforce"][2]:
-            if self.plot_title == plot_titles["People Tested"][1]:
-                ax = self.create_people_tested_plot(plot_data)
-            elif self.plot_title == plot_titles["Workforce"][1]:
-                ax = self.create_workforce_plot(plot_data)
+        if self.plot_ylabel == plot_titles["Care Homes"][2]:
+            if self.plot_title == plot_titles["Daily Positive Cases"][1]:
+                ax = self.create_daily_positive_cases_plot(plot_data)
+            elif self.plot_title == plot_titles["Care Homes"][1]:
+                ax = self.create_care_homes_plot(plot_data)
         else:
-            if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
-                plot = self.create_double_line_plot(plot_data)
-                ax = plot[0]
-                dates = plot[1]
-            if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1]:
-                plot = self.create_hospital_care_plot(plot_data)
-                ax = plot[0]
-                dates = plot[1]
-            elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
-                plot = self.create_single_line_plot(plot_data)
-                ax = plot[0]
-                dates = plot[1]
-            elif self.plot_title == plot_titles["Number Of Tests"][1]:
-                plot = self.create_number_of_tests_plot(plot_data)
-                ax = plot[0]
-                dates = plot[1]
-            if self.plot_type == "line":
-                weekly_dates = dates[::7]
-                ax.set_xticks(weekly_dates)
-                ax.set_xticklabels(weekly_dates, rotation="vertical")
-            elif self.plot_type == "bar":
-                weekly_dates = [""] * len(dates)
-                weekly_dates[::7] = dates[::7]
-                ax.set_xticks(range(len(weekly_dates)))
-                ax.set_xticklabels(weekly_dates, rotation="45")
-        ax.set_yticks(self.plot_yticks)
-        ax.set_ylabel(self.plot_ylabel)
-        ax.set_title(self.plot_title)
-        ax.yaxis.grid(True)
-        sns.despine(top=True, right=True)
+            if self.plot_ylabel == plot_titles["People Tested"][2] or self.plot_ylabel == plot_titles["Workforce"][2]:
+                if self.plot_title == plot_titles["People Tested"][1]:
+                    ax = self.create_people_tested_plot(plot_data)
+                elif self.plot_title == plot_titles["Workforce"][1]:
+                    ax = self.create_workforce_plot(plot_data)
+            else:
+                if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
+                    plot = self.create_double_line_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
+                if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1]:
+                    plot = self.create_hospital_care_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
+                elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
+                    plot = self.create_single_line_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
+                elif self.plot_title == plot_titles["Number Of Tests"][1]:
+                    plot = self.create_number_of_tests_plot(plot_data)
+                    ax = plot[0]
+                    dates = plot[1]
+                if self.plot_type == "line":
+                    weekly_dates = dates[::7]
+                    ax.set_xticks(weekly_dates)
+                    ax.set_xticklabels(weekly_dates, rotation="vertical")
+                elif self.plot_type == "bar":
+                    weekly_dates = [""] * len(dates)
+                    weekly_dates[::7] = dates[::7]
+                    ax.set_xticks(range(len(weekly_dates)))
+                    ax.set_xticklabels(weekly_dates, rotation="45")
+            ax.set_title(self.plot_title)
+            self.format_plot_axis(ax)
         plt.show()
+
+    def format_plot_axis(self, plot):
+        plot.set_yticks(self.plot_yticks)
+        plot.set_ylabel(self.plot_ylabel)
+        plot.yaxis.grid(True)
+        sns.despine(top=True, right=True)
 
     def create_single_line_plot(self, plot_data):
         dates = plot_data["Date"].tolist()
@@ -141,6 +150,19 @@ class TrendsInDailyDataPlots(object):
         plot = [ax, dates]
         return plot
 
+    def create_people_tested_plot(self, plot_data):
+        dates = plot_data["Date notified"].tolist()
+        dates[1::2] = ["" for date in dates[1::2]]
+        people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
+        people_tested_negative = plot_data[self.plot_y_values[1]].tolist()
+        plot = plt.subplot()
+        plt.bar(range(len(dates)), people_tested_positive)
+        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
+        plt.legend(["Positive", "Negative"])
+        plot.set_xticks(range(len(dates)))
+        plot.set_xticklabels(dates, rotation="vertical")
+        return plot
+
     def create_number_of_tests_plot(self, plot_data):
         number_of_tests = plot_data.iloc[30:]
         dates = number_of_tests["Date notified"].tolist()
@@ -153,17 +175,26 @@ class TrendsInDailyDataPlots(object):
         plot = [ax, dates]
         return plot
 
-    def create_people_tested_plot(self, plot_data):
+    def create_daily_positive_cases_plot(self, plot_data):
         dates = plot_data["Date notified"].tolist()
-        dates[1::2] = ["" for date in dates[1::2]]
-        people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
-        people_tested_negative = plot_data[self.plot_y_values[1]].tolist()
-        plot = plt.subplot()
-        plt.bar(range(len(dates)), people_tested_positive)
-        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
-        plt.legend(["Positive", "Negative"])
-        plot.set_xticks(range(len(dates)))
-        plot.set_xticklabels(dates, rotation="vertical")
+        weekly_dates = [""] * len(dates)
+        weekly_dates[::7] = dates[::7]
+        daily_positive_cases = plot_data[self.plot_y_values].tolist()
+        weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
+        weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
+        f, ax = plt.subplots(figsize=(25, 15))
+        plt.subplot(1, 2, 1)
+        plot = sns.barplot(data=plot_data, x="Date notified", y=self.plot_y_values)
+        plot.set_xticks(range(len(weekly_dates)))
+        plot.set_xticklabels(weekly_dates, rotation="45")
+        self.format_plot_axis(plot)
+        plt.subplot(1, 2, 2)
+        plot = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
+        plot.legend(["7 day average"])
+        plot.set_xticks(dates[::7])
+        plot.set_xticklabels(dates[::7], rotation="45")
+        self.format_plot_axis(plot)
+        f.suptitle(self.plot_title)
         return plot
 
     def create_workforce_plot(self, plot_data):
@@ -182,47 +213,14 @@ class TrendsInDailyDataPlots(object):
         other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
         plot = plt.subplot()
         plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
-        plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average,
-                bottom=nursing_and_midwifery_absences_average)
+        plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
         plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
         plt.legend([absences[1], absences[2], absences[3]])
         plot.set_xticks(range(len(weekly_dates)))
         plot.set_xticklabels(weekly_dates, rotation="45")
         return plot
 
-
-
-    def create_daily_positive_cases_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
-        dates = plot_data["Date notified"].tolist()
-        weekly_dates = [""] * len(dates)
-        weekly_dates[::7] = dates[::7]
-        daily_positive_cases = plot_data["(ii) Daily"].tolist()
-        weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
-        weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
-        plt.subplot(1, 2, 1)
-        ax = sns.barplot(data=plot_data, x="Date notified", y="(ii) Daily")
-        ax.set_title("Number of daily new positive cases and 7-day rolling average")
-        ax.yaxis.grid(True)
-        ax.set_xticks(range(len(weekly_dates)))
-        ax.set_xticklabels(weekly_dates, rotation="45")
-        ax.set_yticks([y * 50 for y in range(1, 11)])
-        ax.set_ylabel("Number of cases")
-        sns.despine(top=True, right=True)
-        plt.subplot(1, 2, 2)
-        ax = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
-        ax.set_title("Number of daily new positive cases and 7-day rolling average")
-        ax.yaxis.grid(True)
-        ax.legend(["7 day average"])
-        ax.set_xticks(dates[::7])
-        ax.set_xticklabels(dates[::7], rotation="45")
-        ax.set_yticks([y * 50 for y in range(1, 11)])
-        ax.set_ylabel("Number of cases")
-        sns.despine(top=True, right=True)
-        plt.show()
-
-    def create_care_homes_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 7a - Care Homes.csv")
+    def create_care_homes_plot(self, plot_data):
         dates = plot_data["Date"].tolist()
         x_values = [""] * len(dates)
         x_values[::2] = dates[::2]
@@ -230,41 +228,17 @@ class TrendsInDailyDataPlots(object):
         care_homes_cases = plot_data[care_homes_key].tolist()
         weekly_care_home_cases = [care_homes_cases[x:x + 7] for x in range(0, len(care_homes_cases), 7)]
         weekly_care_home_cases_average = [np.average(x) for x in weekly_care_home_cases]
+        f, ax = plt.subplots(figsize=(25, 15))
         plt.subplot(1, 2, 1)
-        ax = sns.barplot(data=plot_data, x="Date", y=care_homes_key)
-        ax.set_title("Daily number of new suspected Covid-19 cases reported in Scottish adult care homes")
-        ax.yaxis.grid(True)
-        ax.set_xticks(range(len(x_values)))
-        ax.set_xticklabels(x_values, rotation="45")
-        ax.set_yticks([y * 50 for y in range(1, 6)])
-        ax.set_ylabel("Number of cases")
-        sns.despine(top=True, right=True)
+        plot = sns.barplot(data=plot_data, x="Date", y=care_homes_key)
+        plot.set_xticks(range(len(x_values)))
+        plot.set_xticklabels(x_values, rotation="45")
+        self.format_plot_axis(plot)
         plt.subplot(1, 2, 2)
-        ax = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
-        ax.set_title("Daily number of new suspected Covid-19 cases reported in Scottish adult care homes")
-        ax.yaxis.grid(True)
-        ax.legend(["7 day average"])
-        ax.set_xticks(dates[::7])
-        ax.set_xticklabels(dates[::7], rotation="45")
-        ax.set_yticks([y * 50 for y in range(1, 6)])
-        ax.set_ylabel("Number of cases")
-        sns.despine(top=True, right=True)
-        plt.show()
-
-
-
-TrendsInDailyDataPlots(1,2,3,4,5,6)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        plot = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
+        plot.legend(["7 day average"])
+        plot.set_xticks(dates[::7])
+        plot.set_xticklabels(dates[::7], rotation="45")
+        self.format_plot_axis(plot)
+        f.suptitle(self.plot_title)
+        return plot
