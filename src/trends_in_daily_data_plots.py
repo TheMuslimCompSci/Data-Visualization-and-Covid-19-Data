@@ -94,6 +94,10 @@ class TrendsInDailyDataPlots(object):
             plot = self.create_single_line_plot(plot_data)
             ax = plot[0]
             dates = plot[1]
+        elif self.plot_title == plot_titles["Number Of Tests"][1]:
+            plot = self.create_number_of_tests_plot(plot_data)
+            ax = plot[0]
+            dates = plot[1]
         ax.set_title(self.plot_title)
         ax.yaxis.grid(True)
         if self.plot_type == "line":
@@ -125,9 +129,9 @@ class TrendsInDailyDataPlots(object):
         return plot
 
     def create_hospital_care_plot(self, plot_data):
-        plot_data = plot_data.iloc[9:]
-        dates = plot_data["Date"].tolist()
-        ax = sns.barplot(data=plot_data, x="Date", y=self.plot_y_values)
+        confirmed_patients = plot_data.iloc[9:]
+        dates = confirmed_patients["Date"].tolist()
+        ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plot_y_values)
         plot = [ax, dates]
         return plot
 
@@ -150,25 +154,49 @@ class TrendsInDailyDataPlots(object):
         sns.despine(top=True, right=True)
         plt.show()
 
-    def create_number_of_tests_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
+    def create_number_of_tests_plot(self, plot_data):
         plot_data = plot_data.iloc[30:]
         dates = plot_data["Date notified"].tolist()
-        weekly_dates = [""] * len(dates)
-        weekly_dates[::7] = dates[::7]
         number_of_tests_nhs_labs = plot_data["(iii) Cumulative"].tolist()
         number_of_tests_regional_testing_centres = plot_data["(iv) Cumulative"].tolist()
         ax = plt.subplot()
         plt.bar(range(len(dates)), number_of_tests_nhs_labs)
         plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
-        plt.title("Cumulative number of COVID-19 Tests carried out in Scotland")
         plt.legend(["NHS Labs", "Regional Testing Centres"])
-        plt.ylabel("Number of tests")
+        plot = [ax, dates]
+        return plot
+
+    def create_workforce_plot(self):
+        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv")
+        dates = plot_data["Date"].tolist()
+        weekly_dates = dates[::7]
+        absences = plot_data.columns.tolist()
+        workforce_absences_average = []
+        for i in range(1, len(absences)):
+            staff_absences = plot_data[absences[i]].tolist()
+            weekly_staff_absences = [staff_absences[x:x + 7] for x in range(0, len(staff_absences), 7)]
+            weekly_staff_absences_average = [np.average(x) for x in weekly_staff_absences]
+            workforce_absences_average.append(weekly_staff_absences_average)
+        nursing_and_midwifery_absences_average = workforce_absences_average[0]
+        medical_and_dental_staff_absences_average = workforce_absences_average[1]
+        other_staff_absences_average = workforce_absences_average[2]
+        other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
+        ax = plt.subplot()
+        ax.yaxis.grid(True)
+        plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
+        plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average,
+                bottom=nursing_and_midwifery_absences_average)
+        plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
+        plt.title("Number of NHS staff reporting as absent due to Covid-19")
+        plt.legend([absences[1], absences[2], absences[3]])
+        plt.ylabel("Number of staff")
         ax.set_xticks(range(len(weekly_dates)))
         ax.set_xticklabels(weekly_dates, rotation="45")
-        ax.set_yticks([y * 100000 for y in range(1, 8)])
+        ax.set_yticks([y * 1000 for y in range(1, 11)])
         sns.despine(top=True, right=True)
         plt.show()
+
+
 
     def create_daily_positive_cases_plot(self):
         plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
@@ -196,37 +224,6 @@ class TrendsInDailyDataPlots(object):
         ax.set_xticklabels(dates[::7], rotation="45")
         ax.set_yticks([y * 50 for y in range(1, 11)])
         ax.set_ylabel("Number of cases")
-        sns.despine(top=True, right=True)
-        plt.show()
-
-    def create_workforce_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv")
-        dates = plot_data["Date"].tolist()
-        weekly_dates = dates[::7]
-        absences = plot_data.columns.tolist()
-        workforce_absences_average = []
-        for i in range(1, len(absences)):
-            staff_absences = plot_data[absences[i]].tolist()
-            weekly_staff_absences = [staff_absences[x:x + 7] for x in range(0, len(staff_absences), 7)]
-            weekly_staff_absences_average = [np.average(x) for x in weekly_staff_absences]
-            workforce_absences_average.append(weekly_staff_absences_average)
-        nursing_and_midwifery_absences_average = workforce_absences_average[0]
-        medical_and_dental_staff_absences_average = workforce_absences_average[1]
-        other_staff_absences_average = workforce_absences_average[2]
-        other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average,
-                                                     medical_and_dental_staff_absences_average)
-        ax = plt.subplot()
-        ax.yaxis.grid(True)
-        plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
-        plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average,
-                bottom=nursing_and_midwifery_absences_average)
-        plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
-        plt.title("Number of NHS staff reporting as absent due to Covid-19")
-        plt.legend([absences[1], absences[2], absences[3]])
-        plt.ylabel("Number of staff")
-        ax.set_xticks(range(len(weekly_dates)))
-        ax.set_xticklabels(weekly_dates, rotation="45")
-        ax.set_yticks([y * 1000 for y in range(1, 11)])
         sns.despine(top=True, right=True)
         plt.show()
 
