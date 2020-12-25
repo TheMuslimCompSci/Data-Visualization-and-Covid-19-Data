@@ -82,8 +82,11 @@ class TrendsInDailyDataPlots(object):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.get_plots_info()
-        if self.plot_title == plot_titles["People Tested"][1]:
-            ax = self.create_people_tested_plot(plot_data)
+        if self.plot_ylabel == plot_titles["People Tested"][2] or self.plot_ylabel == plot_titles["Workforce"][2]:
+            if self.plot_title == plot_titles["People Tested"][1]:
+                ax = self.create_people_tested_plot(plot_data)
+            elif self.plot_title == plot_titles["Workforce"][1]:
+                ax = self.create_workforce_plot(plot_data)
         else:
             if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
                 plot = self.create_double_line_plot(plot_data)
@@ -163,8 +166,7 @@ class TrendsInDailyDataPlots(object):
         plot.set_xticklabels(dates, rotation="vertical")
         return plot
 
-    def create_workforce_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv")
+    def create_workforce_plot(self, plot_data):
         dates = plot_data["Date"].tolist()
         weekly_dates = dates[::7]
         absences = plot_data.columns.tolist()
@@ -178,20 +180,15 @@ class TrendsInDailyDataPlots(object):
         medical_and_dental_staff_absences_average = workforce_absences_average[1]
         other_staff_absences_average = workforce_absences_average[2]
         other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
-        ax = plt.subplot()
-        ax.yaxis.grid(True)
+        plot = plt.subplot()
         plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
         plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average,
                 bottom=nursing_and_midwifery_absences_average)
         plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
-        plt.title("Number of NHS staff reporting as absent due to Covid-19")
         plt.legend([absences[1], absences[2], absences[3]])
-        plt.ylabel("Number of staff")
-        ax.set_xticks(range(len(weekly_dates)))
-        ax.set_xticklabels(weekly_dates, rotation="45")
-        ax.set_yticks([y * 1000 for y in range(1, 11)])
-        sns.despine(top=True, right=True)
-        plt.show()
+        plot.set_xticks(range(len(weekly_dates)))
+        plot.set_xticklabels(weekly_dates, rotation="45")
+        return plot
 
 
 
