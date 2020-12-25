@@ -82,35 +82,38 @@ class TrendsInDailyDataPlots(object):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.get_plots_info()
-        if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
-            plot = self.create_double_line_plot(plot_data)
-            ax = plot[0]
-            dates = plot[1]
-        if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1]:
-            plot = self.create_hospital_care_plot(plot_data)
-            ax = plot[0]
-            dates = plot[1]
-        elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
-            plot = self.create_single_line_plot(plot_data)
-            ax = plot[0]
-            dates = plot[1]
-        elif self.plot_title == plot_titles["Number Of Tests"][1]:
-            plot = self.create_number_of_tests_plot(plot_data)
-            ax = plot[0]
-            dates = plot[1]
-        ax.set_title(self.plot_title)
-        ax.yaxis.grid(True)
-        if self.plot_type == "line":
-            weekly_dates = dates[::7]
-            ax.set_xticks(weekly_dates)
-            ax.set_xticklabels(weekly_dates, rotation="vertical")
-        elif self.plot_type == "bar":
-            weekly_dates = [""] * len(dates)
-            weekly_dates[::7] = dates[::7]
-            ax.set_xticks(range(len(weekly_dates)))
-            ax.set_xticklabels(weekly_dates, rotation="45")
+        if self.plot_title == plot_titles["People Tested"][1]:
+            ax = self.create_people_tested_plot(plot_data)
+        else:
+            if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
+                plot = self.create_double_line_plot(plot_data)
+                ax = plot[0]
+                dates = plot[1]
+            if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1]:
+                plot = self.create_hospital_care_plot(plot_data)
+                ax = plot[0]
+                dates = plot[1]
+            elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
+                plot = self.create_single_line_plot(plot_data)
+                ax = plot[0]
+                dates = plot[1]
+            elif self.plot_title == plot_titles["Number Of Tests"][1]:
+                plot = self.create_number_of_tests_plot(plot_data)
+                ax = plot[0]
+                dates = plot[1]
+            if self.plot_type == "line":
+                weekly_dates = dates[::7]
+                ax.set_xticks(weekly_dates)
+                ax.set_xticklabels(weekly_dates, rotation="vertical")
+            elif self.plot_type == "bar":
+                weekly_dates = [""] * len(dates)
+                weekly_dates[::7] = dates[::7]
+                ax.set_xticks(range(len(weekly_dates)))
+                ax.set_xticklabels(weekly_dates, rotation="45")
         ax.set_yticks(self.plot_yticks)
         ax.set_ylabel(self.plot_ylabel)
+        ax.set_title(self.plot_title)
+        ax.yaxis.grid(True)
         sns.despine(top=True, right=True)
         plt.show()
 
@@ -135,35 +138,29 @@ class TrendsInDailyDataPlots(object):
         plot = [ax, dates]
         return plot
 
-
-    def create_people_tested_plot(self):
-        plot_data = pd.read_csv("../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv")
-        dates = plot_data["Date notified"].tolist()
-        dates[1::2] = ["" for date in dates[1::2]]
-        people_tested_positive = plot_data["(i) Positive"].tolist()
-        people_tested_negative = plot_data["(i) Negative"].tolist()
-        ax = plt.subplot()
-        plt.bar(range(len(dates)), people_tested_positive)
-        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
-        plt.title("Number of people tested for COVID-19 in Scotland to date, by results")
-        plt.legend(["Positive", "Negative"])
-        plt.ylabel("Number of people tested")
-        ax.set_xticks(range(len(dates)))
-        ax.set_xticklabels(dates, rotation="vertical")
-        ax.set_yticks([y * 50000 for y in range(1, 8)])
-        sns.despine(top=True, right=True)
-        plt.show()
-
     def create_number_of_tests_plot(self, plot_data):
-        plot_data = plot_data.iloc[30:]
-        dates = plot_data["Date notified"].tolist()
-        number_of_tests_nhs_labs = plot_data["(iii) Cumulative"].tolist()
-        number_of_tests_regional_testing_centres = plot_data["(iv) Cumulative"].tolist()
+        number_of_tests = plot_data.iloc[30:]
+        dates = number_of_tests["Date notified"].tolist()
+        number_of_tests_nhs_labs = number_of_tests[self.plot_y_values[0]].tolist()
+        number_of_tests_regional_testing_centres = number_of_tests[self.plot_y_values[1]].tolist()
         ax = plt.subplot()
         plt.bar(range(len(dates)), number_of_tests_nhs_labs)
         plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
         plt.legend(["NHS Labs", "Regional Testing Centres"])
         plot = [ax, dates]
+        return plot
+
+    def create_people_tested_plot(self, plot_data):
+        dates = plot_data["Date notified"].tolist()
+        dates[1::2] = ["" for date in dates[1::2]]
+        people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
+        people_tested_negative = plot_data[self.plot_y_values[1]].tolist()
+        plot = plt.subplot()
+        plt.bar(range(len(dates)), people_tested_positive)
+        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
+        plt.legend(["Positive", "Negative"])
+        plot.set_xticks(range(len(dates)))
+        plot.set_xticklabels(dates, rotation="vertical")
         return plot
 
     def create_workforce_plot(self):
