@@ -1,20 +1,19 @@
-import tkinter as tk
+from tkinter import *
 from data_by_board_plots import DataByBoardPlots
 
 
-class DataByBoardDashboard(tk.Frame):
+class DataByBoardDashboard(object):
 
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        self.pack()
+    def __init__(self):
+        frame = Frame()
+        frame.pack()
         self.plots = DataByBoardPlots()
         self.plots_info = self.plots.get_plots_info()
-        self.create_widgets(self.plots_info)
+        self.create_widgets(frame, self.plots_info)
 
-    def create_widgets(self, buttons):
+    def create_widgets(self, frame, buttons):
         for button_text, button_command_values in buttons.items():
-            button = tk.Button(self)
+            button = Button(frame)
             button["text"] = button_text
             button_plots = DataByBoardPlots(
                 button_command_values[0], button_command_values[1],
@@ -22,6 +21,6 @@ class DataByBoardDashboard(tk.Frame):
             button["command"] = button_plots.create_visualization
             button.pack(side="top")
 
-        self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=self.master.destroy)
+        self.quit = Button(frame, text="QUIT", fg="red",
+                              command=frame.quit)
         self.quit.pack(side="bottom")
