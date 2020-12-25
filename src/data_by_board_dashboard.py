@@ -25,8 +25,3 @@ class DataByBoardDashboard(tk.Frame):
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)
         self.quit.pack(side="bottom")
-
-
-root = tk.Tk()
-app = DataByBoardDashboard(master=root)
-app.mainloop()

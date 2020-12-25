@@ -26,8 +26,3 @@ class TrendsInDailyDataDashboard(tk.Frame):
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)
         self.quit.pack(side="bottom")
-
-
-root = tk.Tk()
-app = TrendsInDailyDataDashboard(master=root)
-app.mainloop()

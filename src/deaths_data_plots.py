@@ -151,11 +151,9 @@ class DeathsDataPlots(object):
         location_of_death_list = location_of_death_columns * 7
         registered_deaths_five_year_avg_covid_19_row = pd.DataFrame([[0, 0, 0, 0]], columns=location_of_death_columns)
         registered_deaths_five_year_avg_data = location_of_death_data.iloc[0:6]
-        registered_deaths_five_year_avg_data = registered_deaths_five_year_avg_data.append(
-            registered_deaths_five_year_avg_covid_19_row, ignore_index=True)
+        registered_deaths_five_year_avg_data = registered_deaths_five_year_avg_data.append(registered_deaths_five_year_avg_covid_19_row, ignore_index=True)
         registered_deaths_five_year_avg_list = registered_deaths_five_year_avg_data.values.tolist()
-        registered_deaths_five_year_avg_list = [item for sublist in registered_deaths_five_year_avg_list for item in
-                                                sublist]
+        registered_deaths_five_year_avg_list = [item for sublist in registered_deaths_five_year_avg_list for item in sublist]
         registered_deaths_2020_data = location_of_death_data.iloc[6:13]
         registered_deaths_2020_list = registered_deaths_2020_data.values.tolist()
         registered_deaths_2020_list = [item for sublist in registered_deaths_2020_list for item in sublist]
