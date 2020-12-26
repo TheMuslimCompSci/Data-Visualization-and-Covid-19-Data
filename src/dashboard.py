@@ -32,11 +32,11 @@ class Dashboard(object):
             button["command"] = button_parameters[0]
             button.grid(row=button_parameters[1][0], column=button_parameters[1][1], sticky="nesw")
 
+        grid_size = tk.Grid.size(self.dashboard_frame)
 
-        tk.Grid.rowconfigure(self.dashboard_frame, index=0, weight=1)
-        tk.Grid.rowconfigure(self.dashboard_frame, index=1, weight=1)
-        tk.Grid.columnconfigure(self.dashboard_frame, index=0, weight=1)
-        tk.Grid.columnconfigure(self.dashboard_frame, index=1, weight=1)
+        for i in range(grid_size[0]):
+            tk.Grid.rowconfigure(self.dashboard_frame, index=i, weight=1)
+            tk.Grid.columnconfigure(self.dashboard_frame, index=i, weight=1)
 
     def create_plots_dashboard(self, frame):
         self.hide_all_frames()
@@ -51,26 +51,14 @@ class Dashboard(object):
         self.create_widgets(frame, plots_buttons)
 
     def create_data_by_board_dashboard(self):
-        self.hide_all_frames()
-        self.data_by_board_dashboard_frame.pack(fill="both", expand=True)
-        data_by_board_plots = DataByBoardPlots()
-        data_by_board_plots_buttons = data_by_board_plots.get_plots_info()
-        self.create_widgets(self.data_by_board_dashboard_frame, data_by_board_plots_buttons)
+        self.create_plots_dashboard(self.data_by_board_dashboard_frame)
 
     def create_deaths_data_dashboard(self):
-        self.hide_all_frames()
-        self.deaths_data_dashboard_frame.pack(fill="both", expand=True)
-        deaths_data_plots = DeathsDataPlots()
-        deaths_data_plots_buttons = deaths_data_plots.get_plots_info()
-        self.create_widgets(self.deaths_data_dashboard_frame, deaths_data_plots_buttons)
+        self.create_plots_dashboard(self.deaths_data_dashboard_frame)
 
     def create_trends_in_daily_data_dashboard(self):
-        self.hide_all_frames()
-        self.trends_in_daily_data_dashboard_frame.pack(fill="both", expand=True)
-        trends_in_daily_data_plots = TrendsInDailyDataPlots()
-        trends_in_daily_data_plots_buttons = trends_in_daily_data_plots.get_plots_info()
-        self.create_widgets(self.trends_in_daily_data_dashboard_frame, trends_in_daily_data_plots_buttons)
-    
+        self.create_plots_dashboard(self.trends_in_daily_data_dashboard_frame)
+
     def create_widgets(self, frame, buttons):
         for button_text, button_command_values in buttons.items():
             button = tk.Button(frame, bg="white")
@@ -90,10 +78,9 @@ class Dashboard(object):
             button.pack(side="top")
 
     def hide_all_frames(self):
-        self.dashboard_frame.pack_forget()
-        self.data_by_board_dashboard_frame.pack_forget()
-        self.deaths_data_dashboard_frame.pack_forget()
-        self.trends_in_daily_data_dashboard_frame.pack_forget()
+        frames = [self.dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame, self.trends_in_daily_data_dashboard_frame]
+        for frame in frames:
+            frame.pack_forget()
 
 
 root = tk.Tk()
