@@ -19,19 +19,18 @@ class Dashboard(object):
         self.hide_all_frames()
         self.dashboard_frame.pack(fill="both", expand=True)
 
-        plots_dashboard_buttons = {
-            "Data By Board Dashboard": [self.data_by_board_dashboard_frame, [0, 0]],
-            "Deaths Data Dashboard": [self.deaths_data_dashboard_frame, [0, 1]],
-            "Trends In Daily Data Dashboard": [self.trends_in_daily_data_dashboard_frame, [1, 0]],
+        buttons = {
+            "Data By Board Dashboard": [self.create_data_by_board_dashboard, [0, 0]],
+            "Deaths Data Dashboard": [self.create_deaths_data_dashboard, [0, 1]],
+            "Trends In Daily Data Dashboard": [self.create_trends_in_daily_data_dashboard, [1, 0]],
+            "QUIT": [self.dashboard_frame.quit, [1, 1]]
         }
 
-        for button_text, button_info in plots_dashboard_buttons.items():
+        for button_text, button_parameters in buttons.items():
             button = tk.Button(self.dashboard_frame, bg="white")
             button["text"] = button_text
-            button["command"] = self.create_plots_dashboard(button_info[0])
-            button.grid(row=button_info[1][0], column=button_info[1][1], sticky="nesw")
-        quit_button = tk.Button(self.dashboard_frame, text="QUIT", fg="red", command=self.dashboard_frame.quit)
-        quit_button.grid(row=1, column=1, sticky="nesw")
+            button["command"] = button_parameters[0]
+            button.grid(row=button_parameters[1][0], column=button_parameters[1][1], sticky="nesw")
 
 
         tk.Grid.rowconfigure(self.dashboard_frame, index=0, weight=1)
