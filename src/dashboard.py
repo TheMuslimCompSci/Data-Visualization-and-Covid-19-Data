@@ -10,9 +10,9 @@ class Dashboard(object):
         master.title("COVID-19 Data Visualization App")
         master.state("zoomed")
         self.main_dashboard_frame = tk.Frame(master, bg="blue")
-        self.data_by_board_dashboard_frame = tk.Frame(master, bg="blue")
-        self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
-        self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
+        self.data_by_board_dashboard_frame = tk.Frame(master, bg="red")
+        self.deaths_data_dashboard_frame = tk.Frame(master, bg="yellow")
+        self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="green")
         self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
         self.create_main_dashboard(self.dashboard_buttons_info)
 
@@ -60,7 +60,6 @@ class Dashboard(object):
         self.create_plots_dashboard(self.trends_in_daily_data_dashboard_frame)
 
     def create_plots_dashboard_buttons(self, frame, buttons):
-        grid_indexes = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1), (4, 0), (4, 1), (5, 0), (5, 1)]
         row_index = 0
         column_index = 0
         counter = 0
@@ -89,9 +88,10 @@ class Dashboard(object):
                 column_index = 1
         grid_size = tk.Grid.size(frame)
         for i in range(grid_size[0]):
-            tk.Grid.rowconfigure(frame, index=i, weight=1)
-        for i in range(grid_size[1]):
             tk.Grid.columnconfigure(frame, index=i, weight=1)
+        for i in range(grid_size[1]):
+            tk.Grid.rowconfigure(frame, index=i, weight=1)
+
 
 
     def hide_all_frames(self):
