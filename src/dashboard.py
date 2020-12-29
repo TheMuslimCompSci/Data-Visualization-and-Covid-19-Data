@@ -10,17 +10,20 @@ import numpy as np
 
 
 class Dashboard(object):
-    
+
     def __init__(self, master):
         master.title("COVID-19 Data Visualization App")
         master.state("zoomed")
+        self.create_frames(master)
+        self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
+        self.create_main_dashboard(self.dashboard_buttons_info)
+
+    def create_frames(self, master):
         self.main_dashboard_frame = tk.Frame(master, bg="blue")
         self.data_by_board_dashboard_frame = tk.Frame(master, bg="blue")
         self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.plots_frame = tk.Frame(master, bg="blue")
-        self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
-        self.create_main_dashboard(self.dashboard_buttons_info)
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -100,7 +103,8 @@ class Dashboard(object):
             tk.Grid.rowconfigure(frame, index=i, weight=1)
 
     def hide_all_frames(self):
-        frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame, self.trends_in_daily_data_dashboard_frame, self.plots_frame]
+        frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
+                  self.trends_in_daily_data_dashboard_frame, self.plots_frame]
         for frame in frames:
             frame.pack_forget()
 
@@ -119,7 +123,6 @@ class Dashboard(object):
         fig = Figure(figsize=(5, 4), dpi=100)
         t = np.arange(0, 3, .01)
         fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
-
         canvas = FigureCanvasTkAgg(fig, master=self.plots_frame)  # A tk.DrawingArea.
         canvas.draw()
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
