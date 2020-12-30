@@ -23,7 +23,6 @@ class Dashboard(object):
         self.data_by_board_dashboard_frame = tk.Frame(master, bg="blue")
         self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
-        self.plots_frame = tk.Frame(master, bg="blue")
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -87,7 +86,7 @@ class Dashboard(object):
                 button_plots = TrendsInDailyDataPlots(button_command_values[0], button_command_values[1],
                                                       button_command_values[2], button_command_values[3],
                                                       button_command_values[4], button_command_values[5])
-            button["command"] = self.create_plots
+            button["command"] = button_plots.create_visualization
             button.grid(row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
@@ -104,7 +103,7 @@ class Dashboard(object):
 
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
-                  self.trends_in_daily_data_dashboard_frame, self.plots_frame]
+                  self.trends_in_daily_data_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
 
@@ -116,26 +115,6 @@ class Dashboard(object):
 
     def create_trends_in_daily_data_dashboard(self):
         self.create_plots_dashboard(self.trends_in_daily_data_dashboard_frame)
-
-    def create_plots(self):
-        self.hide_all_frames()
-        self.plots_frame.pack(fill="both", expand=True)
-        fig = Figure(figsize=(5, 4), dpi=100)
-        t = np.arange(0, 3, .01)
-        fig.add_subplot(111).plot(t, 2 * np.sin(2 * np.pi * t))
-        canvas = FigureCanvasTkAgg(fig, master=self.plots_frame)  # A tk.DrawingArea.
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        toolbar = NavigationToolbar2Tk(canvas, self.plots_frame)
-        toolbar.update()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        canvas.mpl_connect("key_press_event", self.on_key_press)
-        button = tk.Button(master=self.plots_frame, text="Quit", command=self.main_dashboard_frame.quit)
-        button.pack(side=tk.BOTTOM)
-
-    def on_key_press(self, event, canvas, toolbar):
-        print("you pressed {}".format(event.key))
-        key_press_handler(event, canvas, toolbar)
 
 
 root = tk.Tk()
