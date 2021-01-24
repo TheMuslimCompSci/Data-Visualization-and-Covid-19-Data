@@ -242,3 +242,4 @@ class TrendsInDailyDataPlots(object):
         self.format_plot_axis(plot)
         f.suptitle(self.plot_title)
         return plot
+
