@@ -1,12 +1,7 @@
 import tkinter as tk
-from matplotlib.backends.backend_tkagg import (
-    FigureCanvasTkAgg, NavigationToolbar2Tk)
-from matplotlib.backend_bases import key_press_handler
-from matplotlib.figure import Figure
 from data_by_board_plots import DataByBoardPlots
 from deaths_data_plots import DeathsDataPlots
 from trends_in_daily_data_plots import TrendsInDailyDataPlots
-import numpy as np
 
 
 class Dashboard(object):
@@ -23,6 +18,7 @@ class Dashboard(object):
         self.data_by_board_dashboard_frame = tk.Frame(master, bg="blue")
         self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
+        self.plots_data_frame = tk.Frame(master, bg="blue")
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -86,7 +82,7 @@ class Dashboard(object):
                 button_plots = TrendsInDailyDataPlots(button_command_values[0], button_command_values[1],
                                                       button_command_values[2], button_command_values[3],
                                                       button_command_values[4], button_command_values[5])
-            button["command"] = button_plots.create_visualization
+            button["command"] = self.create_plots_dashboard_buttons_command(button_plots)
             button.grid(row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
@@ -101,9 +97,17 @@ class Dashboard(object):
         for i in range(grid_size[1]):
             tk.Grid.rowconfigure(frame, index=i, weight=1)
 
+    def create_plots_dashboard_buttons_command(self, button_plots):
+        self.hide_all_frames()
+        self.plots_data_frame.pack(fill="both", expand=True)
+        return button_plots.create_visualization
+
+    def create_f(self):
+        pass
+
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
-                  self.trends_in_daily_data_dashboard_frame]
+                  self.trends_in_daily_data_dashboard_frame, self.plots_data_frame]
         for frame in frames:
             frame.pack_forget()
 
