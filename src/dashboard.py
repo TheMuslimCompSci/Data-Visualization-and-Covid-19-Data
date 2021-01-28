@@ -48,10 +48,7 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        grid_size = tk.Grid.size(self.main_dashboard_frame)
-        for i in range(grid_size[0]):
-            tk.Grid.rowconfigure(self.main_dashboard_frame, index=i, weight=1)
-            tk.Grid.columnconfigure(self.main_dashboard_frame, index=i, weight=1)
+        self.configure_buttons_layout(self.main_dashboard_frame)
 
     def create_plots_dashboard(self, frame):
         self.hide_all_frames()
@@ -92,11 +89,7 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        grid_size = tk.Grid.size(frame)
-        for i in range(grid_size[0]):
-            tk.Grid.columnconfigure(frame, index=i, weight=1)
-        for i in range(grid_size[1]):
-            tk.Grid.rowconfigure(frame, index=i, weight=1)
+        self.configure_buttons_layout(frame)
 
     def create_analytics_dashboard(self):
         self.hide_all_frames()
@@ -113,17 +106,20 @@ class Dashboard(object):
         statistics_button["text"] = "Statistics"
         #statistics_button["command"] = plot.create_visualization
         statistics_button.grid(row=1, column=0, sticky="nesw")
-        grid_size = tk.Grid.size(self.analytics_dashboard_frame)
-        for i in range(grid_size[0]):
-            tk.Grid.columnconfigure(self.analytics_dashboard_frame, index=i, weight=1)
-        for i in range(grid_size[1]):
-            tk.Grid.rowconfigure(self.analytics_dashboard_frame, index=i, weight=1)
+        self.configure_buttons_layout(self.analytics_dashboard_frame)
 
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
                   self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
+
+    def configure_buttons_layout(self, frame):
+        grid_size = tk.Grid.size(frame)
+        for i in range(grid_size[0]):
+            tk.Grid.columnconfigure(frame, index=i, weight=1)
+        for i in range(grid_size[1]):
+            tk.Grid.rowconfigure(frame, index=i, weight=1)
 
     def create_data_by_board_dashboard(self):
         self.create_plots_dashboard(self.data_by_board_dashboard_frame)
