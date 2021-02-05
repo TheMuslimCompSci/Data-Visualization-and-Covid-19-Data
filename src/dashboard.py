@@ -2,6 +2,7 @@ import tkinter as tk
 from data_by_board_plots import DataByBoardPlots
 from deaths_data_plots import DeathsDataPlots
 from trends_in_daily_data_plots import TrendsInDailyDataPlots
+from functools import partial
 
 
 class Dashboard(object):
@@ -12,7 +13,6 @@ class Dashboard(object):
         self.create_frames(master)
         self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
         self.create_main_dashboard(self.dashboard_buttons_info)
-        self.button_plots = button_plots
 
     def create_frames(self, master):
         self.main_dashboard_frame = tk.Frame(master, bg="blue")
@@ -66,21 +66,10 @@ class Dashboard(object):
         row_index = 0
         column_index = 0
         counter = 0
-        for button_text, button_command_values in buttons.items():
+        button_widgets = []
+        for button_text in buttons.keys():
             button = tk.Button(frame, bg="white")
             button["text"] = button_text
-            if len(buttons) == 5:
-                self.button_plots = DataByBoardPlots(button_command_values[0], button_command_values[1],
-                                                button_command_values[2], button_command_values[3])
-            elif len(buttons) == 9:
-                self.button_plots = DeathsDataPlots(button_command_values[0], button_command_values[1],
-                                               button_command_values[2], button_command_values[3],
-                                               button_command_values[4])
-            elif len(buttons) == 12:
-                self.button_plots = TrendsInDailyDataPlots(button_command_values[0], button_command_values[1],
-                                                      button_command_values[2], button_command_values[3],
-                                                      button_command_values[4], button_command_values[5])
-            button["command"] = self.create_analytics_dashboard
             button.grid(row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
@@ -90,13 +79,26 @@ class Dashboard(object):
             else:
                 column_index = 1
         self.configure_buttons_layout(frame)
+        for button_command_values in buttons.values():
+            if len(buttons) == 5:
+                button_plots = DataByBoardPlots(button_command_values[0], button_command_values[1],
+                                                button_command_values[2], button_command_values[3])
+            elif len(buttons) == 9:
+                button_plots = DeathsDataPlots(button_command_values[0], button_command_values[1],
+                                               button_command_values[2], button_command_values[3],
+                                               button_command_values[4])
+            elif len(buttons) == 12:
+                button_plots = TrendsInDailyDataPlots(button_command_values[0], button_command_values[1],
+                                                      button_command_values[2], button_command_values[3],
+                                                      button_command_values[4], button_command_values[5])
+            button["command"] = self.create_analytics_dashboard
 
     def create_analytics_dashboard(self):
         self.hide_all_frames()
         self.analytics_dashboard_frame.pack(fill="both", expand=True)
         plot_button = tk.Button(self.analytics_dashboard_frame, bg="white")
         plot_button["text"] = "Plot"
-        plot_button["command"] = self.button_plots.create_visualization
+        #plot_button["command"] = create_visualization
         plot_button.grid(row=0, column=0, sticky="nesw")
         data_button = tk.Button(self.analytics_dashboard_frame, bg="white")
         data_button["text"] = "Data"
