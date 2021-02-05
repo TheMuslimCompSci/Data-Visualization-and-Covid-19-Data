@@ -33,8 +33,7 @@ class Dashboard(object):
         return buttons_info
 
     def create_main_dashboard(self, buttons_info):
-        self.hide_all_frames()
-        self.main_dashboard_frame.pack(fill="both", expand=True)
+        self.initialize_frame(self.main_dashboard_frame)
         row_index = 0
         column_index = 0
         counter = 0
@@ -53,8 +52,7 @@ class Dashboard(object):
         self.configure_buttons_layout(self.main_dashboard_frame)
 
     def create_plots_dashboard(self, frame):
-        self.hide_all_frames()
-        frame.pack(fill="both", expand=True)
+        self.initialize_frame(frame)
         if frame == self.data_by_board_dashboard_frame:
             plots = DataByBoardPlots()
         elif frame == self.deaths_data_dashboard_frame:
@@ -94,8 +92,7 @@ class Dashboard(object):
         self.configure_buttons_layout(frame)
 
     def create_analytics_dashboard(self, plots):
-        self.hide_all_frames()
-        self.analytics_dashboard_frame.pack(fill="both", expand=True)
+        self.initialize_frame(self.analytics_dashboard_frame)
         buttons_info = {
             "Plot": plots.create_visualization,
             "Data": self.create_data_dashboard,
@@ -119,12 +116,14 @@ class Dashboard(object):
         self.configure_buttons_layout(self.analytics_dashboard_frame)
 
     def create_data_dashboard(self):
-        self.hide_all_frames()
-        self.data_dashboard_frame.pack(fill="both", expand=True)
+        self.initialize_frame(self.data_dashboard_frame)
 
     def create_statistics_dashboard(self):
+        self.initialize_frame(self.statistics_dashboard_frame)
+
+    def initialize_frame(self, frame):
         self.hide_all_frames()
-        self.statistics_dashboard_frame.pack(fill="both", expand=True)
+        frame.pack(fill="both", expand=True)
 
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
