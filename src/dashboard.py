@@ -20,6 +20,8 @@ class Dashboard(object):
         self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.analytics_dashboard_frame = tk.Frame(master, bg="blue")
+        self.data_dashboard_frame = tk.Frame(master, bg="blue")
+        self.statistics_dashboard_frame = tk.Frame(master, bg="blue")
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -66,20 +68,9 @@ class Dashboard(object):
         row_index = 0
         column_index = 0
         counter = 0
-        button_widgets = []
-        for button_text in buttons.keys():
+        for button_text, button_command_values in buttons.items():
             button = tk.Button(frame, bg="white")
             button["text"] = button_text
-            button.grid(row=row_index, column=column_index, sticky="nesw")
-            counter += 1
-            if counter % 2 == 0:
-                row_index += 1
-            if column_index == 1:
-                column_index = 0
-            else:
-                column_index = 1
-        self.configure_buttons_layout(frame)
-        for button_command_values in buttons.values():
             if len(buttons) == 5:
                 button_plots = DataByBoardPlots(button_command_values[0], button_command_values[1],
                                                 button_command_values[2], button_command_values[3])
@@ -91,28 +82,54 @@ class Dashboard(object):
                 button_plots = TrendsInDailyDataPlots(button_command_values[0], button_command_values[1],
                                                       button_command_values[2], button_command_values[3],
                                                       button_command_values[4], button_command_values[5])
-            button["command"] = self.create_analytics_dashboard
+            button["command"] = partial(self.create_analytics_dashboard, button_plots)
+            button.grid(row=row_index, column=column_index, sticky="nesw")
+            counter += 1
+            if counter % 2 == 0:
+                row_index += 1
+            if column_index == 1:
+                column_index = 0
+            else:
+                column_index = 1
+        self.configure_buttons_layout(frame)
 
-    def create_analytics_dashboard(self):
+    def create_analytics_dashboard(self, plots):
         self.hide_all_frames()
         self.analytics_dashboard_frame.pack(fill="both", expand=True)
-        plot_button = tk.Button(self.analytics_dashboard_frame, bg="white")
-        plot_button["text"] = "Plot"
-        #plot_button["command"] = create_visualization
-        plot_button.grid(row=0, column=0, sticky="nesw")
-        data_button = tk.Button(self.analytics_dashboard_frame, bg="white")
-        data_button["text"] = "Data"
-        #data_button["command"] = plot.create_visualization
-        data_button.grid(row=0, column=1, sticky="nesw")
-        statistics_button = tk.Button(self.analytics_dashboard_frame, bg="white")
-        statistics_button["text"] = "Statistics"
-        #statistics_button["command"] = plot.create_visualization
-        statistics_button.grid(row=1, column=0, sticky="nesw")
+        buttons_info = {
+            "Plot": plots.create_visualization,
+            "Data": self.create_data_dashboard,
+            "Statistics": self.create_statistics_dashboard,
+        }
+        row_index = 0
+        column_index = 0
+        counter = 0
+        for button_text, button_command in buttons_info.items():
+            button = tk.Button(self.analytics_dashboard_frame, bg="white")
+            button["text"] = button_text
+            button["command"] = button_command
+            button.grid(row=row_index, column=column_index, sticky="nesw")
+            counter += 1
+            if counter % 2 == 0:
+                row_index += 1
+            if column_index == 1:
+                column_index = 0
+            else:
+                column_index = 1
         self.configure_buttons_layout(self.analytics_dashboard_frame)
+
+    def create_data_dashboard(self):
+        self.hide_all_frames()
+        self.data_dashboard_frame.pack(fill="both", expand=True)
+
+    def create_statistics_dashboard(self):
+        self.hide_all_frames()
+        self.statistics_dashboard_frame.pack(fill="both", expand=True)
 
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
-                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame]
+                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame,
+                  self.statistics_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
 
