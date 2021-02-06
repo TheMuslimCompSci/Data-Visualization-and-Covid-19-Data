@@ -118,7 +118,12 @@ class Dashboard(object):
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
         plots_data = plots.get_plots_data()
-        data_table = ttk.Treeview(self.data_dashboard_frame)
+        data_table_frame = tk.Frame(self.data_dashboard_frame)
+        data_table_frame.pack(fill="both", expand=True)
+        data_table_scrollbar = tk.Scrollbar(data_table_frame)
+        data_table_scrollbar.pack(side="right", fill="y")
+        data_table = ttk.Treeview(data_table_frame, yscrollcommand=data_table_scrollbar.set)
+        data_table_scrollbar.config(command=data_table.yview)
         data_table["column"] = list(plots_data.columns)
         data_table["show"] = "headings"
         for column in data_table["column"]:
@@ -126,7 +131,7 @@ class Dashboard(object):
         plots_data_rows = plots_data.to_numpy().tolist()
         for row in plots_data_rows:
             data_table.insert("", "end", values=row)
-        data_table.pack()
+        data_table.pack(fill="both", expand=True)
 
     def create_statistics_dashboard(self):
         self.initialize_frame(self.statistics_dashboard_frame)
