@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from data_by_board_plots import DataByBoardPlots
 from deaths_data_plots import DeathsDataPlots
 from trends_in_daily_data_plots import TrendsInDailyDataPlots
@@ -117,6 +118,15 @@ class Dashboard(object):
 
     def create_data_dashboard(self):
         self.initialize_frame(self.data_dashboard_frame)
+        dataset = ttk.Treeview(self.data_dashboard_frame)
+        dataset["column"] = list(dataframe.columns)
+        dataset["show"] = "headings"
+        for column in dataset["column"]:
+            dataset.heading(column, text=column)
+        dataset_rows = dataset.to_numpy().tolist()
+        for row in dataset_rows:
+            dataset.insert("", "end", values=row)
+        dataset.pack()
 
     def create_statistics_dashboard(self):
         self.initialize_frame(self.statistics_dashboard_frame)
