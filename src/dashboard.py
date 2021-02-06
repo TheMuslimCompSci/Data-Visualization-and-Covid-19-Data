@@ -5,7 +5,6 @@ from deaths_data_plots import DeathsDataPlots
 from trends_in_daily_data_plots import TrendsInDailyDataPlots
 from functools import partial
 
-
 class Dashboard(object):
 
     def __init__(self, master, button_plots):
@@ -96,7 +95,7 @@ class Dashboard(object):
         self.initialize_frame(self.analytics_dashboard_frame)
         buttons_info = {
             "Plot": plots.create_visualization,
-            "Data": self.create_data_dashboard,
+            "Data": partial(self.create_data_dashboard, plots),
             "Statistics": self.create_statistics_dashboard,
         }
         row_index = 0
@@ -116,17 +115,18 @@ class Dashboard(object):
                 column_index = 1
         self.configure_buttons_layout(self.analytics_dashboard_frame)
 
-    def create_data_dashboard(self):
+    def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
-        dataset = ttk.Treeview(self.data_dashboard_frame)
-        dataset["column"] = list(dataframe.columns)
-        dataset["show"] = "headings"
-        for column in dataset["column"]:
-            dataset.heading(column, text=column)
-        dataset_rows = dataset.to_numpy().tolist()
-        for row in dataset_rows:
-            dataset.insert("", "end", values=row)
-        dataset.pack()
+        plots_data = plots.get_plots_data()
+        data_table = ttk.Treeview(self.data_dashboard_frame)
+        data_table["column"] = list(plots_data.columns)
+        data_table["show"] = "headings"
+        for column in data_table["column"]:
+            data_table.heading(column, text=column)
+        plots_data_rows = plots_data.to_numpy().tolist()
+        for row in plots_data_rows:
+            data_table.insert("", "end", values=row)
+        data_table.pack()
 
     def create_statistics_dashboard(self):
         self.initialize_frame(self.statistics_dashboard_frame)

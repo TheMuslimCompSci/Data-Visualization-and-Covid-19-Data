@@ -57,3 +57,7 @@ class DataByBoardPlots(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         f.suptitle(self.plots_title)
         plt.show()
+
+    def get_plots_data(self):
+        plots_data = pd.read_csv(self.plots_path)
+        return plots_data

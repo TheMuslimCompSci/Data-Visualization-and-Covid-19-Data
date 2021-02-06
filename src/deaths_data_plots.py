@@ -196,3 +196,7 @@ class DeathsDataPlots(object):
         ax.xaxis.grid(True)
         plot = [ax, dates]
         return plot
+
+    def get_plots_data(self):
+        plots_data = pd.read_csv(self.plot_path)
+        return plots_data

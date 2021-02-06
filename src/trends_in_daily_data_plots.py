@@ -243,3 +243,6 @@ class TrendsInDailyDataPlots(object):
         f.suptitle(self.plot_title)
         return plot
 
+    def get_plots_data(self):
+        plots_data = pd.read_csv(self.plot_path)
+        return plots_data
