@@ -120,10 +120,13 @@ class Dashboard(object):
         plots_data = plots.get_plots_data()
         data_table_frame = tk.Frame(self.data_dashboard_frame)
         data_table_frame.pack(fill="both", expand=True)
-        data_table_scrollbar = tk.Scrollbar(data_table_frame)
-        data_table_scrollbar.pack(side="right", fill="y")
-        data_table = ttk.Treeview(data_table_frame, yscrollcommand=data_table_scrollbar.set)
-        data_table_scrollbar.config(command=data_table.yview)
+        y_scrollbar = tk.Scrollbar(data_table_frame, orient="vertical")
+        y_scrollbar.pack(side="right", fill="y")
+        x_scrollbar = tk.Scrollbar(data_table_frame, orient="horizontal")
+        x_scrollbar.pack(side="bottom", fill="x")
+        data_table = ttk.Treeview(data_table_frame, yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
+        y_scrollbar.config(command=data_table.yview)
+        x_scrollbar.config(command=data_table.xview)
         data_table["column"] = list(plots_data.columns)
         data_table["show"] = "headings"
         for column in data_table["column"]:
