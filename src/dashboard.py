@@ -5,6 +5,7 @@ from deaths_data_plots import DeathsDataPlots
 from trends_in_daily_data_plots import TrendsInDailyDataPlots
 from functools import partial
 
+
 class Dashboard(object):
 
     def __init__(self, master, button_plots):
@@ -117,9 +118,16 @@ class Dashboard(object):
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
-        plots_data = plots.get_plots_data()
         data_table_frame = tk.Frame(self.data_dashboard_frame)
         data_table_frame.pack(fill="both", expand=True)
+        data_table_style = ttk.Style()
+        data_table_style.theme_use("default")
+        data_table_style.configure("Treeview",
+                                   background="white",
+                                   foreground="black",
+                                   fieldbackground="white")
+        data_table_style.map("Treeview",
+                             background=[("selected", "blue")])
         y_scrollbar = tk.Scrollbar(data_table_frame, orient="vertical")
         y_scrollbar.pack(side="right", fill="y")
         x_scrollbar = tk.Scrollbar(data_table_frame, orient="horizontal")
@@ -127,13 +135,26 @@ class Dashboard(object):
         data_table = ttk.Treeview(data_table_frame, yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
         y_scrollbar.config(command=data_table.yview)
         x_scrollbar.config(command=data_table.xview)
+        plots_data = plots.get_plots_data()
+        total_column_index = plots.get_total_column_index()
         data_table["column"] = list(plots_data.columns)
         data_table["show"] = "headings"
+        data_table.tag_configure("<10", background="green")
+        data_table.tag_configure("<100", background="yellow")
+        data_table.tag_configure("<1000", background="orange")
+        data_table.tag_configure(">=1000", background="red")
         for column in data_table["column"]:
             data_table.heading(column, text=column)
         plots_data_rows = plots_data.to_numpy().tolist()
         for row in plots_data_rows:
-            data_table.insert("", "end", values=row)
+            if row[total_column_index] < 10:
+                data_table.insert(parent="", index="end", values=row, tags=("<10",))
+            elif 10 <= row[total_column_index] < 100:
+                data_table.insert(parent="", index="end", values=row, tags=("<100",))
+            elif 100 <= row[total_column_index] < 1000:
+                data_table.insert(parent="", index="end", values=row, tags=("<1000",))
+            elif row[total_column_index] >= 1000:
+                data_table.insert(parent="", index="end", values=row, tags=(">=1000",))
         data_table.pack(fill="both", expand=True)
 
     def create_statistics_dashboard(self):

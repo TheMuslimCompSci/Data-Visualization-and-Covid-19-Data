@@ -61,3 +61,7 @@ class DataByBoardPlots(object):
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plots_path)
         return plots_data
+
+    def get_total_column_index(self):
+        plots_data = pd.read_csv(self.plots_path)
+        return plots_data.columns.get_loc("Scotland")
