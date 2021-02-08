@@ -246,3 +246,31 @@ class TrendsInDailyDataPlots(object):
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plot_path)
         return plots_data
+
+    def get_total_column_index(self):
+        plots_data = pd.read_csv(self.plot_path)
+        plots_info = self.get_plots_info()
+        if self.plot_path == plots_info["NHS 24"][0]:
+            return plots_data.columns.get_loc("NHS24 111 Calls")
+        elif self.plot_path == plots_info["Hospital Confirmed"][0]:
+            return plots_data.columns.get_loc("(ii) Total")
+        elif self.plot_path == plots_info["Hospital Care (ICU)"][0]:
+            return plots_data.columns.get_loc("(ii) Total")
+        elif self.plot_path == plots_info["Ambulance Attendances"][0]:
+            return plots_data.columns.get_loc("Number of attendances")
+        elif self.plot_path == plots_info["Ambulance To Hospital"][0]:
+            return plots_data.columns.get_loc("Number of attendances")
+        elif self.plot_path == plots_info["Delayed Discharges"][0]:
+            return plots_data.columns.get_loc("Number of delayed discharges")
+        elif self.plot_path == plots_info["People Tested"][0]:
+            return plots_data.columns.get_loc("(i) Total")
+        elif self.plot_path == plots_info["Number Of Tests"][0]:
+            return plots_data.columns.get_loc("(i) Total")
+        elif self.plot_path == plots_info["Daily Positive Cases"][0]:
+            return plots_data.columns.get_loc("(i) Total")
+        elif self.plot_path == plots_info["Workforce"][0]:
+            return plots_data.columns.get_loc("All staff absences")
+        elif self.plot_path == plots_info["Care Homes"][0]:
+            return plots_data.columns.get_loc("Cumulative number of suspected COVID-19 cases in adult care homes")
+        elif self.plot_path == plots_info["Deaths"][0]:
+            return plots_data.columns.get_loc("Number of COVID-19 confirmed deaths registered to date")
