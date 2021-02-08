@@ -200,3 +200,25 @@ class DeathsDataPlots(object):
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plot_path)
         return plots_data
+
+    def get_total_column_index(self):
+        plots_data = pd.read_csv(self.plot_path)
+        plots_info = self.get_plots_info()
+        if self.plot_path == plots_info["Cumulative Deaths"][0]:
+            return plots_data.columns.get_loc("Count")
+        elif self.plot_path == plots_info["Cumulative Deaths Different Data"][0]:
+            return plots_data.columns.get_loc("Cumulative Count")
+        elif self.plot_path == plots_info["COVID Deaths By Age"][0]:
+            return plots_data.columns.get_loc("Covid deaths to date")
+        elif self.plot_path == plots_info["All Deaths By Age"][0]:
+            return plots_data.columns.get_loc("Total deaths to date")
+        elif self.plot_path == plots_info["Deaths By Board"][0]:
+            return plots_data.columns.get_loc("COVID-19 deaths to date")
+        elif self.plot_path == plots_info["Deaths By Week"][0]:
+            return plots_data.columns.get_loc("COVID-19 deaths 2020")
+        elif self.plot_path == plots_info["Deaths By Cause"][0]:
+            return plots_data.columns.get_loc("Hospital")
+        elif self.plot_path == plots_info["Deaths By Location"][0]:
+            return plots_data.columns.get_loc("week 30")
+        elif self.plot_path == plots_info["Deaths By Date Of Death vs Date Of Registration"][0]:
+            return plots_data.columns.get_loc("Cumulative deaths by date of registration")
