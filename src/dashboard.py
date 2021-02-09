@@ -119,7 +119,9 @@ class Dashboard(object):
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
         data_table_frame = tk.Frame(self.data_dashboard_frame)
-        data_table_frame.pack(fill="both", expand=True)
+        data_table_frame.pack(fill="both", expand=True, side="top")
+        data_table_fram = tk.Frame(self.data_dashboard_frame)
+        data_table_fram.pack(fill="both", expand=True, side="bottom")
         data_table_style = ttk.Style()
         data_table_style.theme_use("default")
         data_table_style.configure("Treeview",
