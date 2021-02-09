@@ -209,9 +209,10 @@ class DeathsDataPlots(object):
         elif self.plot_path == plots_info["Cumulative Deaths Different Data"][0]:
             return plots_data.columns.get_loc("Cumulative Count")
         elif self.plot_path == plots_info["COVID Deaths By Age"][0]:
-            return plots_data.columns.get_loc("Covid deaths to date")
-        elif self.plot_path == plots_info["All Deaths By Age"][0]:
-            return plots_data.columns.get_loc("Total deaths to date")
+            if self.plot_y_values == plots_info["COVID Deaths By Age"][4]:
+                return plots_data.columns.get_loc("Covid deaths to date")
+            elif self.plot_y_values == plots_info["All Deaths By Age"][4]:
+                return plots_data.columns.get_loc("Total deaths to date")
         elif self.plot_path == plots_info["Deaths By Board"][0]:
             return plots_data.columns.get_loc("COVID-19 deaths to date")
         elif self.plot_path == plots_info["Deaths By Week"][0]:
