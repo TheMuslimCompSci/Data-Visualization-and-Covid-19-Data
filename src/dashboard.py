@@ -50,7 +50,7 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_buttons_layout(self.main_dashboard_frame)
+        self.configure_grid_layout(self.main_dashboard_frame)
 
     def create_plots_dashboard(self, frame):
         self.initialize_frame(frame)
@@ -90,7 +90,7 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_buttons_layout(frame)
+        self.configure_grid_layout(frame)
 
     def create_analytics_dashboard(self, plots):
         self.initialize_frame(self.analytics_dashboard_frame)
@@ -114,14 +114,14 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_buttons_layout(self.analytics_dashboard_frame)
+        self.configure_grid_layout(self.analytics_dashboard_frame)
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
         data_table_frame = tk.Frame(self.data_dashboard_frame)
         data_table_frame.pack(fill="both", expand=True, side="top")
-        data_table_fram = tk.Frame(self.data_dashboard_frame)
-        data_table_fram.pack(fill="both", expand=True, side="bottom")
+        statistics_frame = tk.Frame(self.data_dashboard_frame)
+        statistics_frame.pack(fill="both", expand=True, side="bottom")
         data_table_style = ttk.Style()
         data_table_style.theme_use("default")
         data_table_style.configure("Treeview",
@@ -138,7 +138,7 @@ class Dashboard(object):
         y_scrollbar.config(command=data_table.yview)
         x_scrollbar.config(command=data_table.xview)
         plots_data = plots.get_plots_data()
-        total_column_index = plots.get_total_column_index()
+        plot_axis_column_index = plots.get_plots_axis_column_index()
         data_table["column"] = list(plots_data.columns)
         data_table["show"] = "headings"
         data_table.tag_configure("<10", background="green")
@@ -149,14 +149,30 @@ class Dashboard(object):
             data_table.heading(column, text=column)
         plots_data_rows = plots_data.to_numpy().tolist()
         for row in plots_data_rows:
-            if row[total_column_index] < 10:
+            if row[plot_axis_column_index] < 10:
                 data_table.insert(parent="", index="end", values=row, tags=("<10",))
-            elif 10 <= row[total_column_index] < 100:
+            elif 10 <= row[plot_axis_column_index] < 100:
                 data_table.insert(parent="", index="end", values=row, tags=("<100",))
-            elif 100 <= row[total_column_index] < 1000:
+            elif 100 <= row[plot_axis_column_index] < 1000:
                 data_table.insert(parent="", index="end", values=row, tags=("<1000",))
-            elif row[total_column_index] >= 1000:
+            elif row[plot_axis_column_index] >= 1000:
                 data_table.insert(parent="", index="end", values=row, tags=(">=1000",))
+        plot_statistics = plots.get_plots_statistics()
+        row_index = 0
+        column_index = 0
+        counter = 0
+        for statistic in plot_statistics:
+            statistic_label = tk.Label(self.statistics_dashboard_frame)
+            statistic_label["text"] = statistic
+            statistic_label.grid(row=row_index, column=column_index, sticky="nesw")
+            counter += 1
+            if counter % 2 == 0:
+                row_index += 1
+            if column_index == 1:
+                column_index = 0
+            else:
+                column_index = 1
+        self.configure_grid_layout(self.statistics_dashboard_frame)
         data_table.pack(fill="both", expand=True)
 
     def create_statistics_dashboard(self):
@@ -173,7 +189,7 @@ class Dashboard(object):
         for frame in frames:
             frame.pack_forget()
 
-    def configure_buttons_layout(self, frame):
+    def configure_grid_layout(self, frame):
         grid_size = tk.Grid.size(frame)
         for i in range(grid_size[0]):
             tk.Grid.columnconfigure(frame, index=i, weight=1)

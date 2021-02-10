@@ -1,6 +1,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+import numpy as np
 
 
 class DataByBoardPlots(object):
@@ -62,6 +63,25 @@ class DataByBoardPlots(object):
         plots_data = pd.read_csv(self.plots_path)
         return plots_data
 
-    def get_total_column_index(self):
-        plots_data = pd.read_csv(self.plots_path)
+    def get_plots_axis_column_index(self):
+        plots_data = self.get_plots_data()
         return plots_data.columns.get_loc("Scotland")
+
+    def get_plots_statistics(self):
+        plots_data = self.get_plots_data()
+        plot_axis_column_index = self.get_plots_axis_column_index()
+        plot_axis_column = plots_data.iloc[:, plot_axis_column_index].tolist()
+        plots_statistics = []
+        min_value = np.nanmin(plot_axis_column)
+        plots_statistics.append("Minimum value of " + self.plots_ylabel + ": " + str(min_value))
+        max_value = np.nanmax(plot_axis_column)
+        plots_statistics.append("Maximum value of " + self.plots_ylabel + ": " + str(max_value))
+        median_value = np.nanmedian(plot_axis_column)
+        plots_statistics.append("Median value of " + self.plots_ylabel + ": " + str(median_value))
+        mean_value = np.nanmean(plot_axis_column)
+        plots_statistics.append("Mean value of " + self.plots_ylabel + ": " + str(mean_value))
+        standard_deviation_value = np.nanstd(plot_axis_column)
+        plots_statistics.append("Standard Deviation value of " + self.plots_ylabel + ": " + str(standard_deviation_value))
+        variance_value = np.nanvar(plot_axis_column)
+        plots_statistics.append("Variance value of " + self.plots_ylabel + ": " + str(variance_value))
+        return plots_statistics

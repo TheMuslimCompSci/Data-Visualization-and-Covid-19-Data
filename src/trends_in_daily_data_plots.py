@@ -247,7 +247,7 @@ class TrendsInDailyDataPlots(object):
         plots_data = pd.read_csv(self.plot_path)
         return plots_data
 
-    def get_total_column_index(self):
+    def get_plots_axis_column_index(self):
         plots_data = pd.read_csv(self.plot_path)
         plots_info = self.get_plots_info()
         if self.plot_path == plots_info["NHS 24"][0]:
@@ -278,3 +278,22 @@ class TrendsInDailyDataPlots(object):
             return plots_data.columns.get_loc("Daily number of new suspected COVID-19 cases in adult care homes")
         elif self.plot_path == plots_info["Deaths"][0]:
             return plots_data.columns.get_loc("Number of COVID-19 confirmed deaths registered to date")
+
+    def get_plots_statistics(self):
+        plots_data = self.get_plots_data()
+        plot_axis_column_index = self.get_plots_axis_column_index()
+        plot_axis_column = plots_data.iloc[:, plot_axis_column_index].tolist()
+        plots_statistics = []
+        min_value = np.nanmin(plot_axis_column)
+        plots_statistics.append("Minimum value of " + self.plot_ylabel + ": " + str(min_value))
+        max_value = np.nanmax(plot_axis_column)
+        plots_statistics.append("Maximum value of " + self.plot_ylabel + ": " + str(max_value))
+        median_value = np.nanmedian(plot_axis_column)
+        plots_statistics.append("Median value of " + self.plot_ylabel + ": " + str(median_value))
+        mean_value = np.nanmean(plot_axis_column)
+        plots_statistics.append("Mean value of " + self.plot_ylabel + ": " + str(mean_value))
+        standard_deviation_value = np.nanstd(plot_axis_column)
+        plots_statistics.append("Standard Deviation value of " + self.plot_ylabel + ": " + str(standard_deviation_value))
+        variance_value = np.nanvar(plot_axis_column)
+        plots_statistics.append("Variance value of " + self.plot_ylabel + ": " + str(variance_value))
+        return plots_statistics
