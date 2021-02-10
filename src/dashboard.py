@@ -22,7 +22,6 @@ class Dashboard(object):
         self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.analytics_dashboard_frame = tk.Frame(master, bg="blue")
         self.data_dashboard_frame = tk.Frame(master, bg="blue")
-        self.statistics_dashboard_frame = tk.Frame(master, bg="blue")
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -97,7 +96,6 @@ class Dashboard(object):
         buttons_info = {
             "Plot": plots.create_visualization,
             "Data": partial(self.create_data_dashboard, plots),
-            "Statistics": self.create_statistics_dashboard,
         }
         row_index = 0
         column_index = 0
@@ -118,51 +116,67 @@ class Dashboard(object):
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
-        data_table_frame = tk.Frame(self.data_dashboard_frame)
-        data_table_frame.pack(fill="both", expand=True, side="top")
-        statistics_frame = tk.Frame(self.data_dashboard_frame)
-        statistics_frame.pack(fill="both", expand=True, side="bottom")
-        data_table_style = ttk.Style()
-        data_table_style.theme_use("default")
-        data_table_style.configure("Treeview",
-                                   background="white",
-                                   foreground="black",
-                                   fieldbackground="white")
-        data_table_style.map("Treeview",
-                             background=[("selected", "blue")])
-        y_scrollbar = tk.Scrollbar(data_table_frame, orient="vertical")
+        self.create_data_dashboard_title_frame(plots)
+        self.create_data_dashboard_data_frame(plots)
+        self.create_data_dashboard_statistics_frame(plots)
+
+    def create_data_dashboard_title_frame(self, plots):
+        title_frame = tk.Frame(self.data_dashboard_frame)
+        title_frame.pack()
+        plots_title = plots.get_plots_title()
+        title_label = tk.Label(title_frame)
+        title_label["text"] = plots_title
+        title_label.pack()
+
+    def create_data_dashboard_data_frame(self, plots):
+        data_frame = tk.Frame(self.data_dashboard_frame)
+        data_frame.pack(fill="both", expand=True, side="top")
+        data_style = ttk.Style()
+        data_style.theme_use("default")
+        data_style.configure("Treeview",
+                             background="white",
+                             foreground="black",
+                             fieldbackground="white")
+        data_style.map("Treeview",
+                       background=[("selected", "blue")])
+        y_scrollbar = tk.Scrollbar(data_frame, orient="vertical")
         y_scrollbar.pack(side="right", fill="y")
-        x_scrollbar = tk.Scrollbar(data_table_frame, orient="horizontal")
+        x_scrollbar = tk.Scrollbar(data_frame, orient="horizontal")
         x_scrollbar.pack(side="bottom", fill="x")
-        data_table = ttk.Treeview(data_table_frame, yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
-        y_scrollbar.config(command=data_table.yview)
-        x_scrollbar.config(command=data_table.xview)
+        data = ttk.Treeview(data_frame, yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
+        y_scrollbar.config(command=data.yview)
+        x_scrollbar.config(command=data.xview)
         plots_data = plots.get_plots_data()
         plot_axis_column_index = plots.get_plots_axis_column_index()
-        data_table["column"] = list(plots_data.columns)
-        data_table["show"] = "headings"
-        data_table.tag_configure("<10", background="green")
-        data_table.tag_configure("<100", background="yellow")
-        data_table.tag_configure("<1000", background="orange")
-        data_table.tag_configure(">=1000", background="red")
-        for column in data_table["column"]:
-            data_table.heading(column, text=column)
+        data["column"] = list(plots_data.columns)
+        data["show"] = "headings"
+        data.tag_configure("<10", background="green")
+        data.tag_configure("<100", background="yellow")
+        data.tag_configure("<1000", background="orange")
+        data.tag_configure(">=1000", background="red")
+        for column in data["column"]:
+            data.heading(column, text=column)
         plots_data_rows = plots_data.to_numpy().tolist()
         for row in plots_data_rows:
             if row[plot_axis_column_index] < 10:
-                data_table.insert(parent="", index="end", values=row, tags=("<10",))
+                data.insert(parent="", index="end", values=row, tags=("<10",))
             elif 10 <= row[plot_axis_column_index] < 100:
-                data_table.insert(parent="", index="end", values=row, tags=("<100",))
+                data.insert(parent="", index="end", values=row, tags=("<100",))
             elif 100 <= row[plot_axis_column_index] < 1000:
-                data_table.insert(parent="", index="end", values=row, tags=("<1000",))
+                data.insert(parent="", index="end", values=row, tags=("<1000",))
             elif row[plot_axis_column_index] >= 1000:
-                data_table.insert(parent="", index="end", values=row, tags=(">=1000",))
+                data.insert(parent="", index="end", values=row, tags=(">=1000",))
+        data.pack(fill="both", expand=True)
+
+    def create_data_dashboard_statistics_frame(self, plots):
+        statistics_frame = tk.Frame(self.data_dashboard_frame)
+        statistics_frame.pack(fill="both", expand=True, side="bottom")
         plot_statistics = plots.get_plots_statistics()
         row_index = 0
         column_index = 0
         counter = 0
         for statistic in plot_statistics:
-            statistic_label = tk.Label(self.statistics_dashboard_frame)
+            statistic_label = tk.Label(statistics_frame)
             statistic_label["text"] = statistic
             statistic_label.grid(row=row_index, column=column_index, sticky="nesw")
             counter += 1
@@ -172,11 +186,7 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_grid_layout(self.statistics_dashboard_frame)
-        data_table.pack(fill="both", expand=True)
-
-    def create_statistics_dashboard(self):
-        self.initialize_frame(self.statistics_dashboard_frame)
+        self.configure_grid_layout(statistics_frame)
 
     def initialize_frame(self, frame):
         self.hide_all_frames()
@@ -184,8 +194,7 @@ class Dashboard(object):
 
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
-                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame,
-                  self.statistics_dashboard_frame]
+                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
 

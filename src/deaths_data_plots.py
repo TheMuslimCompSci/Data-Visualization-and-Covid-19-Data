@@ -198,6 +198,9 @@ class DeathsDataPlots(object):
         plot = [ax, dates]
         return plot
 
+    def get_plots_title(self):
+        return self.plot_title
+
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plot_path)
         return plots_data
