@@ -21,7 +21,9 @@ class Dashboard(object):
         self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
         self.analytics_dashboard_frame = tk.Frame(master, bg="blue")
+        self.plots_types_dashboard_frame = tk.Frame(master, bg="blue")
         self.data_dashboard_frame = tk.Frame(master, bg="blue")
+
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -94,7 +96,7 @@ class Dashboard(object):
     def create_analytics_dashboard(self, plots):
         self.initialize_frame(self.analytics_dashboard_frame)
         buttons_info = {
-            "Plot": plots.create_visualization,
+            "Plot": partial(self.create_plots_types_dashboard, plots),
             "Data": partial(self.create_data_dashboard, plots),
         }
         row_index = 0
@@ -113,6 +115,10 @@ class Dashboard(object):
             else:
                 column_index = 1
         self.configure_grid_layout(self.analytics_dashboard_frame)
+
+    def create_plots_types_dashboard(self, plots):
+        self.initialize_frame(self.plots_types_dashboard_frame)
+        plots.create_visualization
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
@@ -194,7 +200,8 @@ class Dashboard(object):
 
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
-                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame]
+                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame,
+                  self.plots_types_dashboard_frame,]
         for frame in frames:
             frame.pack_forget()
 

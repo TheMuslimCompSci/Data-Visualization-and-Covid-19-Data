@@ -78,36 +78,36 @@ class TrendsInDailyDataPlots(object):
         }
         return plots_info
 
-    def create_visualization(self):
+    def create_visualization(self, plot_type):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.get_plots_info()
         if self.plot_ylabel == plot_titles["Care Homes"][2]:
             if self.plot_title == plot_titles["Daily Positive Cases"][1]:
-                ax = self.create_daily_positive_cases_plot(plot_data)
+                ax = self.create_daily_positive_cases_plot(plot_data, plot_type)
             elif self.plot_title == plot_titles["Care Homes"][1]:
-                ax = self.create_care_homes_plot(plot_data)
+                ax = self.create_care_homes_plot(plot_data, plot_type)
         else:
             if self.plot_ylabel == plot_titles["People Tested"][2] or self.plot_ylabel == plot_titles["Workforce"][2]:
                 if self.plot_title == plot_titles["People Tested"][1]:
-                    ax = self.create_people_tested_plot(plot_data)
+                    ax = self.create_people_tested_plot(plot_data, plot_type)
                 elif self.plot_title == plot_titles["Workforce"][1]:
-                    ax = self.create_workforce_plot(plot_data)
+                    ax = self.create_workforce_plot(plot_data, plot_type)
             else:
                 if self.plot_title == plot_titles["NHS 24"][1] or self.plot_title == plot_titles["Ambulance Attendances"][1]:
-                    plot = self.create_double_line_plot(plot_data)
+                    plot = self.create_double_line_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 if self.plot_title == plot_titles["Hospital Confirmed"][1] or self.plot_title == plot_titles["Hospital Care (ICU)"][1]:
-                    plot = self.create_hospital_care_plot(plot_data)
+                    plot = self.create_hospital_care_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 elif self.plot_title == plot_titles["Ambulance To Hospital"][1] or self.plot_title == plot_titles["Delayed Discharges"][1] or self.plot_title == plot_titles["Deaths"][1]:
-                    plot = self.create_single_line_plot(plot_data)
+                    plot = self.create_single_line_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 elif self.plot_title == plot_titles["Number Of Tests"][1]:
-                    plot = self.create_number_of_tests_plot(plot_data)
+                    plot = self.create_number_of_tests_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 if self.plot_type == "line":
@@ -129,13 +129,13 @@ class TrendsInDailyDataPlots(object):
         plot.yaxis.grid(True)
         sns.despine(top=True, right=True)
 
-    def create_single_line_plot(self, plot_data):
+    def create_single_line_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
         plot = [ax, dates]
         return plot
 
-    def create_double_line_plot(self, plot_data):
+    def create_double_line_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
@@ -143,14 +143,14 @@ class TrendsInDailyDataPlots(object):
         plot = [ax, dates]
         return plot
 
-    def create_hospital_care_plot(self, plot_data):
+    def create_hospital_care_plot(self, plot_data, plot_type):
         confirmed_patients = plot_data.iloc[9:]
         dates = confirmed_patients["Date"].tolist()
         ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plot_y_values)
         plot = [ax, dates]
         return plot
 
-    def create_people_tested_plot(self, plot_data):
+    def create_people_tested_plot(self, plot_data, plot_type):
         dates = plot_data["Date notified"].tolist()
         dates[1::2] = ["" for date in dates[1::2]]
         people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
@@ -163,7 +163,7 @@ class TrendsInDailyDataPlots(object):
         plot.set_xticklabels(dates, rotation="vertical")
         return plot
 
-    def create_number_of_tests_plot(self, plot_data):
+    def create_number_of_tests_plot(self, plot_data, plot_type):
         number_of_tests = plot_data.iloc[30:]
         dates = number_of_tests["Date notified"].tolist()
         number_of_tests_nhs_labs = number_of_tests[self.plot_y_values[0]].tolist()
@@ -175,7 +175,7 @@ class TrendsInDailyDataPlots(object):
         plot = [ax, dates]
         return plot
 
-    def create_daily_positive_cases_plot(self, plot_data):
+    def create_daily_positive_cases_plot(self, plot_data, plot_type):
         dates = plot_data["Date notified"].tolist()
         weekly_dates = [""] * len(dates)
         weekly_dates[::7] = dates[::7]
@@ -197,7 +197,7 @@ class TrendsInDailyDataPlots(object):
         f.suptitle(self.plot_title)
         return plot
 
-    def create_workforce_plot(self, plot_data):
+    def create_workforce_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         weekly_dates = dates[::7]
         absences = plot_data.columns.tolist()
@@ -220,7 +220,7 @@ class TrendsInDailyDataPlots(object):
         plot.set_xticklabels(weekly_dates, rotation="45")
         return plot
 
-    def create_care_homes_plot(self, plot_data):
+    def create_care_homes_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         x_values = [""] * len(dates)
         x_values[::2] = dates[::2]

@@ -53,24 +53,24 @@ class DeathsDataPlots(object):
         }
         return plots_info
 
-    def create_visualization(self):
+    def create_visualization(self, plot_type):
         plt.close("all")
         plot_data = pd.read_csv(self.plot_path)
         plot_titles = self.get_plots_info()
         if self.plot_title == plot_titles["Deaths By Cause"][1]:
-            plot = self.create_death_by_cause_plot(plot_data)
+            plot = self.create_death_by_cause_plot(plot_data, plot_type)
         else:
             if self.plot_ylabel == "Cumulative number of deaths":
                 if self.plot_title == plot_titles["Cumulative Deaths"][1]:
-                    plot = self.create_cumulative_deaths_plot(plot_data)
+                    plot = self.create_cumulative_deaths_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 elif self.plot_title == plot_titles["Cumulative Deaths Different Data"][1]:
-                    plot = self.create_cumulative_deaths_different_data_plot(plot_data)
+                    plot = self.create_cumulative_deaths_different_data_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 elif self.plot_title == plot_titles["Deaths By Date Of Death vs Date Of Registration"][1]:
-                    plot = self.create_deaths_by_dates_plot(plot_data)
+                    plot = self.create_deaths_by_dates_plot(plot_data, plot_type)
                     ax = plot[0]
                     dates = plot[1]
                 weekly_dates = dates[::7]
@@ -78,26 +78,26 @@ class DeathsDataPlots(object):
                 ax.set_xticklabels(weekly_dates, rotation="vertical")
             elif self.plot_ylabel == "Number of deaths":
                 if self.plot_title == plot_titles["COVID Deaths By Age"][1] or self.plot_title == plot_titles["All Deaths By Age"][1]:
-                    ax = self.create_deaths_by_age_plot(plot_data)
+                    ax = self.create_deaths_by_age_plot(plot_data, plot_type)
                 elif self.plot_title == plot_titles["Deaths By Board"][1]:
-                    ax = self.create_deaths_by_board_plot(plot_data)
+                    ax = self.create_deaths_by_board_plot(plot_data, plot_type)
                 elif self.plot_title == plot_titles["Deaths By Week"][1]:
-                    ax = self.create_death_by_week_plot(plot_data)
+                    ax = self.create_death_by_week_plot(plot_data, plot_type)
                 elif self.plot_title == plot_titles["Deaths By Location"][1]:
-                    ax = self.create_death_by_location_plot(plot_data)
+                    ax = self.create_death_by_location_plot(plot_data, plot_type)
             ax.set_yticks(self.plot_yticks)
             ax.set_ylabel(self.plot_ylabel)
             ax.set_title(self.plot_title)
             sns.despine(top=True, right=True)
         plt.show()
 
-    def create_cumulative_deaths_plot(self, plot_data):
+    def create_cumulative_deaths_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
         plot = [ax, dates]
         return plot
 
-    def create_cumulative_deaths_different_data_plot(self, plot_data):
+    def create_cumulative_deaths_different_data_plot(self, plot_data, plot_type):
         hps_source_data = plot_data.iloc[:int(len(plot_data) / 2)]
         nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
         dates = hps_source_data["Date"].tolist()
@@ -107,18 +107,18 @@ class DeathsDataPlots(object):
         plot = [ax, dates]
         return plot
 
-    def create_deaths_by_age_plot(self, plot_data):
+    def create_deaths_by_age_plot(self, plot_data, plot_type):
         plot = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
         return plot
 
-    def create_deaths_by_board_plot(self, plot_data):
+    def create_deaths_by_board_plot(self, plot_data, plot_type):
         plot = sns.barplot(data=plot_data, x="Health board", y=self.plot_y_values)
         health_boards = plot_data["Health board"].tolist()
         plot.set_xticks(range(len(health_boards)))
         plot.set_xticklabels(health_boards, rotation="45")
         return plot
 
-    def create_death_by_week_plot(self, plot_data):
+    def create_death_by_week_plot(self, plot_data, plot_type):
         week_numbers = plot_data["Week number"].tolist()
         plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[0])
         plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[1])
@@ -128,8 +128,8 @@ class DeathsDataPlots(object):
         plot.set_xticklabels(week_numbers, rotation="vertical")
         return plot
 
-    def create_death_by_cause_plot(self, plot_data):
-        plot_values = self.format_death_by_cause_data(plot_data)
+    def create_death_by_cause_plot(self, plot_data, plot_type):
+        plot_values = self.format_death_by_cause_data(plot_data, plot_type)
         registered_deaths_2020_list = plot_values[0]
         registered_deaths_five_year_avg_list = plot_values[1]
         location_of_death_list = plot_values[2]
@@ -139,7 +139,7 @@ class DeathsDataPlots(object):
         plt.subplots_adjust(wspace=1, hspace=1)
         return plot
 
-    def format_death_by_cause_data(self, plot_data):
+    def format_death_by_cause_data(self, plot_data, plot_type):
         cause_of_death_column = plot_data["Location of death"]
         cause_of_death_column = cause_of_death_column.iloc[6:13]
         cause_of_death_column_list = cause_of_death_column.tolist()
@@ -161,7 +161,7 @@ class DeathsDataPlots(object):
         plot_values = [registered_deaths_2020_list, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list]
         return plot_values
 
-    def format_death_by_cause_plot(self, subplot_index, plot_x_values, plot_y_values, plot_hue, plot_title):
+    def format_death_by_cause_plot(self, subplot_index, plot_x_values, plot_y_values, plot_hue, plot_title, plot_type):
         plt.subplot(1, 2, subplot_index)
         ax = sns.barplot(x=plot_x_values, y=plot_y_values, hue=plot_hue)
         ax.set_title(plot_title)
@@ -172,7 +172,7 @@ class DeathsDataPlots(object):
         sns.despine(top=True, right=True)
         return ax
 
-    def create_death_by_location_plot(self, plot_data):
+    def create_death_by_location_plot(self, plot_data, plot_type):
         week_numbers = plot_data.columns.tolist()
         week_numbers = week_numbers[1:]
         care_home_deaths = plot_data.loc[0].values.tolist()
@@ -189,7 +189,7 @@ class DeathsDataPlots(object):
         plot.set_xticklabels(week_numbers, rotation="vertical")
         return plot
 
-    def create_deaths_by_dates_plot(self, plot_data):
+    def create_deaths_by_dates_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
         ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
