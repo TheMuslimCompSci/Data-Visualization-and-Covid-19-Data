@@ -131,14 +131,16 @@ class TrendsInDailyDataPlots(object):
 
     def create_single_line_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        if plot_type == "default":
+            ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
         plot = [ax, dates]
         return plot
 
     def create_double_line_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
-        ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        if plot_type == "default":
+            ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+            ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
         ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
         plot = [ax, dates]
         return plot
@@ -146,7 +148,8 @@ class TrendsInDailyDataPlots(object):
     def create_hospital_care_plot(self, plot_data, plot_type):
         confirmed_patients = plot_data.iloc[9:]
         dates = confirmed_patients["Date"].tolist()
-        ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plot_y_values)
+        if plot_type == "default":
+            ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plot_y_values)
         plot = [ax, dates]
         return plot
 
@@ -156,8 +159,9 @@ class TrendsInDailyDataPlots(object):
         people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
         people_tested_negative = plot_data[self.plot_y_values[1]].tolist()
         plot = plt.subplot()
-        plt.bar(range(len(dates)), people_tested_positive)
-        plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
+        if plot_type == "default":
+            plt.bar(range(len(dates)), people_tested_positive)
+            plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
         plt.legend(["Positive", "Negative"])
         plot.set_xticks(range(len(dates)))
         plot.set_xticklabels(dates, rotation="vertical")
@@ -169,8 +173,9 @@ class TrendsInDailyDataPlots(object):
         number_of_tests_nhs_labs = number_of_tests[self.plot_y_values[0]].tolist()
         number_of_tests_regional_testing_centres = number_of_tests[self.plot_y_values[1]].tolist()
         ax = plt.subplot()
-        plt.bar(range(len(dates)), number_of_tests_nhs_labs)
-        plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
+        if plot_type == "default":
+            plt.bar(range(len(dates)), number_of_tests_nhs_labs)
+            plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
         plt.legend(["NHS Labs", "Regional Testing Centres"])
         plot = [ax, dates]
         return plot
@@ -184,12 +189,14 @@ class TrendsInDailyDataPlots(object):
         weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
         f, ax = plt.subplots(figsize=(25, 15))
         plt.subplot(1, 2, 1)
-        plot = sns.barplot(data=plot_data, x="Date notified", y=self.plot_y_values)
+        if plot_type == "default":
+            plot = sns.barplot(data=plot_data, x="Date notified", y=self.plot_y_values)
         plot.set_xticks(range(len(weekly_dates)))
         plot.set_xticklabels(weekly_dates, rotation="45")
         self.format_plot_axis(plot)
         plt.subplot(1, 2, 2)
-        plot = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
+        if plot_type == "default":
+            plot = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
         plot.legend(["7 day average"])
         plot.set_xticks(dates[::7])
         plot.set_xticklabels(dates[::7], rotation="45")
@@ -212,9 +219,10 @@ class TrendsInDailyDataPlots(object):
         other_staff_absences_average = workforce_absences_average[2]
         other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
         plot = plt.subplot()
-        plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
-        plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
-        plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
+        if plot_type == "default":
+            plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
+            plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
+            plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
         plt.legend([absences[1], absences[2], absences[3]])
         plot.set_xticks(range(len(weekly_dates)))
         plot.set_xticklabels(weekly_dates, rotation="45")
@@ -230,12 +238,14 @@ class TrendsInDailyDataPlots(object):
         weekly_care_home_cases_average = [np.average(x) for x in weekly_care_home_cases]
         f, ax = plt.subplots(figsize=(25, 15))
         plt.subplot(1, 2, 1)
-        plot = sns.barplot(data=plot_data, x="Date", y=care_homes_key)
+        if plot_type == "default":
+            plot = sns.barplot(data=plot_data, x="Date", y=care_homes_key)
         plot.set_xticks(range(len(x_values)))
         plot.set_xticklabels(x_values, rotation="45")
         self.format_plot_axis(plot)
         plt.subplot(1, 2, 2)
-        plot = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
+        if plot_type == "default":
+            plot = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
         plot.legend(["7 day average"])
         plot.set_xticks(dates[::7])
         plot.set_xticklabels(dates[::7], rotation="45")

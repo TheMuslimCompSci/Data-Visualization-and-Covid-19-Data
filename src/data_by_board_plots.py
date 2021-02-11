@@ -46,10 +46,11 @@ class DataByBoardPlots(object):
         for i in range(1, len(boards)):
             board = boards[i]
             plt.subplot(4, 4, i)
-            if self.plots_ylabel == "Cumulative Cases":
-                ax = sns.lineplot(data=plots_data, x="Date", y=board)
-            else:
-                ax = sns.barplot(data=plots_data, x="Date", y=board)
+            if plot_type == "default":
+                if self.plots_ylabel == "Cumulative Cases":
+                    ax = sns.lineplot(data=plots_data, x="Date", y=board)
+                else:
+                    ax = sns.barplot(data=plots_data, x="Date", y=board)
             ax.set_xticks(range(len(weekly_dates)))
             ax.set_title(board)
             ax.set_xticklabels(weekly_dates, rotation="vertical")
