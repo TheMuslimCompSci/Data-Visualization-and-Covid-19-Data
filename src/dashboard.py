@@ -118,7 +118,23 @@ class Dashboard(object):
 
     def create_plots_types_dashboard(self, plots):
         self.initialize_frame(self.plots_types_dashboard_frame)
-        plots.create_visualization
+        plot_types = ["default", "kde", "box", "violin"]
+        row_index = 0
+        column_index = 0
+        counter = 0
+        for plot_type in plot_types:
+            button = tk.Button(self.plots_types_dashboard_frame, bg="white")
+            button["text"] = plot_type
+            button["command"] = partial(plots.create_visualization, plot_type)
+            button.grid(row=row_index, column=column_index, sticky="nesw")
+            counter += 1
+            if counter % 2 == 0:
+                row_index += 1
+            if column_index == 1:
+                column_index = 0
+            else:
+                column_index = 1
+        self.configure_grid_layout(self.plots_types_dashboard_frame)
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
