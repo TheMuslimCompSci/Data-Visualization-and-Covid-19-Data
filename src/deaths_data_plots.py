@@ -74,8 +74,9 @@ class DeathsDataPlots(object):
                     ax = plot[0]
                     dates = plot[1]
                 weekly_dates = dates[::7]
-                ax.set_xticks(weekly_dates)
-                ax.set_xticklabels(weekly_dates, rotation="vertical")
+                if plot_type == "default":
+                    ax.set_xticks(weekly_dates)
+                    ax.set_xticklabels(weekly_dates, rotation="vertical")
             elif self.plot_ylabel == "Number of deaths":
                 if self.plot_title == plot_titles["COVID Deaths By Age"][1] or self.plot_title == plot_titles["All Deaths By Age"][1]:
                     ax = self.create_deaths_by_age_plot(plot_data, plot_type)
@@ -95,6 +96,16 @@ class DeathsDataPlots(object):
         dates = plot_data["Date"].tolist()
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.violinplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         plot = [ax, dates]
         return plot
 
@@ -105,6 +116,19 @@ class DeathsDataPlots(object):
         if plot_type == "default":
             ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
             ax = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=hps_source_data[self.plot_y_values], shade=True)
+            ax = sns.kdeplot(data=nrs_source_data[self.plot_y_values], shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=hps_source_data[self.plot_y_values])
+            ax = sns.boxplot(data=nrs_source_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.boxplot(data=hps_source_data[self.plot_y_values])
+            ax = sns.boxplot(data=nrs_source_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         ax.legend(["HPS", "NRS"])
         plot = [ax, dates]
         return plot
@@ -112,14 +136,34 @@ class DeathsDataPlots(object):
     def create_deaths_by_age_plot(self, plot_data, plot_type):
         if plot_type == "default":
             plot = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.violinplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         return plot
 
     def create_deaths_by_board_plot(self, plot_data, plot_type):
         if plot_type == "default":
             plot = sns.barplot(data=plot_data, x="Health board", y=self.plot_y_values)
-        health_boards = plot_data["Health board"].tolist()
-        plot.set_xticks(range(len(health_boards)))
-        plot.set_xticklabels(health_boards, rotation="45")
+            health_boards = plot_data["Health board"].tolist()
+            plot.set_xticks(range(len(health_boards)))
+            plot.set_xticklabels(health_boards, rotation="45")
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.violinplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         return plot
 
     def create_death_by_week_plot(self, plot_data, plot_type):
@@ -128,9 +172,25 @@ class DeathsDataPlots(object):
             plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[0])
             plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[1])
             plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[2])
+            plot.set_xticks(range(len(week_numbers)))
+            plot.set_xticklabels(week_numbers, rotation="vertical")
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values[0]], shade=True)
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values[1]], shade=True)
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values[2]], shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=plot_data[self.plot_y_values[0]])
+            ax = sns.boxplot(data=plot_data[self.plot_y_values[1]])
+            ax = sns.boxplot(data=plot_data[self.plot_y_values[2]])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.violinplot(data=plot_data[self.plot_y_values[0]])
+            ax = sns.violinplot(data=plot_data[self.plot_y_values[1]])
+            ax = sns.violinplot(data=plot_data[self.plot_y_values[2]])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         plot.legend(["All deaths 2020", "All deaths, average of previous 5 years", "COVID-19 deaths 2020"])
-        plot.set_xticks(range(len(week_numbers)))
-        plot.set_xticklabels(week_numbers, rotation="vertical")
         return plot
 
     def create_death_by_cause_plot(self, plot_data, plot_type):
@@ -191,9 +251,25 @@ class DeathsDataPlots(object):
             plot = sns.lineplot(x=week_numbers, y=care_home_deaths)
             plot = sns.lineplot(x=week_numbers, y=home_deaths)
             plot = sns.lineplot(x=week_numbers, y=hospital_deaths)
+            plot.set_xticks(range(len(week_numbers)))
+            plot.set_xticklabels(week_numbers, rotation="vertical")
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=care_home_deaths, shade=True)
+            ax = sns.kdeplot(data=home_deaths, shade=True)
+            ax = sns.kdeplot(data=hospital_deaths, shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=care_home_deaths)
+            ax = sns.boxplot(data=home_deaths)
+            ax = sns.boxplot(data=hospital_deaths)
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.violinplot(data=care_home_deaths)
+            ax = sns.violinplot(data=home_deaths)
+            ax = sns.violinplot(data=hospital_deaths)
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         plot.legend(["Care Home", "Home / Non-institution", "Hospital"])
-        plot.set_xticks(range(len(week_numbers)))
-        plot.set_xticklabels(week_numbers, rotation="vertical")
         return plot
 
     def create_deaths_by_dates_plot(self, plot_data, plot_type):
@@ -201,6 +277,19 @@ class DeathsDataPlots(object):
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values[0]], shade=True)
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values[1]], shade=True)
+        elif plot_type == "box":
+            ax = sns.boxplot(data=plot_data[self.plot_y_values[0]])
+            ax = sns.boxplot(data=plot_data[self.plot_y_values[1]])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
+        elif plot_type == "violin":
+            ax = sns.violinplot(data=plot_data[self.plot_y_values[0]])
+            ax = sns.violinplot(data=plot_data[self.plot_y_values[1]])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_xlabel(self.plot_ylabel)
         ax.legend(self.plot_y_values)
         ax.xaxis.grid(True)
         plot = [ax, dates]
