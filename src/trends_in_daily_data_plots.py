@@ -113,8 +113,8 @@ class TrendsInDailyDataPlots(object):
                 if self.plot_type == "line":
                     weekly_dates = dates[::7]
                     if plot_type == "default":
-                        #ax.set_xticks(weekly_dates)
-                        #ax.set_xticklabels(weekly_dates, rotation="vertical")
+                        ax.set_xticks(weekly_dates)
+                        ax.set_xticklabels(weekly_dates, rotation="vertical")
                         pass
                 elif self.plot_type == "bar":
                     weekly_dates = [""] * len(dates)
@@ -123,7 +123,10 @@ class TrendsInDailyDataPlots(object):
                         ax.set_xticks(range(len(weekly_dates)))
                         ax.set_xticklabels(weekly_dates, rotation="45")
             ax.set_title(self.plot_title)
-            self.format_plot_axis(ax)
+            if plot_type == "default":
+                self.format_plot_axis(ax)
+            ax.yaxis.grid(True)
+            sns.despine(top=True, right=True)
         plt.show()
 
     def format_plot_axis(self, plot):
@@ -151,10 +154,27 @@ class TrendsInDailyDataPlots(object):
 
     def create_double_line_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
-        if plot_type == "default":
-            ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
-            ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
-        ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        if plot_type == "default" or plot_type == "kde":
+            if plot_type == "default":
+                ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
+                ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
+            elif plot_type == "kde":
+                ax = sns.kdeplot(data=plot_data[self.plot_y_values[0]], shade=True)
+                ax = sns.kdeplot(data=plot_data[self.plot_y_values[1]], shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
+        else:
+            rows = len(dates)
+            data = pd.DataFrame({
+                "label": [self.plot_y_values[0]] * rows + [self.plot_y_values[1]] * rows,
+                "value": np.concatenate([plot_data[self.plot_y_values[0]], plot_data[self.plot_y_values[1]]])
+            })
+            if plot_type == "box":
+                ax = sns.boxplot(data=data, x="label", y="value")
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=data, x="label", y="value")
+            ax.set_ylabel(self.plot_ylabel)
+            ax.set_xlabel("Calls")
         plot = [ax, dates]
         return plot
 
