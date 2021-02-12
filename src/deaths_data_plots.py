@@ -93,23 +93,18 @@ class DeathsDataPlots(object):
             sns.despine(top=True, right=True)
         plt.show()
 
-    def create_kde_plot(self):
-        plot_data = pd.read_csv(self.plot_path)
-        plot = sns.kdeplot(data=plot_data, shade=True)
-        return plot
-
     def create_cumulative_deaths_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
         elif plot_type == "kde":
             ax = sns.kdeplot(data=plot_data, shade=True)
-        elif plot_type == "box":
-            ax = sns.boxplot(data=plot_data[self.plot_y_values])
-            ax.axes.xaxis.set_ticks([])
             ax.set_xlabel(self.plot_ylabel)
-        elif plot_type == "violin":
-            ax = sns.violinplot(data=plot_data[self.plot_y_values])
+        else:
+            if plot_type == "box":
+                ax = sns.boxplot(data=plot_data[self.plot_y_values])
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=plot_data[self.plot_y_values])
             ax.axes.xaxis.set_ticks([])
             ax.set_xlabel(self.plot_ylabel)
         plot = [ax, dates]
@@ -123,18 +118,21 @@ class DeathsDataPlots(object):
             ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
             ax = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
         elif plot_type == "kde":
-            ax = sns.kdeplot(data=hps_source_data[self.plot_y_values], shade=True)
-            ax = sns.kdeplot(data=nrs_source_data[self.plot_y_values], shade=True)
-        elif plot_type == "box":
-            ax = sns.boxplot(data=hps_source_data[self.plot_y_values])
-            ax = sns.boxplot(data=nrs_source_data[self.plot_y_values])
-            ax.axes.xaxis.set_ticks([])
+            ax = sns.kdeplot(data=hps_source_data, shade=True)
+            ax = sns.kdeplot(data=nrs_source_data, shade=True)
             ax.set_xlabel(self.plot_ylabel)
-        elif plot_type == "violin":
-            ax = sns.boxplot(data=hps_source_data[self.plot_y_values])
-            ax = sns.boxplot(data=nrs_source_data[self.plot_y_values])
-            ax.axes.xaxis.set_ticks([])
-            ax.set_xlabel(self.plot_ylabel)
+        else:
+            rows = 136
+            sources_data = pd.DataFrame({
+                "label": ["HPS"] * rows + ["NRS"] * rows,
+                "value": np.concatenate([hps_source_data[self.plot_y_values], nrs_source_data[self.plot_y_values]])
+            })
+            if plot_type == "box":
+                ax = sns.boxplot(data=sources_data, x="label", y="value")
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=sources_data, x="label", y="value")
+            ax.set_ylabel(self.plot_ylabel)
+            ax.set_xlabel("Sources")
         ax.legend(["HPS", "NRS"])
         plot = [ax, dates]
         return plot
@@ -349,6 +347,3 @@ class DeathsDataPlots(object):
         variance_value = np.nanvar(plot_axis_column)
         plots_statistics.append("Variance value of " + self.plot_ylabel + ": " + str(variance_value))
         return plots_statistics
-
-lol = DeathsDataPlots(plot_path="../covid deaths data week 30/Figure 1 data.csv")
-lol.create_kde_plot()
