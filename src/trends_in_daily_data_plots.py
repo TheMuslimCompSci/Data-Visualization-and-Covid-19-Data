@@ -112,13 +112,16 @@ class TrendsInDailyDataPlots(object):
                     dates = plot[1]
                 if self.plot_type == "line":
                     weekly_dates = dates[::7]
-                    ax.set_xticks(weekly_dates)
-                    ax.set_xticklabels(weekly_dates, rotation="vertical")
+                    if plot_type == "default":
+                        #ax.set_xticks(weekly_dates)
+                        #ax.set_xticklabels(weekly_dates, rotation="vertical")
+                        pass
                 elif self.plot_type == "bar":
                     weekly_dates = [""] * len(dates)
                     weekly_dates[::7] = dates[::7]
-                    ax.set_xticks(range(len(weekly_dates)))
-                    ax.set_xticklabels(weekly_dates, rotation="45")
+                    if plot_type == "default":
+                        ax.set_xticks(range(len(weekly_dates)))
+                        ax.set_xticklabels(weekly_dates, rotation="45")
             ax.set_title(self.plot_title)
             self.format_plot_axis(ax)
         plt.show()
@@ -133,6 +136,16 @@ class TrendsInDailyDataPlots(object):
         dates = plot_data["Date"].tolist()
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+            ax.set_xlabel(self.plot_ylabel)
+        else:
+            if plot_type == "box":
+                ax = sns.boxplot(data=plot_data[self.plot_y_values])
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=plot_data[self.plot_y_values])
+            ax.axes.xaxis.set_ticks([])
+            ax.set_ylabel(self.plot_ylabel)
         plot = [ax, dates]
         return plot
 

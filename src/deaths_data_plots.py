@@ -204,8 +204,8 @@ class DeathsDataPlots(object):
         registered_deaths_five_year_avg_list = plot_values[1]
         location_of_death_list = plot_values[2]
         cause_of_death_list = plot_values[3]
-        plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020")
-        plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, five year average")
+        plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020", plot_type)
+        plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, five year average", plot_type)
         plt.subplots_adjust(wspace=1, hspace=1)
         return plot
 
@@ -235,11 +235,13 @@ class DeathsDataPlots(object):
         plt.subplot(1, 2, subplot_index)
         if plot_type == "default":
             ax = sns.barplot(x=plot_x_values, y=plot_y_values, hue=plot_hue)
+            x_values = [y * 500 for y in range(1, 21)]
+            ax.set_xticks(x_values)
+            ax.set_xticklabels(x_values, rotation="vertical")
+            ax.set_xlabel("Number of deaths")
+        elif plot_type == "kde":
+            ax = sns.kdeplot(x=plot_x_values, y=plot_y_values)
         ax.set_title(plot_title)
-        x_values = [y * 500 for y in range(1, 21)]
-        ax.set_xticks(x_values)
-        ax.set_xticklabels(x_values, rotation="vertical")
-        ax.set_xlabel("Number of deaths")
         sns.despine(top=True, right=True)
         return ax
 
