@@ -86,18 +86,24 @@ class DeathsDataPlots(object):
                     ax = self.create_death_by_week_plot(plot_data, plot_type)
                 elif self.plot_title == plot_titles["Deaths By Location"][1]:
                     ax = self.create_death_by_location_plot(plot_data, plot_type)
-            ax.set_yticks(self.plot_yticks)
-            ax.set_ylabel(self.plot_ylabel)
+            if plot_type == "default":
+                ax.set_yticks(self.plot_yticks)
+                ax.set_ylabel(self.plot_ylabel)
             ax.set_title(self.plot_title)
             sns.despine(top=True, right=True)
         plt.show()
+
+    def create_kde_plot(self):
+        plot_data = pd.read_csv(self.plot_path)
+        plot = sns.kdeplot(data=plot_data, shade=True)
+        return plot
 
     def create_cumulative_deaths_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
         elif plot_type == "kde":
-            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+            ax = sns.kdeplot(data=plot_data, shade=True)
         elif plot_type == "box":
             ax = sns.boxplot(data=plot_data[self.plot_y_values])
             ax.axes.xaxis.set_ticks([])
@@ -343,3 +349,6 @@ class DeathsDataPlots(object):
         variance_value = np.nanvar(plot_axis_column)
         plots_statistics.append("Variance value of " + self.plot_ylabel + ": " + str(variance_value))
         return plots_statistics
+
+lol = DeathsDataPlots(plot_path="../covid deaths data week 30/Figure 1 data.csv")
+lol.create_kde_plot()
