@@ -183,6 +183,21 @@ class TrendsInDailyDataPlots(object):
         dates = confirmed_patients["Date"].tolist()
         if plot_type == "default":
             ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plot_y_values)
+        elif plot_type == "kde":
+            ax = sns.kdeplot(data=confirmed_patients[self.plot_y_values], shade=True)
+            ax.set_xlabel(self.plot_ylabel)
+        else:
+            rows = len(dates)
+            hospital_care_data = pd.DataFrame({
+                "label": [self.plot_y_values] * rows,
+                "value": np.concatenate([confirmed_patients])
+            })
+            if plot_type == "box":
+                ax = sns.boxplot(data=hospital_care_data, x="value", y="label")
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=hospital_care_data, x="value", y="label")
+            ax.axes.xaxis.set_ticks([])
+            ax.set_ylabel(self.plot_ylabel)
         plot = [ax, dates]
         return plot
 
