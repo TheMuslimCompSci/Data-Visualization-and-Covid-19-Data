@@ -208,12 +208,29 @@ class TrendsInDailyDataPlots(object):
         people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
         people_tested_negative = plot_data[self.plot_y_values[1]].tolist()
         plot = plt.subplot()
-        if plot_type == "default":
-            plt.bar(range(len(dates)), people_tested_positive)
-            plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
-        plt.legend(["Positive", "Negative"])
-        plot.set_xticks(range(len(dates)))
-        plot.set_xticklabels(dates, rotation="vertical")
+        if plot_type == "default" or plot_type == "kde":
+            if plot_type == "default":
+                plt.bar(range(len(dates)), people_tested_positive)
+                plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
+                plot.set_xticks(range(len(dates)))
+                plot.set_xticklabels(dates, rotation="vertical")
+            elif plot_type == "kde":
+                ax = sns.kdeplot(data=people_tested_positive, shade=True)
+                ax = sns.kdeplot(data=people_tested_negative, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            plt.legend(["Positive", "Negative"])
+        else:
+            rows = len(dates)
+            people_tested_data = pd.DataFrame({
+                "label": ["Positive"] * rows + ["Negative"] * rows,
+                "value": np.concatenate([people_tested_positive, people_tested_negative])
+            })
+            if plot_type == "box":
+                ax = sns.boxplot(data=people_tested_data, x="label", y="value")
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=people_tested_data, x="label", y="value")
+            ax.set_ylabel(self.plot_ylabel)
+            ax.set_xlabel("Result")
         return plot
 
     def create_number_of_tests_plot(self, plot_data, plot_type):
@@ -222,10 +239,27 @@ class TrendsInDailyDataPlots(object):
         number_of_tests_nhs_labs = number_of_tests[self.plot_y_values[0]].tolist()
         number_of_tests_regional_testing_centres = number_of_tests[self.plot_y_values[1]].tolist()
         ax = plt.subplot()
-        if plot_type == "default":
-            plt.bar(range(len(dates)), number_of_tests_nhs_labs)
-            plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
-        plt.legend(["NHS Labs", "Regional Testing Centres"])
+        if plot_type == "default" or plot_type == "kde":
+            if plot_type == "default":
+                plt.bar(range(len(dates)), number_of_tests_nhs_labs)
+                plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
+            elif plot_type == "kde":
+                ax = sns.kdeplot(data=number_of_tests_nhs_labs, shade=True)
+                ax = sns.kdeplot(data=number_of_tests_regional_testing_centres, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            plt.legend(["NHS Labs", "Regional Testing Centres"])
+        else:
+            rows = len(dates)
+            number_of_tests_data = pd.DataFrame({
+                "label": ["NHS Labs"] * rows + ["Regional Testing Centres"] * rows,
+                "value": np.concatenate([number_of_tests_nhs_labs, number_of_tests_regional_testing_centres])
+            })
+            if plot_type == "box":
+                ax = sns.boxplot(data=number_of_tests_data, x="label", y="value")
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=number_of_tests_data, x="label", y="value")
+            ax.set_ylabel(self.plot_ylabel)
+            ax.set_xlabel("Location")
         plot = [ax, dates]
         return plot
 
@@ -268,13 +302,36 @@ class TrendsInDailyDataPlots(object):
         other_staff_absences_average = workforce_absences_average[2]
         other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
         plot = plt.subplot()
-        if plot_type == "default":
-            plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
-            plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
-            plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
-        plt.legend([absences[1], absences[2], absences[3]])
-        plot.set_xticks(range(len(weekly_dates)))
-        plot.set_xticklabels(weekly_dates, rotation="45")
+        if plot_type == "default" or plot_type == "kde":
+            if plot_type == "default":
+                plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
+                plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
+                plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
+                plot.set_xticks(range(len(weekly_dates)))
+                plot.set_xticklabels(weekly_dates, rotation="45")
+            elif plot_type == "kde":
+                ax = sns.kdeplot(data=nursing_and_midwifery_absences_average, shade=True)
+                ax = sns.kdeplot(data=medical_and_dental_staff_absences_average, shade=True)
+                ax = sns.kdeplot(data=other_staff_absences_average, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            plt.legend([absences[1], absences[2], absences[3]])
+        else:
+            print(len(nursing_and_midwifery_absences_average))
+            print(len(medical_and_dental_staff_absences_average))
+            print(len(other_staff_absences_average))
+            rows = len(nursing_and_midwifery_absences_average)
+            workforce_data = pd.DataFrame({
+                "label": [absences[1]] * rows + [absences[2]] * rows + [absences[3]] * rows,
+                "value": np.concatenate([nursing_and_midwifery_absences_average,
+                                         medical_and_dental_staff_absences_average,
+                                         other_staff_absences_average])
+            })
+            if plot_type == "box":
+                ax = sns.boxplot(data=workforce_data, x="label", y="value")
+            elif plot_type == "violin":
+                ax = sns.violinplot(data=workforce_data, x="label", y="value")
+            ax.set_ylabel(self.plot_ylabel)
+            ax.set_xlabel("Staff")
         return plot
 
     def create_care_homes_plot(self, plot_data, plot_type):
