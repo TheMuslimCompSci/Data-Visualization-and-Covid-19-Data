@@ -113,6 +113,7 @@ class DeathsDataPlots(object):
     def create_cumulative_deaths_different_data_plot(self, plot_data, plot_type):
         hps_source_data = plot_data.iloc[:int(len(plot_data) / 2)]
         nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
+        print(hps_source_data)
         dates = hps_source_data["Date"].tolist()
         if plot_type == "default" or plot_type == "kde":
             if plot_type == "default":

@@ -187,17 +187,18 @@ class TrendsInDailyDataPlots(object):
             ax = sns.kdeplot(data=confirmed_patients[self.plot_y_values], shade=True)
             ax.set_xlabel(self.plot_ylabel)
         else:
-            rows = len(dates)
+            rows = len(confirmed_patients)
             hospital_care_data = pd.DataFrame({
                 "label": [self.plot_y_values] * rows,
-                "value": np.concatenate([confirmed_patients])
+                "value": np.concatenate([confirmed_patients[self.plot_y_values]])
             })
             if plot_type == "box":
                 ax = sns.boxplot(data=hospital_care_data, x="value", y="label")
             elif plot_type == "violin":
                 ax = sns.violinplot(data=hospital_care_data, x="value", y="label")
-            ax.axes.xaxis.set_ticks([])
-            ax.set_ylabel(self.plot_ylabel)
+            ax.set_xlabel(self.plot_ylabel)
+            ax.set_ylabel("")
+            ax.axes.yaxis.set_ticks([])
         plot = [ax, dates]
         return plot
 
