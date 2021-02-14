@@ -118,7 +118,7 @@ class Dashboard(object):
 
     def create_plots_types_dashboard(self, plots):
         self.initialize_frame(self.plots_types_dashboard_frame)
-        plot_types = ["default", "kde", "box", "violin"]
+        plot_types = ["default", "kde", "box", "violin", "histogram"]
         row_index = 0
         column_index = 0
         counter = 0
