@@ -139,8 +139,11 @@ class TrendsInDailyDataPlots(object):
         dates = plot_data["Date"].tolist()
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
-        elif plot_type == "kde":
-            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "kde" or plot_type == "histogram":
+            if plot_type == "kde":
+                ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=plot_data[self.plot_y_values])
             ax.set_xlabel(self.plot_ylabel)
         else:
             if plot_type == "box":
@@ -154,13 +157,17 @@ class TrendsInDailyDataPlots(object):
 
     def create_double_line_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type == "histogram":
             if plot_type == "default":
                 ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
                 ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
             elif plot_type == "kde":
                 ax = sns.kdeplot(data=plot_data[self.plot_y_values[0]], shade=True)
                 ax = sns.kdeplot(data=plot_data[self.plot_y_values[1]], shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=plot_data[self.plot_y_values[0]])
+                ax = sns.histplot(data=plot_data[self.plot_y_values[1]])
                 ax.set_xlabel(self.plot_ylabel)
             ax.legend([self.plot_y_values[0], self.plot_y_values[1]])
         else:
@@ -183,8 +190,11 @@ class TrendsInDailyDataPlots(object):
         dates = confirmed_patients["Date"].tolist()
         if plot_type == "default":
             ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plot_y_values)
-        elif plot_type == "kde":
-            ax = sns.kdeplot(data=confirmed_patients[self.plot_y_values], shade=True)
+        elif plot_type == "kde" or plot_type == "histogram":
+            if plot_type == "kde":
+                ax = sns.kdeplot(data=confirmed_patients[self.plot_y_values], shade=True)
+            if plot_type == "histogram":
+                ax = sns.histplot(data=confirmed_patients[self.plot_y_values])
             ax.set_xlabel(self.plot_ylabel)
         else:
             rows = len(confirmed_patients)
@@ -208,7 +218,7 @@ class TrendsInDailyDataPlots(object):
         people_tested_positive = plot_data[self.plot_y_values[0]].tolist()
         people_tested_negative = plot_data[self.plot_y_values[1]].tolist()
         plot = plt.subplot()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type == "histogram":
             if plot_type == "default":
                 plt.bar(range(len(dates)), people_tested_positive)
                 plt.bar(range(len(dates)), people_tested_negative, bottom=people_tested_positive)
@@ -217,6 +227,10 @@ class TrendsInDailyDataPlots(object):
             elif plot_type == "kde":
                 ax = sns.kdeplot(data=people_tested_positive, shade=True)
                 ax = sns.kdeplot(data=people_tested_negative, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=people_tested_positive)
+                ax = sns.histplot(data=people_tested_negative)
                 ax.set_xlabel(self.plot_ylabel)
             plt.legend(["Positive", "Negative"])
         else:
@@ -239,13 +253,17 @@ class TrendsInDailyDataPlots(object):
         number_of_tests_nhs_labs = number_of_tests[self.plot_y_values[0]].tolist()
         number_of_tests_regional_testing_centres = number_of_tests[self.plot_y_values[1]].tolist()
         ax = plt.subplot()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type=="histogram":
             if plot_type == "default":
                 plt.bar(range(len(dates)), number_of_tests_nhs_labs)
                 plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
             elif plot_type == "kde":
                 ax = sns.kdeplot(data=number_of_tests_nhs_labs, shade=True)
                 ax = sns.kdeplot(data=number_of_tests_regional_testing_centres, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=number_of_tests_nhs_labs)
+                ax = sns.histplot(data=number_of_tests_regional_testing_centres)
                 ax.set_xlabel(self.plot_ylabel)
             plt.legend(["NHS Labs", "Regional Testing Centres"])
         else:
@@ -285,8 +303,11 @@ class TrendsInDailyDataPlots(object):
             self.format_plot_axis(plot)
             f.suptitle(self.plot_title)
         else:
-            if plot_type == "kde":
-                plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+            if plot_type == "kde" or plot_type == "histogram":
+                if plot_type == "kde":
+                    plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+                elif plot_type == "histogram":
+                    plot = sns.histplot(data=plot_data[self.plot_y_values])
                 plot.set_xlabel(self.plot_ylabel)
             else:
                 if plot_type == "box":
@@ -315,7 +336,7 @@ class TrendsInDailyDataPlots(object):
         other_staff_absences_average = workforce_absences_average[2]
         other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
         plot = plt.subplot()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type=="histogram":
             if plot_type == "default":
                 plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
                 plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
@@ -326,6 +347,11 @@ class TrendsInDailyDataPlots(object):
                 ax = sns.kdeplot(data=nursing_and_midwifery_absences_average, shade=True)
                 ax = sns.kdeplot(data=medical_and_dental_staff_absences_average, shade=True)
                 ax = sns.kdeplot(data=other_staff_absences_average, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=nursing_and_midwifery_absences_average)
+                ax = sns.histplot(data=medical_and_dental_staff_absences_average)
+                ax = sns.histplot(data=other_staff_absences_average)
                 ax.set_xlabel(self.plot_ylabel)
             plt.legend([absences[1], absences[2], absences[3]])
         else:
@@ -367,8 +393,11 @@ class TrendsInDailyDataPlots(object):
             self.format_plot_axis(plot)
             f.suptitle(self.plot_title)
         else:
-            if plot_type == "kde":
-                plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+            if plot_type == "kde" or plot_type == "histogram":
+                if plot_type == "kde":
+                    plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+                elif plot_type == "histogram":
+                    plot = sns.histplot(data=plot_data[self.plot_y_values])
                 plot.set_xlabel(self.plot_ylabel)
             else:
                 if plot_type == "box":
