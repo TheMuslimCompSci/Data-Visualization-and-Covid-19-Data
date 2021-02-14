@@ -270,21 +270,34 @@ class TrendsInDailyDataPlots(object):
         daily_positive_cases = plot_data[self.plot_y_values].tolist()
         weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
         weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
-        f, ax = plt.subplots(figsize=(25, 15))
-        plt.subplot(1, 2, 1)
         if plot_type == "default":
+            f, ax = plt.subplots(figsize=(25, 15))
+            plt.subplot(1, 2, 1)
             plot = sns.barplot(data=plot_data, x="Date notified", y=self.plot_y_values)
-        plot.set_xticks(range(len(weekly_dates)))
-        plot.set_xticklabels(weekly_dates, rotation="45")
-        self.format_plot_axis(plot)
-        plt.subplot(1, 2, 2)
-        if plot_type == "default":
+            plot.set_xticks(range(len(weekly_dates)))
+            plot.set_xticklabels(weekly_dates, rotation="45")
+            self.format_plot_axis(plot)
+            plt.subplot(1, 2, 2)
             plot = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
-        plot.legend(["7 day average"])
-        plot.set_xticks(dates[::7])
-        plot.set_xticklabels(dates[::7], rotation="45")
-        self.format_plot_axis(plot)
-        f.suptitle(self.plot_title)
+            plot.legend(["7 day average"])
+            plot.set_xticks(dates[::7])
+            plot.set_xticklabels(dates[::7], rotation="45")
+            self.format_plot_axis(plot)
+            f.suptitle(self.plot_title)
+        else:
+            if plot_type == "kde":
+                plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+                plot.set_xlabel(self.plot_ylabel)
+            else:
+                if plot_type == "box":
+                    plot = sns.boxplot(data=plot_data[self.plot_y_values])
+                elif plot_type == "violin":
+                    plot = sns.violinplot(data=plot_data[self.plot_y_values])
+                plot.axes.xaxis.set_ticks([])
+                plot.set_ylabel(self.plot_ylabel)
+            plot.set_title("Number of daily new positive cases")
+            plot.yaxis.grid(True)
+            sns.despine(top=True, right=True)
         return plot
 
     def create_workforce_plot(self, plot_data, plot_type):
@@ -316,9 +329,6 @@ class TrendsInDailyDataPlots(object):
                 ax.set_xlabel(self.plot_ylabel)
             plt.legend([absences[1], absences[2], absences[3]])
         else:
-            print(len(nursing_and_midwifery_absences_average))
-            print(len(medical_and_dental_staff_absences_average))
-            print(len(other_staff_absences_average))
             rows = len(nursing_and_midwifery_absences_average)
             workforce_data = pd.DataFrame({
                 "label": [absences[1]] * rows + [absences[2]] * rows + [absences[3]] * rows,
@@ -342,21 +352,34 @@ class TrendsInDailyDataPlots(object):
         care_homes_cases = plot_data[care_homes_key].tolist()
         weekly_care_home_cases = [care_homes_cases[x:x + 7] for x in range(0, len(care_homes_cases), 7)]
         weekly_care_home_cases_average = [np.average(x) for x in weekly_care_home_cases]
-        f, ax = plt.subplots(figsize=(25, 15))
-        plt.subplot(1, 2, 1)
         if plot_type == "default":
+            f, ax = plt.subplots(figsize=(25, 15))
+            plt.subplot(1, 2, 1)
             plot = sns.barplot(data=plot_data, x="Date", y=care_homes_key)
-        plot.set_xticks(range(len(x_values)))
-        plot.set_xticklabels(x_values, rotation="45")
-        self.format_plot_axis(plot)
-        plt.subplot(1, 2, 2)
-        if plot_type == "default":
+            plot.set_xticks(range(len(x_values)))
+            plot.set_xticklabels(x_values, rotation="45")
+            self.format_plot_axis(plot)
+            plt.subplot(1, 2, 2)
             plot = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
-        plot.legend(["7 day average"])
-        plot.set_xticks(dates[::7])
-        plot.set_xticklabels(dates[::7], rotation="45")
-        self.format_plot_axis(plot)
-        f.suptitle(self.plot_title)
+            plot.legend(["7 day average"])
+            plot.set_xticks(dates[::7])
+            plot.set_xticklabels(dates[::7], rotation="45")
+            self.format_plot_axis(plot)
+            f.suptitle(self.plot_title)
+        else:
+            if plot_type == "kde":
+                plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+                plot.set_xlabel(self.plot_ylabel)
+            else:
+                if plot_type == "box":
+                    plot = sns.boxplot(data=plot_data[self.plot_y_values])
+                elif plot_type == "violin":
+                    plot = sns.violinplot(data=plot_data[self.plot_y_values])
+                plot.axes.xaxis.set_ticks([])
+                plot.set_ylabel(self.plot_ylabel)
+            plot.set_title("Daily number of new suspected Covid-19 cases reported in Scottish adult care homes")
+            plot.yaxis.grid(True)
+            sns.despine(top=True, right=True)
         return plot
 
     def get_plots_title(self):
