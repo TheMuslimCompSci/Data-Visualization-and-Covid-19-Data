@@ -97,8 +97,11 @@ class DeathsDataPlots(object):
         dates = plot_data["Date"].tolist()
         if plot_type == "default":
             ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values)
-        elif plot_type == "kde":
-            ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "kde" or plot_type == "histogram":
+            if plot_type == "kde":
+                ax = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=plot_data[self.plot_y_values])
             ax.set_xlabel(self.plot_ylabel)
         else:
             if plot_type == "box":
@@ -115,13 +118,17 @@ class DeathsDataPlots(object):
         nrs_source_data = plot_data.iloc[int(len(plot_data) / 2):]
         print(hps_source_data)
         dates = hps_source_data["Date"].tolist()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type == "histogram":
             if plot_type == "default":
                 ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plot_y_values)
                 ax = sns.lineplot(data=nrs_source_data, x="Date", y=self.plot_y_values)
             elif plot_type == "kde":
                 ax = sns.kdeplot(data=hps_source_data, shade=True)
                 ax = sns.kdeplot(data=nrs_source_data, shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=hps_source_data)
+                ax = sns.histplot(data=nrs_source_data)
                 ax.set_xlabel(self.plot_ylabel)
             ax.legend(["HPS", "NRS"])
         else:
@@ -144,6 +151,8 @@ class DeathsDataPlots(object):
             plot = sns.barplot(data=plot_data, x="Age group", y=self.plot_y_values)
         elif plot_type == "kde":
             plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "histogram":
+            plot = sns.histplot(data=plot_data[self.plot_y_values])
         else:
             if plot_type == "box":
                 plot = sns.boxplot(data=plot_data[self.plot_y_values])
@@ -161,6 +170,8 @@ class DeathsDataPlots(object):
             plot.set_xticklabels(health_boards, rotation="45")
         elif plot_type == "kde":
             plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
+        elif plot_type == "histogram":
+            plot = sns.histplot(data=plot_data[self.plot_y_values])
         else:
             if plot_type == "box":
                 plot = sns.boxplot(data=plot_data[self.plot_y_values])
@@ -172,7 +183,7 @@ class DeathsDataPlots(object):
 
     def create_death_by_week_plot(self, plot_data, plot_type):
         week_numbers = plot_data["Week number"].tolist()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type == "histogram":
             if plot_type == "default":
                 plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[0])
                 plot = sns.lineplot(data=plot_data, x="Week number", y=self.plot_y_values[1])
@@ -183,6 +194,11 @@ class DeathsDataPlots(object):
                 plot = sns.kdeplot(data=plot_data[self.plot_y_values[0]], shade=True)
                 plot = sns.kdeplot(data=plot_data[self.plot_y_values[1]], shade=True)
                 plot = sns.kdeplot(data=plot_data[self.plot_y_values[2]], shade=True)
+                plot.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                plot = sns.histplot(data=plot_data[self.plot_y_values[0]])
+                plot = sns.histplot(data=plot_data[self.plot_y_values[1]])
+                plot = sns.histplot(data=plot_data[self.plot_y_values[2]])
                 plot.set_xlabel(self.plot_ylabel)
             plot.legend(["All deaths 2020", "All deaths, average of previous 5 years", "COVID-19 deaths 2020"])
         else:
@@ -240,8 +256,6 @@ class DeathsDataPlots(object):
             ax.set_xticks(x_values)
             ax.set_xticklabels(x_values, rotation="vertical")
             ax.set_xlabel("Number of deaths")
-        elif plot_type == "kde":
-            ax = sns.kdeplot(x=plot_x_values, y=plot_y_values)
         ax.set_title(plot_title)
         sns.despine(top=True, right=True)
         return ax
@@ -255,11 +269,7 @@ class DeathsDataPlots(object):
         home_deaths = home_deaths[1:]
         hospital_deaths = plot_data.loc[2].values.tolist()
         hospital_deaths = hospital_deaths[1:]
-        print(len(care_home_deaths))
-        print(len(hospital_deaths))
-        print(len(home_deaths))
-        print(len(week_numbers))
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type == "histogram":
             if plot_type == "default":
                 plot = sns.lineplot(x=week_numbers, y=care_home_deaths)
                 plot = sns.lineplot(x=week_numbers, y=home_deaths)
@@ -270,6 +280,11 @@ class DeathsDataPlots(object):
                 plot = sns.kdeplot(data=care_home_deaths, shade=True)
                 plot = sns.kdeplot(data=home_deaths, shade=True)
                 plot = sns.kdeplot(data=hospital_deaths, shade=True)
+                plot.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                plot = sns.histplot(data=care_home_deaths)
+                plot = sns.histplot(data=home_deaths)
+                plot = sns.histplot(data=hospital_deaths)
                 plot.set_xlabel(self.plot_ylabel)
             plot.legend(["Care Home", "Home / Non-institution", "Hospital"])
         else:
@@ -288,13 +303,17 @@ class DeathsDataPlots(object):
 
     def create_deaths_by_dates_plot(self, plot_data, plot_type):
         dates = plot_data["Date"].tolist()
-        if plot_type == "default" or plot_type == "kde":
+        if plot_type == "default" or plot_type == "kde" or plot_type == "histogram":
             if plot_type == "default":
                 ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[0])
                 ax = sns.lineplot(data=plot_data, x="Date", y=self.plot_y_values[1])
             elif plot_type == "kde":
                 ax = sns.kdeplot(data=plot_data[self.plot_y_values[0]], shade=True)
                 ax = sns.kdeplot(data=plot_data[self.plot_y_values[1]], shade=True)
+                ax.set_xlabel(self.plot_ylabel)
+            elif plot_type == "histogram":
+                ax = sns.histplot(data=plot_data[self.plot_y_values[0]])
+                ax = sns.histplot(data=plot_data[self.plot_y_values[1]])
                 ax.set_xlabel(self.plot_ylabel)
             ax.legend(self.plot_y_values)
             ax.xaxis.grid(True)
