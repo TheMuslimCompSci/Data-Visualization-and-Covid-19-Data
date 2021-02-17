@@ -52,7 +52,7 @@ class DataByBoardPlots(object):
                 else:
                     board_total = plots_data[board].sum()
                 board_totals.append(board_total)
-            plt.pie(board_totals, labels=boards[1:len(boards) - 1], autopct="%1d%%")
+            plt.pie(x=board_totals, labels=boards[1:len(boards) - 1], autopct="%1d%%")
             plt.axis("equal")
             plt.title(self.plots_title)
         else:

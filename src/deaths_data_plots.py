@@ -89,7 +89,7 @@ class DeathsDataPlots(object):
             if plot_type == "default":
                 ax.set_yticks(self.plot_yticks)
                 ax.set_ylabel(self.plot_ylabel)
-            ax.set_title(self.plot_title)
+            plt.title(self.plot_title)
             sns.despine(top=True, right=True)
         plt.show()
 
@@ -153,6 +153,9 @@ class DeathsDataPlots(object):
             plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
         elif plot_type == "histogram":
             plot = sns.histplot(data=plot_data[self.plot_y_values])
+        elif plot_type == "pie":
+            plot = plt.pie(x=plot_data[self.plot_y_values], labels=plot_data["Age group"], autopct="%1d%%")
+            plt.axis("equal")
         else:
             if plot_type == "box":
                 plot = sns.boxplot(data=plot_data[self.plot_y_values])
@@ -172,6 +175,9 @@ class DeathsDataPlots(object):
             plot = sns.kdeplot(data=plot_data[self.plot_y_values], shade=True)
         elif plot_type == "histogram":
             plot = sns.histplot(data=plot_data[self.plot_y_values])
+        elif plot_type == "pie":
+            plot = plt.pie(x=plot_data[self.plot_y_values], labels=plot_data["Health board"], autopct="%1d%%")
+            plt.axis("equal")
         else:
             if plot_type == "box":
                 plot = sns.boxplot(data=plot_data[self.plot_y_values])
@@ -221,8 +227,11 @@ class DeathsDataPlots(object):
         registered_deaths_five_year_avg_list = plot_values[1]
         location_of_death_list = plot_values[2]
         cause_of_death_list = plot_values[3]
-        plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020", plot_type)
-        plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, five year average", plot_type)
+        if plot_type == "default":
+            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020", plot_type, plot_data)
+            plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, five year average", plot_type, plot_data)
+        else:
+            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020", plot_type, plot_data)
         plt.subplots_adjust(wspace=1, hspace=1)
         return plot
 
@@ -248,15 +257,35 @@ class DeathsDataPlots(object):
         plot_values = [registered_deaths_2020_list, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list]
         return plot_values
 
-    def format_death_by_cause_plot(self, subplot_index, plot_x_values, plot_y_values, plot_hue, plot_title, plot_type):
-        plt.subplot(1, 2, subplot_index)
+    def format_death_by_cause_plot(self, subplot_index, plot_x_values, plot_y_values, plot_hue, plot_title, plot_type, plot_data):
         if plot_type == "default":
+            plt.subplot(1, 2, subplot_index)
             ax = sns.barplot(x=plot_x_values, y=plot_y_values, hue=plot_hue)
             x_values = [y * 500 for y in range(1, 21)]
             ax.set_xticks(x_values)
             ax.set_xticklabels(x_values, rotation="vertical")
             ax.set_xlabel("Number of deaths")
-        ax.set_title(plot_title)
+            ax.set_title(plot_title)
+        else:
+            f, ax = plt.subplots(figsize=(25, 15))
+            locations = plot_data.columns.tolist()
+            locations_totals = []
+            causes_labels = plot_data["Location of death"].iloc[6:13]
+            causes_labels.drop([11], inplace=True)
+            locations_causes_labels = causes_labels.values.tolist()
+            counter = 1
+            for i in range(1, len(locations)):
+                location = locations[i]
+                causes = plot_data[location].iloc[6:13]
+                causes.drop([11], inplace=True)
+                locations_causes = causes.values.tolist()
+                plt.subplot(2, 2, counter)
+                ax = plt.pie(x=locations_causes, labels=locations_causes_labels, autopct="%1d%%")
+                plt.axis("equal")
+                plt.title(location)
+                counter += 1
+            f.suptitle(self.plot_title)
+
         sns.despine(top=True, right=True)
         return ax
 
@@ -287,6 +316,11 @@ class DeathsDataPlots(object):
                 plot = sns.histplot(data=hospital_deaths)
                 plot.set_xlabel(self.plot_ylabel)
             plot.legend(["Care Home", "Home / Non-institution", "Hospital"])
+        elif plot_type == "pie":
+            location_totals = [sum(care_home_deaths), sum(home_deaths), sum(hospital_deaths)]
+            location_labels = plot_data["Week number"].iloc[0:3]
+            plot = plt.pie(x=location_totals, labels=location_labels, autopct="%1d%%")
+            plt.axis("equal")
         else:
             rows = len(week_numbers)
             locations_data = pd.DataFrame({
