@@ -74,7 +74,7 @@ class Dashboard(object):
             if len(buttons) == 5:
                 button_plots = DataByBoardPlots(button_command_values[0], button_command_values[1],
                                                 button_command_values[2], button_command_values[3],
-                                                button_command_values[5])
+                                                button_command_values[4])
             elif len(buttons) == 9:
                 button_plots = DeathsDataPlots(button_command_values[0], button_command_values[1],
                                                button_command_values[2], button_command_values[3],
