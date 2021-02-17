@@ -73,15 +73,17 @@ class Dashboard(object):
             button["text"] = button_text
             if len(buttons) == 5:
                 button_plots = DataByBoardPlots(button_command_values[0], button_command_values[1],
-                                                button_command_values[2], button_command_values[3])
+                                                button_command_values[2], button_command_values[3],
+                                                button_command_values[5])
             elif len(buttons) == 9:
                 button_plots = DeathsDataPlots(button_command_values[0], button_command_values[1],
                                                button_command_values[2], button_command_values[3],
-                                               button_command_values[4])
+                                               button_command_values[4], button_command_values[5])
             elif len(buttons) == 12:
                 button_plots = TrendsInDailyDataPlots(button_command_values[0], button_command_values[1],
                                                       button_command_values[2], button_command_values[3],
-                                                      button_command_values[4], button_command_values[5])
+                                                      button_command_values[4], button_command_values[5],
+                                                      button_command_values[6])
             button["command"] = partial(self.create_analytics_dashboard, button_plots)
             button.grid(row=row_index, column=column_index, sticky="nesw")
             counter += 1
@@ -118,7 +120,7 @@ class Dashboard(object):
 
     def create_plots_types_dashboard(self, plots):
         self.initialize_frame(self.plots_types_dashboard_frame)
-        plot_types = ["default", "kde", "box", "violin", "histogram", "pie"]
+        plot_types = plots.get_plots_types_list()
         row_index = 0
         column_index = 0
         counter = 0

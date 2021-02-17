@@ -6,75 +6,88 @@ import numpy as np
 
 class TrendsInDailyDataPlots(object):
 
-    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None, plot_type=None):
+    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None, plot_type=None, plot_types_list=None):
         self.plot_path = plot_path
         self.plot_title = plot_title
         self.plot_ylabel = plot_ylabel
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
         self.plot_type = plot_type
+        self.plot_types_list = plot_types_list
 
     def get_plots_info(self):
         plots_info = {
             "NHS 24": ["../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv",
                        "Daily number of calls to NHS24 111 and the Coronavirus helpline",
                        "Number of calls", [y * 2000 for y in range(1, 8)],
-                       ["NHS24 111 Calls", "Coronavirus Helpline Calls"], "line"],
+                       ["NHS24 111 Calls", "Coronavirus Helpline Calls"], "line",
+                       ["default", "kde", "box", "violin", "histogram"]],
 
             "Hospital Confirmed": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
                                    "Daily number of confirmed COVID-19 patients in hospital",
                                    "Number of patients", [y * 200 for y in range(1, 9)],
-                                   "(ii) Confirmed", "bar"],
+                                   "(ii) Confirmed", "bar",
+                                   ["default", "kde", "box", "violin", "histogram"]],
 
             "Hospital Care (ICU)": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
                                     "Daily number of confirmed COVID-19 patients in ICU or combined ICU/HDU",
                                     "Number of patients", [y * 50 for y in range(1, 6)],
-                                    "(i) Confirmed", "bar"],
+                                    "(i) Confirmed", "bar",
+                                    ["default", "kde", "box", "violin", "histogram"]],
 
             "Ambulance Attendances": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of Attendances (total and COVID-19 suspected)",
                                       "Number of attendances", [y * 200 for y in range(1, 11)],
-                                      ["Number of attendances", "Number of COVID-19 suspected attendances"], "line"],
+                                      ["Number of attendances", "Number of COVID-19 suspected attendances"], "line",
+                                      ["default", "kde", "box", "violin", "histogram"]],
 
             "Ambulance To Hospital": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of suspected COVID-19 patients taken to hospital by ambulance",
                                       "Number of patients", [y * 50 for y in range(1, 9)],
-                                      "Number of suspected COVID-19 patients taken to hospital", "line"],
+                                      "Number of suspected COVID-19 patients taken to hospital", "line",
+                                      ["default", "kde", "box", "violin", "histogram"]],
 
             "Delayed Discharges": ["../Trends in daily COVID-19 data 22 July 2020/Table 4 - Delayed Discharges.csv",
                                    "Daily Delayed Discharges",
                                    "Number of delayed discharges", [y * 200 for y in range(1, 10)],
-                                   "Number of delayed discharges", "line"],
+                                   "Number of delayed discharges", "line",
+                                   ["default", "kde", "box", "violin", "histogram"]],
 
             "People Tested": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                               "Number of people tested for COVID-19 in Scotland to date, by results",
                               "Number of people tested", [y * 50000 for y in range(1, 8)],
-                              ["(i) Positive", "(i) Negative"], "bar"],
+                              ["(i) Positive", "(i) Negative"], "bar",
+                              ["default", "kde", "box", "violin", "histogram"]],
 
             "Number Of Tests": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                                 "Cumulative number of COVID-19 Tests carried out in Scotland",
                                 "Number of tests", [y * 100000 for y in range(1, 8)],
-                                ["(iii) Cumulative", "(iv) Cumulative"], "bar"],
+                                ["(iii) Cumulative", "(iv) Cumulative"], "bar",
+                                ["default", "kde", "box", "violin", "histogram"]],
 
             "Daily Positive Cases": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                                      "Number of daily new positive cases and 7-day rolling average",
                                      "Number of cases", [y * 50 for y in range(1, 11)],
-                                     "(ii) Daily", "bar"],
+                                     "(ii) Daily", "bar",
+                                     ["default", "kde", "box", "violin", "histogram"]],
 
             "Workforce": ["../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv",
                           "Number of NHS staff reporting as absent due to Covid-19",
                           "Number of staff", [y * 1000 for y in range(1, 11)],
-                          "", "bar"],
+                          "", "bar",
+                          ["default", "kde", "box", "violin", "histogram"]],
 
             "Care Homes": ["../Trends in daily COVID-19 data 22 July 2020/Table 7a - Care Homes.csv",
                            "Daily number of new suspected Covid-19 cases reported in Scottish adult care homes",
                            "Number of cases", [y * 50 for y in range(1, 6)],
-                           "Daily number of new suspected COVID-19 cases in adult care homes", "bar"],
+                           "Daily number of new suspected COVID-19 cases in adult care homes", "bar",
+                           ["default", "kde", "box", "violin", "histogram"]],
 
             "Deaths": ["../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv",
                        "Number of COVID-19 confirmed deaths registered to date",
                        "Number of deaths", [y * 500 for y in range(1, 7)],
-                       "Number of COVID-19 confirmed deaths registered to date", "line"],
+                       "Number of COVID-19 confirmed deaths registered to date", "line",
+                       ["default", "kde", "box", "violin", "histogram"]],
         }
         return plots_info
 
@@ -413,6 +426,9 @@ class TrendsInDailyDataPlots(object):
 
     def get_plots_title(self):
         return self.plot_title
+
+    def get_plots_types_list(self):
+        return self.plot_types_list
 
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plot_path)

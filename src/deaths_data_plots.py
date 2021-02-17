@@ -6,50 +6,60 @@ import numpy as np
 
 class DeathsDataPlots(object):
 
-    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None):
+    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None, plot_types_list=None):
         self.plot_path = plot_path
         self.plot_title = plot_title
         self.plot_ylabel = plot_ylabel
         self.plot_yticks = plot_yticks
         self.plot_y_values = plot_y_values
+        self.plot_types_list = plot_types_list
 
     def get_plots_info(self):
         plots_info = {
             "Cumulative Deaths": ["../covid deaths data week 30/Figure 1 data.csv",
                                   "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
-                                  "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Count"],
+                                  "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Count",
+                                  ["default", "kde", "box", "violin", "histogram"]],
 
             "Cumulative Deaths Different Data": ["../covid deaths data week 30/Figure 2 data.csv",
                                                  "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020",
-                                                 "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Cumulative Count"],
+                                                 "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Cumulative Count",
+                                                 ["default", "kde", "box", "violin", "histogram"]],
 
             "COVID Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
                                     "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
-                                    "Number of deaths", [y * 200 for y in range(1, 11)], "Covid deaths to date"],
+                                    "Number of deaths", [y * 200 for y in range(1, 11)], "Covid deaths to date",
+                                    ["default", "kde", "box", "violin", "histogram", "pie"]],
 
             "All Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
                                   "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
-                                  "Number of deaths", [y * 2000 for y in range(1, 8)], "Total deaths to date"],
+                                  "Number of deaths", [y * 2000 for y in range(1, 8)], "Total deaths to date",
+                                  ["default", "kde", "box", "violin", "histogram", "pie"]],
 
             "Deaths By Board": ["../covid deaths data week 30/Figure 4 data.csv",
                                 "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland",
-                                "Number of deaths", [y * 200 for y in range(1, 8)], "COVID-19 deaths to date"],
+                                "Number of deaths", [y * 200 for y in range(1, 8)], "COVID-19 deaths to date",
+                                ["default", "kde", "box", "violin", "histogram", "pie"]],
 
             "Deaths By Week": ["../covid deaths data week 30/Figure 5 data.csv",
                                "Deaths by week of registration, Scotland, 2020",
-                               "Number of deaths", [y * 500 for y in range(1, 6)], ["Total deaths 2020", "Average for previous 5 years", "COVID-19 deaths 2020"]],
+                               "Number of deaths", [y * 500 for y in range(1, 6)], ["Total deaths 2020", "Average for previous 5 years", "COVID-19 deaths 2020"],
+                               ["default", "kde", "box", "violin", "histogram"]],
 
             "Deaths By Cause": ["../covid deaths data week 30/Figure 6 data.csv",
                                 "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020",
-                                "Number of deaths", [y * 5000 for y in range(1, 6)], ""],
+                                "Number of deaths", [y * 5000 for y in range(1, 6)], "",
+                                ["default", "pie"]],
 
             "Deaths By Location": ["../covid deaths data week 30/Figure 7 data.csv",
                                    "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020",
-                                   "Number of deaths", [y * 50 for y in range(1, 9)], ""],
+                                   "Number of deaths", [y * 50 for y in range(1, 9)], "",
+                                   ["default", "kde", "box", "violin", "histogram", "pie"]],
 
             "Deaths By Date Of Death vs Date Of Registration": ["../covid deaths data week 30/Figure 8 data.csv",
                                                                 "Deaths involving COVID-19, date of death vs date of registration",
-                                                                "Cumulative number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"]]
+                                                                "Cumulative number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"],
+                                                                ["default", "kde", "box", "violin", "histogram"]]
         }
         return plots_info
 
@@ -368,6 +378,9 @@ class DeathsDataPlots(object):
 
     def get_plots_title(self):
         return self.plot_title
+
+    def get_plots_types_list(self):
+        return self.plot_types_list
 
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plot_path)
