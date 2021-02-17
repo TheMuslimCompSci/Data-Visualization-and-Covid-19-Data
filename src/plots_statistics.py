@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class PlotStatistics(object):
+class PlotsStatistics(object):
 
     def __init__(self, plot_data, plot_axis_column_index, plot_ylabel):
         self.plot_data = plot_data

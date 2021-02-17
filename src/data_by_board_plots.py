@@ -2,10 +2,10 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import numpy as np
-from plot_statistics import PlotStatistics
+from plots import Plots
 
 
-class DataByBoardPlots(object):
+class DataByBoardPlots(Plots):
 
     def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_types_list=None, plots_axis_column_index=None):
         self.plots_path = plots_path
@@ -44,14 +44,14 @@ class DataByBoardPlots(object):
         }
         return plots_info
 
-    def create_visualization(self, plot_type):
+    def create_visualization(self, plots_type):
         plots_data = pd.read_csv(self.plots_path)
         boards = plots_data.columns.tolist()
         dates = plots_data["Date"].tolist()
         weekly_dates = [""] * len(dates)
         weekly_dates[::7] = dates[::7]
         f, ax = plt.subplots(figsize=(25, 15))
-        if plot_type == "pie":
+        if plots_type == "pie":
             board_totals = []
             for i in range(1, len(boards) - 1):
                 board = boards[i]
@@ -67,23 +67,23 @@ class DataByBoardPlots(object):
             for i in range(1, len(boards)):
                 board = boards[i]
                 plt.subplot(4, 4, i)
-                if plot_type == "default":
+                if plots_type == "default":
                     if self.plots_ylabel == "Cumulative Cases":
                         ax = sns.lineplot(data=plots_data, x="Date", y=board)
                     else:
                         ax = sns.barplot(data=plots_data, x="Date", y=board)
                     ax.axes.xaxis.set_ticklabels([])
                     ax.set_ylabel(self.plots_ylabel)
-                elif plot_type == "kde" or plot_type == "histogram":
-                    if plot_type == "kde":
+                elif plots_type == "kde" or plots_type == "histogram":
+                    if plots_type == "kde":
                         ax = sns.kdeplot(data=plots_data[board], shade=True)
-                    elif plot_type == "histogram":
+                    elif plots_type == "histogram":
                         ax = sns.histplot(data=plots_data[board])
                     ax.set_xlabel(self.plots_ylabel)
                 else:
-                    if plot_type == "box":
+                    if plots_type == "box":
                         ax = sns.boxplot(data=plots_data[board])
-                    elif plot_type == "violin":
+                    elif plots_type == "violin":
                         ax = sns.violinplot(data=plots_data[board])
                     ax.axes.xaxis.set_ticks([])
                     ax.set_ylabel(self.plots_ylabel)
@@ -91,23 +91,3 @@ class DataByBoardPlots(object):
             plt.subplots_adjust(wspace=1, hspace=1)
             f.suptitle(self.plots_title)
         plt.show()
-
-    def get_plots_data(self):
-        plots_data = pd.read_csv(self.plots_path)
-        return plots_data
-
-    def get_plots_title(self):
-        return self.plots_title
-
-    def get_plots_types_list(self):
-        return self.plots_types_list
-
-    def get_plots_axis_column_index(self):
-        plots_data = pd.read_csv(self.plots_path)
-        return plots_data.columns.get_loc(self.plots_axis_column_index)
-
-    def get_plots_statistics(self):
-        plots_data = self.get_plots_data()
-        plot_axis_column_index = self.get_plots_axis_column_index()
-        plots_statistics = PlotStatistics(plots_data, plot_axis_column_index, self.plots_ylabel)
-        return plots_statistics.get_plots_statistics()
