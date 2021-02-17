@@ -7,7 +7,7 @@ from plot_statistics import PlotStatistics
 
 class TrendsInDailyDataPlots(object):
 
-    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None, plot_type=None, plot_types_list=None):
+    def __init__(self, plot_path=None, plot_title=None, plot_ylabel=None, plot_yticks=None, plot_y_values=None, plot_type=None, plot_types_list=None, plot_axis_column_index=None):
         self.plot_path = plot_path
         self.plot_title = plot_title
         self.plot_ylabel = plot_ylabel
@@ -15,6 +15,7 @@ class TrendsInDailyDataPlots(object):
         self.plot_y_values = plot_y_values
         self.plot_type = plot_type
         self.plot_types_list = plot_types_list
+        self.plot_axis_column_index = plot_axis_column_index
 
     def get_plots_info(self):
         plots_info = {
@@ -22,73 +23,73 @@ class TrendsInDailyDataPlots(object):
                        "Daily number of calls to NHS24 111 and the Coronavirus helpline",
                        "Number of calls", [y * 2000 for y in range(1, 8)],
                        ["NHS24 111 Calls", "Coronavirus Helpline Calls"], "line",
-                       ["default", "kde", "box", "violin", "histogram"]],
+                       ["default", "kde", "box", "violin", "histogram"], "Coronavirus Helpline Calls"],
 
             "Hospital Confirmed": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
                                    "Daily number of confirmed COVID-19 patients in hospital",
                                    "Number of patients", [y * 200 for y in range(1, 9)],
                                    "(ii) Confirmed", "bar",
-                                   ["default", "kde", "box", "violin", "histogram"]],
+                                   ["default", "kde", "box", "violin", "histogram"], "(ii) Confirmed"],
 
             "Hospital Care (ICU)": ["../Trends in daily COVID-19 data 22 July 2020/Table 2 - Hospital Care.csv",
                                     "Daily number of confirmed COVID-19 patients in ICU or combined ICU/HDU",
                                     "Number of patients", [y * 50 for y in range(1, 6)],
                                     "(i) Confirmed", "bar",
-                                    ["default", "kde", "box", "violin", "histogram"]],
+                                    ["default", "kde", "box", "violin", "histogram"], "(i) Confirmed"],
 
             "Ambulance Attendances": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of Attendances (total and COVID-19 suspected)",
                                       "Number of attendances", [y * 200 for y in range(1, 11)],
                                       ["Number of attendances", "Number of COVID-19 suspected attendances"], "line",
-                                      ["default", "kde", "box", "violin", "histogram"]],
+                                      ["default", "kde", "box", "violin", "histogram"], "Number of COVID-19 suspected attendances"],
 
             "Ambulance To Hospital": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of suspected COVID-19 patients taken to hospital by ambulance",
                                       "Number of patients", [y * 50 for y in range(1, 9)],
                                       "Number of suspected COVID-19 patients taken to hospital", "line",
-                                      ["default", "kde", "box", "violin", "histogram"]],
+                                      ["default", "kde", "box", "violin", "histogram"], "Number of suspected COVID-19 patients taken to hospital"],
 
             "Delayed Discharges": ["../Trends in daily COVID-19 data 22 July 2020/Table 4 - Delayed Discharges.csv",
                                    "Daily Delayed Discharges",
                                    "Number of delayed discharges", [y * 200 for y in range(1, 10)],
                                    "Number of delayed discharges", "line",
-                                   ["default", "kde", "box", "violin", "histogram"]],
+                                   ["default", "kde", "box", "violin", "histogram"], "Number of delayed discharges"],
 
             "People Tested": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                               "Number of people tested for COVID-19 in Scotland to date, by results",
                               "Number of people tested", [y * 50000 for y in range(1, 8)],
                               ["(i) Positive", "(i) Negative"], "bar",
-                              ["default", "kde", "box", "violin", "histogram"]],
+                              ["default", "kde", "box", "violin", "histogram"], "(i) Positive"],
 
             "Number Of Tests": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                                 "Cumulative number of COVID-19 Tests carried out in Scotland",
                                 "Number of tests", [y * 100000 for y in range(1, 8)],
                                 ["(iii) Cumulative", "(iv) Cumulative"], "bar",
-                                ["default", "kde", "box", "violin", "histogram"]],
+                                ["default", "kde", "box", "violin", "histogram"], "(iii) Cumulative"],
 
             "Daily Positive Cases": ["../Trends in daily COVID-19 data 22 July 2020/Table 5 - Testing.csv",
                                      "Number of daily new positive cases and 7-day rolling average",
                                      "Number of cases", [y * 50 for y in range(1, 11)],
                                      "(ii) Daily", "bar",
-                                     ["default", "kde", "box", "violin", "histogram"]],
+                                     ["default", "kde", "box", "violin", "histogram"], "(ii) Daily"],
 
             "Workforce": ["../Trends in daily COVID-19 data 22 July 2020/Table 6 - Workforce.csv",
                           "Number of NHS staff reporting as absent due to Covid-19",
                           "Number of staff", [y * 1000 for y in range(1, 11)],
                           "", "bar",
-                          ["default", "kde", "box", "violin", "histogram"]],
+                          ["default", "kde", "box", "violin", "histogram"], "All staff absences"],
 
             "Care Homes": ["../Trends in daily COVID-19 data 22 July 2020/Table 7a - Care Homes.csv",
                            "Daily number of new suspected Covid-19 cases reported in Scottish adult care homes",
                            "Number of cases", [y * 50 for y in range(1, 6)],
                            "Daily number of new suspected COVID-19 cases in adult care homes", "bar",
-                           ["default", "kde", "box", "violin", "histogram"]],
+                           ["default", "kde", "box", "violin", "histogram"], "Daily number of new suspected COVID-19 cases in adult care homes"],
 
             "Deaths": ["../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv",
                        "Number of COVID-19 confirmed deaths registered to date",
                        "Number of deaths", [y * 500 for y in range(1, 7)],
                        "Number of COVID-19 confirmed deaths registered to date", "line",
-                       ["default", "kde", "box", "violin", "histogram"]],
+                       ["default", "kde", "box", "violin", "histogram"], "Number of COVID-19 confirmed deaths registered to date"],
         }
         return plots_info
 
@@ -425,47 +426,19 @@ class TrendsInDailyDataPlots(object):
             sns.despine(top=True, right=True)
         return plot
 
+    def get_plots_data(self):
+        plots_data = pd.read_csv(self.plot_path)
+        return plots_data
+
     def get_plots_title(self):
         return self.plot_title
 
     def get_plots_types_list(self):
         return self.plot_types_list
 
-    def get_plots_data(self):
-        plots_data = pd.read_csv(self.plot_path)
-        return plots_data
-
     def get_plots_axis_column_index(self):
         plots_data = pd.read_csv(self.plot_path)
-        plots_info = self.get_plots_info()
-        if self.plot_path == plots_info["NHS 24"][0]:
-            return plots_data.columns.get_loc("Coronavirus Helpline Calls")
-        elif self.plot_path == plots_info["Hospital Confirmed"][0]:
-            if self.plot_y_values == plots_info["Hospital Confirmed"][4]:
-                return plots_data.columns.get_loc("(ii) Confirmed")
-            elif self.plot_y_values == plots_info["Hospital Care (ICU)"][4]:
-                return plots_data.columns.get_loc("(i) Confirmed")
-        elif self.plot_path == plots_info["Ambulance Attendances"][0]:
-            if self.plot_y_values == plots_info["Ambulance Attendances"][4]:
-                return plots_data.columns.get_loc("Number of COVID-19 suspected attendances")
-            elif self.plot_y_values == plots_info["Ambulance To Hospital"][4]:
-                return plots_data.columns.get_loc("Number of suspected COVID-19 patients taken to hospital")
-        elif self.plot_path == plots_info["Delayed Discharges"][0]:
-            return plots_data.columns.get_loc("Number of delayed discharges")
-        elif self.plot_path == plots_info["People Tested"][0]:
-            if self.plot_y_values == plots_info["People Tested"][4]:
-                return plots_data.columns.get_loc("(i) Positive")
-            elif self.plot_y_values == plots_info["Number Of Tests"][4]:
-                return plots_data.columns.get_loc("(iii) Cumulative")
-            elif self.plot_y_values == plots_info["Daily Positive Cases"][4]:
-                return plots_data.columns.get_loc("(ii) Daily")
-            return plots_data.columns.get_loc("(i) Positive")
-        elif self.plot_path == plots_info["Workforce"][0]:
-            return plots_data.columns.get_loc("All staff absences")
-        elif self.plot_path == plots_info["Care Homes"][0]:
-            return plots_data.columns.get_loc("Daily number of new suspected COVID-19 cases in adult care homes")
-        elif self.plot_path == plots_info["Deaths"][0]:
-            return plots_data.columns.get_loc("Number of COVID-19 confirmed deaths registered to date")
+        return plots_data.columns.get_loc(self.plot_axis_column_index)
 
     def get_plots_statistics(self):
         plots_data = self.get_plots_data()
