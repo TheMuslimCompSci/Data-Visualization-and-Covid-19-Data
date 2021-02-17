@@ -43,7 +43,7 @@ class Dashboard(object):
             button = tk.Button(self.main_dashboard_frame, bg="white")
             button["text"] = button_text
             button["command"] = button_command
-            button.grid(row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -86,7 +86,7 @@ class Dashboard(object):
                                                       button_command_values[4], button_command_values[5],
                                                       button_command_values[6], button_command_values[7])
             button["command"] = partial(self.create_analytics_dashboard, button_plots)
-            button.grid(row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -109,7 +109,7 @@ class Dashboard(object):
             button = tk.Button(self.analytics_dashboard_frame, bg="white")
             button["text"] = button_text
             button["command"] = button_command
-            button.grid(row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -129,7 +129,7 @@ class Dashboard(object):
             button = tk.Button(self.plots_types_dashboard_frame, bg="white")
             button["text"] = plot_type
             button["command"] = partial(plots.create_visualization, plot_type)
-            button.grid(row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -203,7 +203,7 @@ class Dashboard(object):
         for statistic in plot_statistics:
             statistic_label = tk.Label(statistics_frame)
             statistic_label["text"] = statistic
-            statistic_label.grid(row=row_index, column=column_index, sticky="nesw")
+            statistic_label.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
