@@ -43,32 +43,45 @@ class DataByBoardPlots(object):
         weekly_dates = [""] * len(dates)
         weekly_dates[::7] = dates[::7]
         f, ax = plt.subplots(figsize=(25, 15))
-        for i in range(1, len(boards)):
-            board = boards[i]
-            plt.subplot(4, 4, i)
-            if plot_type == "default":
+        if plot_type == "pie":
+            board_totals = []
+            for i in range(1, len(boards) - 1):
+                board = boards[i]
                 if self.plots_ylabel == "Cumulative Cases":
-                    ax = sns.lineplot(data=plots_data, x="Date", y=board)
+                    board_total = plots_data[board].iloc[-1]
                 else:
-                    ax = sns.barplot(data=plots_data, x="Date", y=board)
-                ax.axes.xaxis.set_ticklabels([])
-                ax.set_ylabel(self.plots_ylabel)
-            elif plot_type == "kde" or plot_type == "histogram":
-                if plot_type == "kde":
-                    ax = sns.kdeplot(data=plots_data[board], shade=True)
-                elif plot_type == "histogram":
-                    ax = sns.histplot(data=plots_data[board])
-                ax.set_xlabel(self.plots_ylabel)
-            else:
-                if plot_type == "box":
-                    ax = sns.boxplot(data=plots_data[board])
-                elif plot_type == "violin":
-                    ax = sns.violinplot(data=plots_data[board])
-                ax.axes.xaxis.set_ticks([])
-                ax.set_ylabel(self.plots_ylabel)
-            ax.set_title(board)
-        plt.subplots_adjust(wspace=1, hspace=1)
-        f.suptitle(self.plots_title)
+                    board_total = plots_data[board].sum()
+                board_totals.append(board_total)
+            plt.pie(board_totals, labels=boards[1:len(boards) - 1], autopct="%1d%%")
+            plt.axis("equal")
+            plt.title(self.plots_title)
+        else:
+            for i in range(1, len(boards)):
+                board = boards[i]
+                plt.subplot(4, 4, i)
+                if plot_type == "default":
+                    if self.plots_ylabel == "Cumulative Cases":
+                        ax = sns.lineplot(data=plots_data, x="Date", y=board)
+                    else:
+                        ax = sns.barplot(data=plots_data, x="Date", y=board)
+                    ax.axes.xaxis.set_ticklabels([])
+                    ax.set_ylabel(self.plots_ylabel)
+                elif plot_type == "kde" or plot_type == "histogram":
+                    if plot_type == "kde":
+                        ax = sns.kdeplot(data=plots_data[board], shade=True)
+                    elif plot_type == "histogram":
+                        ax = sns.histplot(data=plots_data[board])
+                    ax.set_xlabel(self.plots_ylabel)
+                else:
+                    if plot_type == "box":
+                        ax = sns.boxplot(data=plots_data[board])
+                    elif plot_type == "violin":
+                        ax = sns.violinplot(data=plots_data[board])
+                    ax.axes.xaxis.set_ticks([])
+                    ax.set_ylabel(self.plots_ylabel)
+                ax.set_title(board)
+            plt.subplots_adjust(wspace=1, hspace=1)
+            f.suptitle(self.plots_title)
         plt.show()
 
     def get_plots_title(self):
