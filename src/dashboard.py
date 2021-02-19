@@ -23,6 +23,7 @@ class Dashboard(object):
         self.analytics_dashboard_frame = tk.Frame(master, bg="blue")
         self.plots_types_dashboard_frame = tk.Frame(master, bg="blue")
         self.data_dashboard_frame = tk.Frame(master, bg="blue")
+        self.plots_styling_dashboard_frame = tk.Frame(master, bg="blue")
 
 
     def get_main_dashboard_buttons_info(self):
@@ -43,7 +44,7 @@ class Dashboard(object):
             button = tk.Button(self.main_dashboard_frame, bg="white")
             button["text"] = button_text
             button["command"] = button_command
-            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -86,7 +87,7 @@ class Dashboard(object):
                                                       button_command_values[4], button_command_values[5],
                                                       button_command_values[6], button_command_values[7])
             button["command"] = partial(self.create_analytics_dashboard, button_plots)
-            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -109,7 +110,7 @@ class Dashboard(object):
             button = tk.Button(self.analytics_dashboard_frame, bg="white")
             button["text"] = button_text
             button["command"] = button_command
-            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
+            button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -128,8 +129,8 @@ class Dashboard(object):
         for plot_type in plot_types:
             button = tk.Button(self.plots_types_dashboard_frame, bg="white")
             button["text"] = plot_type
-            button["command"] = partial(plots.create_visualization, plot_type)
-            button.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
+            button["command"] = partial(self.plots_styling_dashboard_frame, plots)
+            button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -138,6 +139,27 @@ class Dashboard(object):
             else:
                 column_index = 1
         self.configure_grid_layout(self.plots_types_dashboard_frame)
+
+
+    def create_plots_styling_dashboard(self, plots):
+        self.initialize_frame(self.plots_styling_dashboard_frame)
+        PLOTS_STYLES = plots.get_plots_styles_list()
+        PLOTS_CONTEXTS = plots.get_plots_contexts_list()
+        PLOTS_PALETTES = plots.get_plots_palettes_list()
+        plots_style = self.create_plots_styling_dashboard_radio_buttons(PLOTS_STYLES, "default")
+        plots_context = self.create_plots_styling_dashboard_radio_buttons(PLOTS_CONTEXTS, "notebook")
+        plots_palette = self.create_plots_styling_dashboard_radio_buttons(PLOTS_PALETTES, "default")
+
+    def create_plots_styling_dashboard_radio_buttons(self, radio_buttons_list, radio_buttons_default):
+        radio_buttons_variable = tk.StringVar()
+        radio_buttons_variable.set(radio_buttons_default)
+        for text, style in radio_buttons_list:
+            radio_button = tk.Radiobutton(self.plots_styling_dashboard_frame)
+            radio_button["text"] = text
+            radio_button["variable"] = radio_buttons_variable
+            radio_button["value"] = style
+            radio_button.pack(side="left")
+        return radio_buttons_variable
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
@@ -203,7 +225,7 @@ class Dashboard(object):
         for statistic in plot_statistics:
             statistic_label = tk.Label(statistics_frame)
             statistic_label["text"] = statistic
-            statistic_label.grid(padx=5, pady=5 , row=row_index, column=column_index, sticky="nesw")
+            statistic_label.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
                 row_index += 1
@@ -220,7 +242,7 @@ class Dashboard(object):
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
                   self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame,
-                  self.plots_types_dashboard_frame,]
+                  self.plots_types_dashboard_frame, self.plots_styling_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
 

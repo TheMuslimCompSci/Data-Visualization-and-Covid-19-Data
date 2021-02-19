@@ -30,3 +30,35 @@ class Plots(object):
         plot_axis_column_index = self.get_plots_axis_column_index()
         plots_statistics = PlotsStatistics(plots_data, plot_axis_column_index, self.plots_ylabel)
         return plots_statistics.get_plots_statistics()
+
+    def get_plots_styles_list(self):
+        PLOTS_STYLES = [
+            ("default", None),
+            ("dark grid", "darkgrid"),
+            ("white grid", "whitegrid"),
+            ("dark", "dark"),
+            ("white", "white"),
+            ("ticks", "ticks")
+        ]
+        return PLOTS_STYLES
+
+    def get_plots_contexts_list(self):
+        PLOTS_CONTEXTS = [
+            ("default", "notebook"),
+            ("paper", "paper"),
+            ("talk", "talk"),
+            ("poster", "poster"),
+        ]
+        return PLOTS_CONTEXTS
+
+    def get_plots_palettes_list(self):
+        PLOTS_PALETTES = [
+            ("default", None),
+            ("deep", "deep"),
+            ("muted", "muted"),
+            ("pastel", "pastel"),
+            ("bright", "bright"),
+            ("dark", "dark"),
+            ("colour blind", "colorblind"),
+        ]
+        return PLOTS_PALETTES
