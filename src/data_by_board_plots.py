@@ -44,7 +44,8 @@ class DataByBoardPlots(Plots):
         }
         return plots_info
 
-    def create_visualization(self, plots_type):
+    def create_visualization(self, plots_type, plots_style, plots_context, plots_palette):
+        self.set_plots_styling(plots_style, plots_context, plots_palette)
         plots_data = pd.read_csv(self.plots_path)
         boards = plots_data.columns.tolist()
         dates = plots_data["Date"].tolist()

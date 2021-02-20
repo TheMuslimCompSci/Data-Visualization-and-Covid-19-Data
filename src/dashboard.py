@@ -19,17 +19,16 @@ class Dashboard(object):
     def configure_widgets_style(self):
         widgets_style = ttk.Style()
         widgets_style.theme_use("clam")
-        widgets_style.configure('.', font=('Arial', 12))
+        widgets_style.configure(".", font=("Arial", 12))
         widgets_style.configure("TFrame", background="cyan")
         widgets_style.configure("TButton", background="white")
         widgets_style.configure("TLabel", background="cyan")
         widgets_style.configure("TRadiobutton", background="cyan")
         widgets_style.configure("Treeview",
-                                  background="white",
-                                  foreground="black",
-                                  fieldbackground="white")
-        widgets_style.map("Treeview",
-                            background=[("selected", "blue")])
+                                background="white",
+                                foreground="black",
+                                fieldbackground="white")
+        widgets_style.map("Treeview", background=[("selected", "blue")])
         widgets_style.configure("Horizontal.TScrollbar", background="white")
         widgets_style.configure("Vertical.TScrollbar", background="white")
 
@@ -139,14 +138,14 @@ class Dashboard(object):
 
     def create_plots_types_dashboard(self, plots):
         self.initialize_frame(self.plots_types_dashboard_frame)
-        plot_types = plots.get_plots_types_list()
+        plots_types = plots.get_plots_types_list()
         row_index = 0
         column_index = 0
         counter = 0
-        for plot_type in plot_types:
+        for plots_type in plots_types:
             button = ttk.Button(self.plots_types_dashboard_frame)
-            button["text"] = plot_type
-            button["command"] = partial(self.create_plots_styling_dashboard, plots)
+            button["text"] = plots_type
+            button["command"] = partial(self.create_plots_styling_dashboard, plots, plots_type)
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
@@ -157,14 +156,14 @@ class Dashboard(object):
                 column_index = 1
         self.configure_grid_layout(self.plots_types_dashboard_frame)
 
-    def create_plots_styling_dashboard(self, plots):
+    def create_plots_styling_dashboard(self, plots, plots_type):
         self.initialize_frame(self.plots_styling_dashboard_frame)
 
         plots_styles_frame = ttk.Frame(self.plots_styling_dashboard_frame)
         plots_styles_frame.pack(fill="both", expand=True, side="top")
         PLOTS_STYLES = plots.get_plots_styles_list()
         plots_style = tk.StringVar()
-        plots_style.set("default")
+        plots_style.set("None")
         for text, style in PLOTS_STYLES:
             radio_button = ttk.Radiobutton(plots_styles_frame)
             radio_button["text"] = text
@@ -188,7 +187,7 @@ class Dashboard(object):
         plots_palettes_frame.pack(fill="both", expand=True, side="top")
         PLOTS_PALETTES = plots.get_plots_palettes_list()
         plots_palette = tk.StringVar()
-        plots_palette.set("default")
+        plots_palette.set("None")
         for text, palette in PLOTS_PALETTES:
             radio_button = ttk.Radiobutton(plots_palettes_frame)
             radio_button["text"] = text
@@ -196,12 +195,23 @@ class Dashboard(object):
             radio_button["value"] = palette
             radio_button.pack(side="left")
 
+        button = ttk.Button(plots_palettes_frame)
+        button["text"] = "Plot"
+        button["command"] = lambda: self.plots_button_clicked(plots, plots_type, plots_style.get(), plots_context.get(), plots_palette.get())
+        button.pack()
+
+    def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
+        print(plots_style)
+        print(plots_context)
+        print(plots_palette)
+        return partial(plots.create_visualization, plots_type, plots_style, plots_context, plots_palette)
+
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
         self.create_data_dashboard_title_frame(plots)
         self.create_data_dashboard_data_frame(plots)
         self.create_data_dashboard_statistics_frame(plots)
-    
+
     def create_data_dashboard_title_frame(self, plots):
         title_frame = ttk.Frame(self.data_dashboard_frame)
         title_frame.pack()
@@ -221,7 +231,7 @@ class Dashboard(object):
         y_scrollbar.config(command=data.yview)
         x_scrollbar.config(command=data.xview)
         plots_data = plots.get_plots_data()
-        plot_axis_column_index = plots.get_plots_axis_column_index()
+        plots_axis_column_index = plots.get_plots_axis_column_index()
         data["column"] = list(plots_data.columns)
         data["show"] = "headings"
         data.tag_configure("<10", background="green")
@@ -232,24 +242,24 @@ class Dashboard(object):
             data.heading(column, text=column)
         plots_data_rows = plots_data.to_numpy().tolist()
         for row in plots_data_rows:
-            if row[plot_axis_column_index] < 10:
+            if row[plots_axis_column_index] < 10:
                 data.insert(parent="", index="end", values=row, tags=("<10",))
-            elif 10 <= row[plot_axis_column_index] < 100:
+            elif 10 <= row[plots_axis_column_index] < 100:
                 data.insert(parent="", index="end", values=row, tags=("<100",))
-            elif 100 <= row[plot_axis_column_index] < 1000:
+            elif 100 <= row[plots_axis_column_index] < 1000:
                 data.insert(parent="", index="end", values=row, tags=("<1000",))
-            elif row[plot_axis_column_index] >= 1000:
+            elif row[plots_axis_column_index] >= 1000:
                 data.insert(parent="", index="end", values=row, tags=(">=1000",))
         data.pack(fill="both", expand=True)
 
     def create_data_dashboard_statistics_frame(self, plots):
         statistics_frame = ttk.Frame(self.data_dashboard_frame)
         statistics_frame.pack(fill="both", expand=True, side="bottom")
-        plot_statistics = plots.get_plots_statistics()
+        plots_statistics = plots.get_plots_statistics()
         row_index = 0
         column_index = 0
         counter = 0
-        for statistic in plot_statistics:
+        for statistic in plots_statistics:
             statistic_label = ttk.Label(statistics_frame)
             statistic_label["text"] = statistic
             statistic_label.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")

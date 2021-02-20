@@ -65,8 +65,8 @@ class DeathsDataPlots(Plots):
         }
         return plots_info
 
-    def create_visualization(self, plots_type):
-        plt.close("all")
+    def create_visualization(self, plots_type, plots_style, plots_context, plots_palette):
+        self.set_plots_styling(plots_style, plots_context, plots_palette)
         plots_data = pd.read_csv(self.plots_path)
         plots_titles = self.get_plots_info()
         if self.plots_title == plots_titles["Deaths By Cause"][1]:

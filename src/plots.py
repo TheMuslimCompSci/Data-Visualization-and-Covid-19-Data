@@ -1,4 +1,6 @@
 import pandas as pd
+from matplotlib import pyplot as plt
+import seaborn as sns
 from plots_statistics import PlotsStatistics
 
 
@@ -10,6 +12,12 @@ class Plots(object):
         self.plots_types_list = plots_types_list
         self.plots_axis_column_index = plots_axis_column_index
         self.plots_ylabel = plots_ylabel
+
+    def set_plots_styling(self, plots_style, plots_context, plots_palette):
+        plt.close("all")
+        sns.set_style(plots_style)
+        sns.set_context(plots_context)
+        sns.set_palette(plots_palette)
 
     def get_plots_data(self):
         plots_data = pd.read_csv(self.plots_path)
@@ -33,7 +41,7 @@ class Plots(object):
 
     def get_plots_styles_list(self):
         PLOTS_STYLES = [
-            ("default", None),
+            ("default", "None"),
             ("dark grid", "darkgrid"),
             ("white grid", "whitegrid"),
             ("dark", "dark"),
@@ -53,7 +61,7 @@ class Plots(object):
 
     def get_plots_palettes_list(self):
         PLOTS_PALETTES = [
-            ("default", None),
+            ("default", "None"),
             ("deep", "deep"),
             ("muted", "muted"),
             ("pastel", "pastel"),
