@@ -201,7 +201,10 @@ class Dashboard(object):
         button.pack()
 
     def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
-        print(plots_style, plots_context, plots_palette)
+        if plots_style == "None":
+            plots_style = None
+        if plots_palette == "None":
+            plots_palette = None
         return plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
 
     def create_data_dashboard(self, plots):
