@@ -201,10 +201,8 @@ class Dashboard(object):
         button.pack()
 
     def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
-        print(plots_style)
-        print(plots_context)
-        print(plots_palette)
-        return partial(plots.create_visualization, plots_type, plots_style, plots_context, plots_palette)
+        print(plots_style, plots_context, plots_palette)
+        return plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
