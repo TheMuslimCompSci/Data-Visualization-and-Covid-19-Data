@@ -11,20 +11,31 @@ class Dashboard(object):
     def __init__(self, master, button_plots):
         master.title("COVID-19 Data Visualization App")
         master.state("zoomed")
+        self.configure_frames_style()
+        self.configure_buttons_style()
         self.create_frames(master)
         self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
         self.create_main_dashboard(self.dashboard_buttons_info)
 
-    def create_frames(self, master):
-        self.main_dashboard_frame = tk.Frame(master, bg="blue")
-        self.data_by_board_dashboard_frame = tk.Frame(master, bg="blue")
-        self.deaths_data_dashboard_frame = tk.Frame(master, bg="blue")
-        self.trends_in_daily_data_dashboard_frame = tk.Frame(master, bg="blue")
-        self.analytics_dashboard_frame = tk.Frame(master, bg="blue")
-        self.plots_types_dashboard_frame = tk.Frame(master, bg="blue")
-        self.data_dashboard_frame = tk.Frame(master, bg="blue")
-        self.plots_styling_dashboard_frame = tk.Frame(master, bg="blue")
+    def configure_frames_style(self):
+        frames_style = ttk.Style()
+        frames_style.theme_use("default")
+        frames_style.configure("TFrame", background="cyan")
 
+    def configure_buttons_style(self):
+        buttons_style = ttk.Style()
+        buttons_style.theme_use("default")
+        buttons_style.configure("TButton")
+
+    def create_frames(self, master):
+        self.main_dashboard_frame = ttk.Frame(master)
+        self.data_by_board_dashboard_frame = ttk.Frame(master)
+        self.deaths_data_dashboard_frame = ttk.Frame(master)
+        self.trends_in_daily_data_dashboard_frame = ttk.Frame(master)
+        self.analytics_dashboard_frame = ttk.Frame(master)
+        self.plots_types_dashboard_frame = ttk.Frame(master)
+        self.data_dashboard_frame = ttk.Frame(master)
+        self.plots_styling_dashboard_frame = ttk.Frame(master)
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -41,7 +52,7 @@ class Dashboard(object):
         column_index = 0
         counter = 0
         for button_text, button_command in buttons_info.items():
-            button = tk.Button(self.main_dashboard_frame, bg="white")
+            button = ttk.Button(self.main_dashboard_frame)
             button["text"] = button_text
             button["command"] = button_command
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
@@ -70,7 +81,7 @@ class Dashboard(object):
         column_index = 0
         counter = 0
         for button_text, button_command_values in buttons.items():
-            button = tk.Button(frame, bg="white")
+            button = ttk.Button(frame)
             button["text"] = button_text
             if len(buttons) == 5:
                 button_plots = DataByBoardPlots(button_command_values[0], button_command_values[1],
@@ -107,7 +118,7 @@ class Dashboard(object):
         column_index = 0
         counter = 0
         for button_text, button_command in buttons_info.items():
-            button = tk.Button(self.analytics_dashboard_frame, bg="white")
+            button = ttk.Button(self.analytics_dashboard_frame)
             button["text"] = button_text
             button["command"] = button_command
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
@@ -127,9 +138,9 @@ class Dashboard(object):
         column_index = 0
         counter = 0
         for plot_type in plot_types:
-            button = tk.Button(self.plots_types_dashboard_frame, bg="white")
+            button = ttk.Button(self.plots_types_dashboard_frame)
             button["text"] = plot_type
-            button["command"] = partial(self.plots_styling_dashboard_frame, plots)
+            button["command"] = partial(self.create_plots_styling_dashboard, plots)
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
             if counter % 2 == 0:
@@ -140,55 +151,82 @@ class Dashboard(object):
                 column_index = 1
         self.configure_grid_layout(self.plots_types_dashboard_frame)
 
-
     def create_plots_styling_dashboard(self, plots):
         self.initialize_frame(self.plots_styling_dashboard_frame)
-        PLOTS_STYLES = plots.get_plots_styles_list()
-        PLOTS_CONTEXTS = plots.get_plots_contexts_list()
-        PLOTS_PALETTES = plots.get_plots_palettes_list()
-        plots_style = self.create_plots_styling_dashboard_radio_buttons(PLOTS_STYLES, "default")
-        plots_context = self.create_plots_styling_dashboard_radio_buttons(PLOTS_CONTEXTS, "notebook")
-        plots_palette = self.create_plots_styling_dashboard_radio_buttons(PLOTS_PALETTES, "default")
 
-    def create_plots_styling_dashboard_radio_buttons(self, radio_buttons_list, radio_buttons_default):
-        radio_buttons_variable = tk.StringVar()
-        radio_buttons_variable.set(radio_buttons_default)
-        for text, style in radio_buttons_list:
-            radio_button = tk.Radiobutton(self.plots_styling_dashboard_frame)
+        plots_styles_frame = ttk.Frame(self.plots_styling_dashboard_frame)
+        plots_styles_frame.pack(fill="both", expand=True, side="top")
+        PLOTS_STYLES = plots.get_plots_styles_list()
+        plots_style = tk.StringVar()
+        plots_style.set("default")
+        for text, style in PLOTS_STYLES:
+            radio_button = ttk.Radiobutton(plots_styles_frame)
             radio_button["text"] = text
-            radio_button["variable"] = radio_buttons_variable
+            radio_button["variable"] = plots_style
             radio_button["value"] = style
             radio_button.pack(side="left")
-        return radio_buttons_variable
+
+        plots_contexts_frame = ttk.Frame(self.plots_styling_dashboard_frame)
+        plots_contexts_frame.pack(fill="both", expand=True, side="top")
+        PLOTS_CONTEXTS = plots.get_plots_contexts_list()
+        plots_context = tk.StringVar()
+        plots_context.set("notebook")
+        for text, context in PLOTS_CONTEXTS:
+            radio_button = ttk.Radiobutton(plots_contexts_frame)
+            radio_button["text"] = text
+            radio_button["variable"] = plots_context
+            radio_button["value"] = context
+            radio_button.pack(side="left")
+
+        plots_palettes_frame = ttk.Frame(self.plots_styling_dashboard_frame)
+        plots_palettes_frame.pack(fill="both", expand=True, side="top")
+        PLOTS_PALETTES = plots.get_plots_palettes_list()
+        plots_palette = tk.StringVar()
+        plots_palette.set("default")
+        for text, palette in PLOTS_PALETTES:
+            radio_button = ttk.Radiobutton(plots_palettes_frame)
+            radio_button["text"] = text
+            radio_button["variable"] = plots_palette
+            radio_button["value"] = palette
+            radio_button.pack(side="left")
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
+        self.configure_labels_style()
         self.create_data_dashboard_title_frame(plots)
         self.create_data_dashboard_data_frame(plots)
         self.create_data_dashboard_statistics_frame(plots)
 
+    def configure_labels_style(self):
+        labels_style = ttk.Style()
+        labels_style.theme_use("default")
+        labels_style.configure("TLabel", background="cyan")
+    
     def create_data_dashboard_title_frame(self, plots):
-        title_frame = tk.Frame(self.data_dashboard_frame)
+        title_frame = ttk.Frame(self.data_dashboard_frame)
         title_frame.pack()
         plots_title = plots.get_plots_title()
-        title_label = tk.Label(title_frame)
+        title_label = ttk.Label(title_frame)
         title_label["text"] = plots_title
         title_label.pack()
 
-    def create_data_dashboard_data_frame(self, plots):
-        data_frame = tk.Frame(self.data_dashboard_frame)
-        data_frame.pack(fill="both", expand=True, side="top")
-        data_style = ttk.Style()
-        data_style.theme_use("default")
-        data_style.configure("Treeview",
+    def configure_treeviews_style(self):
+        treeviews_style = ttk.Style()
+        treeviews_style.theme_use("default")
+        treeviews_style.configure("Treeview",
                              background="white",
                              foreground="black",
                              fieldbackground="white")
-        data_style.map("Treeview",
+        treeviews_style.map("Treeview",
                        background=[("selected", "blue")])
-        y_scrollbar = tk.Scrollbar(data_frame, orient="vertical")
+
+    def create_data_dashboard_data_frame(self, plots):
+        data_frame = ttk.Frame(self.data_dashboard_frame)
+        data_frame.pack(fill="both", expand=True, side="top")
+        self.configure_treeviews_style()
+        y_scrollbar = ttk.Scrollbar(data_frame, orient="vertical")
         y_scrollbar.pack(side="right", fill="y")
-        x_scrollbar = tk.Scrollbar(data_frame, orient="horizontal")
+        x_scrollbar = ttk.Scrollbar(data_frame, orient="horizontal")
         x_scrollbar.pack(side="bottom", fill="x")
         data = ttk.Treeview(data_frame, yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
         y_scrollbar.config(command=data.yview)
@@ -216,14 +254,14 @@ class Dashboard(object):
         data.pack(fill="both", expand=True)
 
     def create_data_dashboard_statistics_frame(self, plots):
-        statistics_frame = tk.Frame(self.data_dashboard_frame)
+        statistics_frame = ttk.Frame(self.data_dashboard_frame)
         statistics_frame.pack(fill="both", expand=True, side="bottom")
         plot_statistics = plots.get_plots_statistics()
         row_index = 0
         column_index = 0
         counter = 0
         for statistic in plot_statistics:
-            statistic_label = tk.Label(statistics_frame)
+            statistic_label = ttk.Label(statistics_frame)
             statistic_label["text"] = statistic
             statistic_label.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
             counter += 1
