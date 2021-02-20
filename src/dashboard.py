@@ -40,7 +40,7 @@ class Dashboard(object):
         self.analytics_dashboard_frame = ttk.Frame(master)
         self.plots_types_dashboard_frame = ttk.Frame(master)
         self.data_dashboard_frame = ttk.Frame(master)
-        self.plots_styling_dashboard_frame = ttk.Frame(master)
+        self.models_dashboard_frame = ttk.Frame(master)
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -116,7 +116,7 @@ class Dashboard(object):
     def create_analytics_dashboard(self, plots):
         self.initialize_frame(self.analytics_dashboard_frame)
         buttons_info = {
-            "Plot": partial(self.create_plots_types_dashboard, plots),
+            "Plot": partial(self.create_models_dashboard, plots),
             "Data": partial(self.create_data_dashboard, plots),
         }
         row_index = 0
@@ -136,30 +136,22 @@ class Dashboard(object):
                 column_index = 1
         self.configure_grid_layout(self.analytics_dashboard_frame)
 
-    def create_plots_types_dashboard(self, plots):
-        self.initialize_frame(self.plots_types_dashboard_frame)
+    def create_models_dashboard(self, plots):
+        self.initialize_frame(self.models_dashboard_frame)
+
+        plots_types_frame = ttk.Frame(self.models_dashboard_frame)
+        plots_types_frame.pack(fill="both", expand=True, side="top")
         plots_types = plots.get_plots_types_list()
-        row_index = 0
-        column_index = 0
-        counter = 0
-        for plots_type in plots_types:
-            button = ttk.Button(self.plots_types_dashboard_frame)
-            button["text"] = plots_type
-            button["command"] = partial(self.create_plots_styling_dashboard, plots, plots_type)
-            button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
-            counter += 1
-            if counter % 2 == 0:
-                row_index += 1
-            if column_index == 1:
-                column_index = 0
-            else:
-                column_index = 1
-        self.configure_grid_layout(self.plots_types_dashboard_frame)
+        plots_type = tk.StringVar()
+        plots_type.set("default")
+        for type in plots_types:
+            radio_button = ttk.Radiobutton(plots_types_frame)
+            radio_button["text"] = type
+            radio_button["variable"] = plots_type
+            radio_button["value"] = type
+            radio_button.pack(side="left")
 
-    def create_plots_styling_dashboard(self, plots, plots_type):
-        self.initialize_frame(self.plots_styling_dashboard_frame)
-
-        plots_styles_frame = ttk.Frame(self.plots_styling_dashboard_frame)
+        plots_styles_frame = ttk.Frame(self.models_dashboard_frame)
         plots_styles_frame.pack(fill="both", expand=True, side="top")
         PLOTS_STYLES = plots.get_plots_styles_list()
         plots_style = tk.StringVar()
@@ -171,7 +163,7 @@ class Dashboard(object):
             radio_button["value"] = style
             radio_button.pack(side="left")
 
-        plots_contexts_frame = ttk.Frame(self.plots_styling_dashboard_frame)
+        plots_contexts_frame = ttk.Frame(self.models_dashboard_frame)
         plots_contexts_frame.pack(fill="both", expand=True, side="top")
         PLOTS_CONTEXTS = plots.get_plots_contexts_list()
         plots_context = tk.StringVar()
@@ -183,7 +175,7 @@ class Dashboard(object):
             radio_button["value"] = context
             radio_button.pack(side="left")
 
-        plots_palettes_frame = ttk.Frame(self.plots_styling_dashboard_frame)
+        plots_palettes_frame = ttk.Frame(self.models_dashboard_frame)
         plots_palettes_frame.pack(fill="both", expand=True, side="top")
         PLOTS_PALETTES = plots.get_plots_palettes_list()
         plots_palette = tk.StringVar()
@@ -197,7 +189,7 @@ class Dashboard(object):
 
         button = ttk.Button(plots_palettes_frame)
         button["text"] = "Plot"
-        button["command"] = lambda: self.plots_button_clicked(plots, plots_type, plots_style.get(), plots_context.get(), plots_palette.get())
+        button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
         button.pack()
 
     def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
@@ -280,7 +272,7 @@ class Dashboard(object):
     def hide_all_frames(self):
         frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
                   self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame,
-                  self.plots_types_dashboard_frame, self.plots_styling_dashboard_frame]
+                  self.models_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
 
