@@ -11,21 +11,27 @@ class Dashboard(object):
     def __init__(self, master, button_plots):
         master.title("COVID-19 Data Visualization App")
         master.state("zoomed")
-        self.configure_frames_style()
-        self.configure_buttons_style()
+        self.configure_widgets_style()
         self.create_frames(master)
         self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
         self.create_main_dashboard(self.dashboard_buttons_info)
 
-    def configure_frames_style(self):
-        frames_style = ttk.Style()
-        frames_style.theme_use("default")
-        frames_style.configure("TFrame", background="cyan")
-
-    def configure_buttons_style(self):
-        buttons_style = ttk.Style()
-        buttons_style.theme_use("default")
-        buttons_style.configure("TButton")
+    def configure_widgets_style(self):
+        widgets_style = ttk.Style()
+        widgets_style.theme_use("clam")
+        widgets_style.configure('.', font=('Arial', 12))
+        widgets_style.configure("TFrame", background="cyan")
+        widgets_style.configure("TButton", background="white")
+        widgets_style.configure("TLabel", background="cyan")
+        widgets_style.configure("TRadiobutton", background="cyan")
+        widgets_style.configure("Treeview",
+                                  background="white",
+                                  foreground="black",
+                                  fieldbackground="white")
+        widgets_style.map("Treeview",
+                            background=[("selected", "blue")])
+        widgets_style.configure("Horizontal.TScrollbar", background="white")
+        widgets_style.configure("Vertical.TScrollbar", background="white")
 
     def create_frames(self, master):
         self.main_dashboard_frame = ttk.Frame(master)
@@ -192,15 +198,9 @@ class Dashboard(object):
 
     def create_data_dashboard(self, plots):
         self.initialize_frame(self.data_dashboard_frame)
-        self.configure_labels_style()
         self.create_data_dashboard_title_frame(plots)
         self.create_data_dashboard_data_frame(plots)
         self.create_data_dashboard_statistics_frame(plots)
-
-    def configure_labels_style(self):
-        labels_style = ttk.Style()
-        labels_style.theme_use("default")
-        labels_style.configure("TLabel", background="cyan")
     
     def create_data_dashboard_title_frame(self, plots):
         title_frame = ttk.Frame(self.data_dashboard_frame)
@@ -210,20 +210,9 @@ class Dashboard(object):
         title_label["text"] = plots_title
         title_label.pack()
 
-    def configure_treeviews_style(self):
-        treeviews_style = ttk.Style()
-        treeviews_style.theme_use("default")
-        treeviews_style.configure("Treeview",
-                             background="white",
-                             foreground="black",
-                             fieldbackground="white")
-        treeviews_style.map("Treeview",
-                       background=[("selected", "blue")])
-
     def create_data_dashboard_data_frame(self, plots):
         data_frame = ttk.Frame(self.data_dashboard_frame)
         data_frame.pack(fill="both", expand=True, side="top")
-        self.configure_treeviews_style()
         y_scrollbar = ttk.Scrollbar(data_frame, orient="vertical")
         y_scrollbar.pack(side="right", fill="y")
         x_scrollbar = ttk.Scrollbar(data_frame, orient="horizontal")
