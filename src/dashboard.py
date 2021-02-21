@@ -43,6 +43,17 @@ class Dashboard(object):
         self.dynamic_dashboard_frame = ttk.Frame(self.main_frame)
         self.models_dashboard_frame = ttk.Frame(self.main_frame)
 
+    def get_dashboard_functions(self):
+        dashboard_functions = {
+            "Portal Dashboard": [self.create_portal_dashboard],
+            "Main Dashboard": [self.create_main_dashboard, self.get_main_dashboard_buttons_info()],
+            "Data By Board Dashboard": [self.create_data_by_board_dashboard],
+            "Deaths Data Dashboard": [self.create_deaths_data_dashboard],
+            "Trends In Daily Data Dashboard": [self.create_trends_in_daily_data_dashboard],
+            "Analytics Dashboard": [self.create_analytics_dashboard, ]
+        }
+        return dashboard_functions
+
     def create_portal_dashboard(self):
         self.initialize_frame(self.portal_dashboard_frame)
         welcome_text = "COVID-19 Data Visualization App"
@@ -67,10 +78,6 @@ class Dashboard(object):
         quit_button["text"] = "QUIT"
         quit_button["command"] = current_frame.quit
         quit_button.pack(side="right")
-
-    def show_previous_frame(self, current_frame, previous_frame):
-        previous_frame.pack(fill="both", expand=True)
-        current_frame.forget()
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
