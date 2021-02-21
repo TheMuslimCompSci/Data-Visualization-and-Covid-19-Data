@@ -53,24 +53,36 @@ class Dashboard(object):
         start_button["command"] = partial(self.create_main_dashboard, main_dashboard_buttons_info)
         start_button.grid(padx=10, pady=10, row=1, column=0, sticky="nesw")
         self.configure_grid_layout(self.portal_dashboard_frame)
-
     
+    def create_navigation_frame(self, frame, back_button_command):
+        navigation_frame = ttk.Frame(frame)
+        navigation_frame.pack()
+        back_button = ttk.Button(navigation_frame)
+        back_button["text"] = "BACK"
+        back_button["command"] = back_button_command
+        back_button.pack(side="left")
+        quit_button = ttk.Button(navigation_frame)
+        quit_button["text"] = "QUIT"
+        quit_button["command"] = frame.quit
+        quit_button.pack(side="right")
+
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
             "Data By Board Dashboard": self.create_data_by_board_dashboard,
             "Deaths Data Dashboard": self.create_deaths_data_dashboard,
-            "Trends In Daily Data Dashboard": self.create_trends_in_daily_data_dashboard,
-            "QUIT": self.main_dashboard_frame.quit
+            "Trends In Daily Data Dashboard": self.create_trends_in_daily_data_dashboard
         }
         return buttons_info
 
     def create_main_dashboard(self, buttons_info):
         self.initialize_frame(self.main_dashboard_frame)
+        buttons_frame = ttk.Frame(self.main_dashboard_frame)
+        buttons_frame.pack(fill="both", expand=True)
         row_index = 0
         column_index = 0
         counter = 0
         for button_text, button_command in buttons_info.items():
-            button = ttk.Button(self.main_dashboard_frame)
+            button = ttk.Button(buttons_frame)
             button["text"] = button_text
             button["command"] = button_command
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
@@ -81,7 +93,8 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_grid_layout(self.main_dashboard_frame)
+        self.configure_grid_layout(buttons_frame)
+        self.create_navigation_frame(self.main_dashboard_frame, self.create_portal_dashboard)
 
     def create_plots_dashboard(self, frame):
         self.initialize_frame(frame)
@@ -93,6 +106,7 @@ class Dashboard(object):
             plots = TrendsInDailyDataPlots()
         plots_buttons_info = plots.get_plots_info()
         self.create_plots_dashboard_buttons(frame, plots_buttons_info)
+        self.create_navigation_frame(frame, partial(self.main_dashboard_frame, self.get_main_dashboard_buttons_info()))
 
     def create_plots_dashboard_buttons(self, frame, buttons):
         row_index = 0
