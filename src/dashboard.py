@@ -43,17 +43,6 @@ class Dashboard(object):
         self.dynamic_dashboard_frame = ttk.Frame(self.main_frame)
         self.models_dashboard_frame = ttk.Frame(self.main_frame)
 
-    def get_dashboard_functions(self):
-        dashboard_functions = {
-            "Portal Dashboard": [self.create_portal_dashboard],
-            "Main Dashboard": [self.create_main_dashboard, self.get_main_dashboard_buttons_info()],
-            "Data By Board Dashboard": [self.create_data_by_board_dashboard],
-            "Deaths Data Dashboard": [self.create_deaths_data_dashboard],
-            "Trends In Daily Data Dashboard": [self.create_trends_in_daily_data_dashboard],
-            "Analytics Dashboard": [self.create_analytics_dashboard, ]
-        }
-        return dashboard_functions
-
     def create_portal_dashboard(self):
         self.initialize_frame(self.portal_dashboard_frame)
         welcome_text = "COVID-19 Data Visualization App"
@@ -67,12 +56,15 @@ class Dashboard(object):
         start_button.grid(padx=10, pady=10, row=1, column=0, sticky="nesw")
         self.configure_grid_layout(self.portal_dashboard_frame)
     
-    def create_navigation_frame(self, current_frame, previous_frame):
+    def create_navigation_frame(self, current_frame, create_previous_dashboard, previous_dashboard_arg):
         navigation_frame = ttk.Frame(current_frame)
         navigation_frame.pack()
         back_button = ttk.Button(navigation_frame)
         back_button["text"] = "BACK"
-        back_button["command"] = self.create_portal_dashboard
+        if previous_dashboard_arg is None:
+            back_button["command"] = partial(create_previous_dashboard)
+        else:
+            back_button["command"] = partial(create_previous_dashboard, previous_dashboard_arg)
         back_button.pack(side="left")
         quit_button = ttk.Button(navigation_frame)
         quit_button["text"] = "QUIT"
@@ -107,10 +99,12 @@ class Dashboard(object):
             else:
                 column_index = 1
         self.configure_grid_layout(buttons_frame)
-        self.create_navigation_frame(self.main_dashboard_frame, self.portal_dashboard_frame)
+        self.create_navigation_frame(self.main_dashboard_frame, self.create_portal_dashboard, None)
 
     def create_plots_dashboard(self, frame):
         self.initialize_frame(frame)
+        plots_buttons_frame = ttk.Frame(frame)
+        plots_buttons_frame.pack(fill="both", expand=True, side="top")
         if frame == self.data_by_board_dashboard_frame:
             plots = DataByBoardPlots()
         elif frame == self.deaths_data_dashboard_frame:
@@ -118,8 +112,8 @@ class Dashboard(object):
         elif frame == self.trends_in_daily_data_dashboard_frame:
             plots = TrendsInDailyDataPlots()
         plots_buttons_info = plots.get_plots_info()
-        self.create_plots_dashboard_buttons(frame, plots_buttons_info)
-        self.create_navigation_frame(frame, self.main_dashboard_frame)
+        self.create_plots_dashboard_buttons(plots_buttons_frame, plots_buttons_info)
+        self.create_navigation_frame(frame, self.create_main_dashboard, self.get_main_dashboard_buttons_info())
 
     def create_plots_dashboard_buttons(self, frame, buttons):
         row_index = 0
@@ -159,11 +153,13 @@ class Dashboard(object):
             "Plot": partial(self.create_models_dashboard, plots),
             "Data": partial(self.create_dynamic_dashboard, plots),
         }
+        buttons_frame = ttk.Frame(self.analytics_dashboard_frame)
+        buttons_frame.pack(fill="both", expand=True, side="top")
         row_index = 0
         column_index = 0
         counter = 0
         for button_text, button_command in buttons_info.items():
-            button = ttk.Button(self.analytics_dashboard_frame)
+            button = ttk.Button(buttons_frame)
             button["text"] = button_text
             button["command"] = button_command
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
@@ -174,7 +170,15 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_grid_layout(self.analytics_dashboard_frame)
+        self.configure_grid_layout(buttons_frame)
+        create_plots_dashboard = None
+        if type(plots) is DataByBoardPlots:
+            create_plots_dashboard = self.create_data_by_board_dashboard
+        elif type(plots) is DeathsDataPlots:
+            create_plots_dashboard = self.create_deaths_data_dashboard
+        elif type(plots) is TrendsInDailyDataPlots:
+            create_plots_dashboard = self.create_trends_in_daily_data_dashboard
+        self.create_navigation_frame(self.analytics_dashboard_frame, create_plots_dashboard, None)
 
     def create_models_dashboard(self, plots):
         self.initialize_frame(self.models_dashboard_frame)
@@ -188,6 +192,7 @@ class Dashboard(object):
         plots_button["text"] = "Plot"
         plots_button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
         plots_button.pack()
+        self.create_navigation_frame(self.models_dashboard_frame, self.create_analytics_dashboard, plots)
 
     def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
         if plots_style == "None":
@@ -256,6 +261,7 @@ class Dashboard(object):
         self.create_dynamic_dashboard_title_frame(plots)
         self.create_dynamic_dashboard_data_frame(plots)
         self.create_dynamic_dashboard_statistics_frame(plots)
+        self.create_navigation_frame(self.dynamic_dashboard_frame, self.create_analytics_dashboard, plots)
 
     def create_dynamic_dashboard_title_frame(self, plots):
         title_frame = ttk.Frame(self.dynamic_dashboard_frame)
@@ -297,7 +303,7 @@ class Dashboard(object):
 
     def create_dynamic_dashboard_statistics_frame(self, plots):
         statistics_frame = ttk.Frame(self.dynamic_dashboard_frame)
-        statistics_frame.pack(fill="both", expand=True, side="bottom")
+        statistics_frame.pack(fill="both", expand=True, side="top")
         plots_statistics = plots.get_plots_statistics()
         row_index = 0
         column_index = 0
