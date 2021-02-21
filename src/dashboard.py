@@ -32,14 +32,16 @@ class Dashboard(object):
         widgets_style.configure("Vertical.TScrollbar", background="white")
 
     def create_frames(self, master):
-        self.portal_dashboard_frame = ttk.Frame(master)
-        self.main_dashboard_frame = ttk.Frame(master)
-        self.data_by_board_dashboard_frame = ttk.Frame(master)
-        self.deaths_data_dashboard_frame = ttk.Frame(master)
-        self.trends_in_daily_data_dashboard_frame = ttk.Frame(master)
-        self.analytics_dashboard_frame = ttk.Frame(master)
-        self.dynamic_dashboard_frame = ttk.Frame(master)
-        self.models_dashboard_frame = ttk.Frame(master)
+        self.main_frame = ttk.Frame(master)
+        self.main_frame.pack(fill="both", expand=True)
+        self.portal_dashboard_frame = ttk.Frame(self.main_frame)
+        self.main_dashboard_frame = ttk.Frame(self.main_frame)
+        self.data_by_board_dashboard_frame = ttk.Frame(self.main_frame)
+        self.deaths_data_dashboard_frame = ttk.Frame(self.main_frame)
+        self.trends_in_daily_data_dashboard_frame = ttk.Frame(self.main_frame)
+        self.analytics_dashboard_frame = ttk.Frame(self.main_frame)
+        self.dynamic_dashboard_frame = ttk.Frame(self.main_frame)
+        self.models_dashboard_frame = ttk.Frame(self.main_frame)
 
     def create_portal_dashboard(self):
         self.initialize_frame(self.portal_dashboard_frame)
@@ -54,17 +56,21 @@ class Dashboard(object):
         start_button.grid(padx=10, pady=10, row=1, column=0, sticky="nesw")
         self.configure_grid_layout(self.portal_dashboard_frame)
     
-    def create_navigation_frame(self, frame, back_button_command):
-        navigation_frame = ttk.Frame(frame)
+    def create_navigation_frame(self, current_frame, previous_frame):
+        navigation_frame = ttk.Frame(current_frame)
         navigation_frame.pack()
         back_button = ttk.Button(navigation_frame)
         back_button["text"] = "BACK"
-        back_button["command"] = back_button_command
+        back_button["command"] = self.create_portal_dashboard
         back_button.pack(side="left")
         quit_button = ttk.Button(navigation_frame)
         quit_button["text"] = "QUIT"
-        quit_button["command"] = frame.quit
+        quit_button["command"] = current_frame.quit
         quit_button.pack(side="right")
+
+    def show_previous_frame(self, current_frame, previous_frame):
+        previous_frame.pack(fill="both", expand=True)
+        current_frame.forget()
 
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
@@ -94,7 +100,7 @@ class Dashboard(object):
             else:
                 column_index = 1
         self.configure_grid_layout(buttons_frame)
-        self.create_navigation_frame(self.main_dashboard_frame, self.create_portal_dashboard)
+        self.create_navigation_frame(self.main_dashboard_frame, self.portal_dashboard_frame)
 
     def create_plots_dashboard(self, frame):
         self.initialize_frame(frame)
@@ -106,7 +112,7 @@ class Dashboard(object):
             plots = TrendsInDailyDataPlots()
         plots_buttons_info = plots.get_plots_info()
         self.create_plots_dashboard_buttons(frame, plots_buttons_info)
-        self.create_navigation_frame(frame, partial(self.main_dashboard_frame, self.get_main_dashboard_buttons_info()))
+        self.create_navigation_frame(frame, self.main_dashboard_frame)
 
     def create_plots_dashboard_buttons(self, frame, buttons):
         row_index = 0
@@ -176,6 +182,13 @@ class Dashboard(object):
         plots_button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
         plots_button.pack()
 
+    def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
+        if plots_style == "None":
+            plots_style = None
+        if plots_palette == "None":
+            plots_palette = None
+        return plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
+
     def create_models_dashboard_plots_types_frame(self, plots):
         plots_types_frame = ttk.Frame(self.models_dashboard_frame)
         plots_types_frame.pack(fill="both", expand=True, side="top")
@@ -230,13 +243,6 @@ class Dashboard(object):
         radio_button["variable"] = radio_buttons_var
         radio_button["value"] = value
         radio_button.pack(side="left")
-
-    def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
-        if plots_style == "None":
-            plots_style = None
-        if plots_palette == "None":
-            plots_palette = None
-        return plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
 
     def create_dynamic_dashboard(self, plots):
         self.initialize_frame(self.dynamic_dashboard_frame)
@@ -312,6 +318,8 @@ class Dashboard(object):
                   self.analytics_dashboard_frame, self.dynamic_dashboard_frame, self.models_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
+            for widget in frame.winfo_children():
+                widget.destroy()
 
     def configure_grid_layout(self, frame):
         grid_size = tk.Grid.size(frame)
