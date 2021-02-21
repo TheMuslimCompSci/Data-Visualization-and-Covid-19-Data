@@ -38,7 +38,6 @@ class Dashboard(object):
         self.deaths_data_dashboard_frame = ttk.Frame(master)
         self.trends_in_daily_data_dashboard_frame = ttk.Frame(master)
         self.analytics_dashboard_frame = ttk.Frame(master)
-        self.plots_types_dashboard_frame = ttk.Frame(master)
         self.data_dashboard_frame = ttk.Frame(master)
         self.models_dashboard_frame = ttk.Frame(master)
 
@@ -138,59 +137,48 @@ class Dashboard(object):
 
     def create_models_dashboard(self, plots):
         self.initialize_frame(self.models_dashboard_frame)
-
         plots_types_frame = ttk.Frame(self.models_dashboard_frame)
         plots_types_frame.pack(fill="both", expand=True, side="top")
         plots_types = plots.get_plots_types_list()
-        plots_type = tk.StringVar()
-        plots_type.set("default")
-        for type in plots_types:
-            radio_button = ttk.Radiobutton(plots_types_frame)
-            radio_button["text"] = type
-            radio_button["variable"] = plots_type
-            radio_button["value"] = type
-            radio_button.pack(side="left")
+        plots_type = self.create_models_dashboard_radio_buttons(plots_types_frame, "default", plots_types)
 
         plots_styles_frame = ttk.Frame(self.models_dashboard_frame)
         plots_styles_frame.pack(fill="both", expand=True, side="top")
         PLOTS_STYLES = plots.get_plots_styles_list()
-        plots_style = tk.StringVar()
-        plots_style.set("None")
-        for text, style in PLOTS_STYLES:
-            radio_button = ttk.Radiobutton(plots_styles_frame)
-            radio_button["text"] = text
-            radio_button["variable"] = plots_style
-            radio_button["value"] = style
-            radio_button.pack(side="left")
+        plots_style = self.create_models_dashboard_radio_buttons(plots_styles_frame, "None",  PLOTS_STYLES)
 
         plots_contexts_frame = ttk.Frame(self.models_dashboard_frame)
         plots_contexts_frame.pack(fill="both", expand=True, side="top")
         PLOTS_CONTEXTS = plots.get_plots_contexts_list()
-        plots_context = tk.StringVar()
-        plots_context.set("notebook")
-        for text, context in PLOTS_CONTEXTS:
-            radio_button = ttk.Radiobutton(plots_contexts_frame)
-            radio_button["text"] = text
-            radio_button["variable"] = plots_context
-            radio_button["value"] = context
-            radio_button.pack(side="left")
+        plots_context = self.create_models_dashboard_radio_buttons(plots_contexts_frame, "notebook",  PLOTS_CONTEXTS)
 
         plots_palettes_frame = ttk.Frame(self.models_dashboard_frame)
         plots_palettes_frame.pack(fill="both", expand=True, side="top")
         PLOTS_PALETTES = plots.get_plots_palettes_list()
-        plots_palette = tk.StringVar()
-        plots_palette.set("None")
-        for text, palette in PLOTS_PALETTES:
-            radio_button = ttk.Radiobutton(plots_palettes_frame)
-            radio_button["text"] = text
-            radio_button["variable"] = plots_palette
-            radio_button["value"] = palette
-            radio_button.pack(side="left")
+        plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "None", PLOTS_PALETTES)
 
         button = ttk.Button(plots_palettes_frame)
         button["text"] = "Plot"
         button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
         button.pack()
+
+    def create_models_dashboard_radio_buttons(self, frame, radio_buttons_var_default, radio_buttons):
+        radio_buttons_var = tk.StringVar()
+        radio_buttons_var.set(radio_buttons_var_default)
+        if type(radio_buttons[0]) is tuple:
+            for text, value in radio_buttons:
+                self.create_radio_buttons_from_iterable(frame, text, radio_buttons_var, value)
+        else:
+            for text in radio_buttons:
+                self.create_radio_buttons_from_iterable(frame, text, radio_buttons_var, text)
+        return radio_buttons_var
+
+    def create_radio_buttons_from_iterable(self, frame, text, radio_buttons_var, value):
+        radio_button = ttk.Radiobutton(frame)
+        radio_button["text"] = text
+        radio_button["variable"] = radio_buttons_var
+        radio_button["value"] = value
+        radio_button.pack(side="left")
 
     def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
         if plots_style == "None":
