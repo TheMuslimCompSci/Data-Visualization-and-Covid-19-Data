@@ -83,11 +83,15 @@ class Dashboard(object):
         self.initialize_frame(self.main_dashboard_frame)
         buttons_frame = ttk.Frame(self.main_dashboard_frame)
         buttons_frame.pack(fill="both", expand=True)
+        self.create_buttons_from_iterable(buttons_frame, buttons_info.items())
+        self.create_navigation_frame(self.main_dashboard_frame, self.create_portal_dashboard, None)
+
+    def create_buttons_from_iterable(self, frame, buttons):
         row_index = 0
         column_index = 0
         counter = 0
-        for button_text, button_command in buttons_info.items():
-            button = ttk.Button(buttons_frame)
+        for button_text, button_command in buttons:
+            button = ttk.Button(frame)
             button["text"] = button_text
             button["command"] = button_command
             button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
@@ -98,8 +102,8 @@ class Dashboard(object):
                 column_index = 0
             else:
                 column_index = 1
-        self.configure_grid_layout(buttons_frame)
-        self.create_navigation_frame(self.main_dashboard_frame, self.create_portal_dashboard, None)
+        self.configure_grid_layout(frame)
+
 
     def create_plots_dashboard(self, frame):
         self.initialize_frame(frame)
@@ -155,22 +159,7 @@ class Dashboard(object):
         }
         buttons_frame = ttk.Frame(self.analytics_dashboard_frame)
         buttons_frame.pack(fill="both", expand=True, side="top")
-        row_index = 0
-        column_index = 0
-        counter = 0
-        for button_text, button_command in buttons_info.items():
-            button = ttk.Button(buttons_frame)
-            button["text"] = button_text
-            button["command"] = button_command
-            button.grid(padx=5, pady=5, row=row_index, column=column_index, sticky="nesw")
-            counter += 1
-            if counter % 2 == 0:
-                row_index += 1
-            if column_index == 1:
-                column_index = 0
-            else:
-                column_index = 1
-        self.configure_grid_layout(buttons_frame)
+        self.create_buttons_from_iterable(buttons_frame, buttons_info.items())
         create_plots_dashboard = None
         if type(plots) is DataByBoardPlots:
             create_plots_dashboard = self.create_data_by_board_dashboard
