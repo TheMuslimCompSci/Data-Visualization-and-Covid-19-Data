@@ -137,30 +137,56 @@ class Dashboard(object):
 
     def create_models_dashboard(self, plots):
         self.initialize_frame(self.models_dashboard_frame)
+        plots_type = self.create_models_dashboard_plots_types_frame(plots)
+        plots_style = self.create_models_dashboard_plots_styles_frame(plots)
+        plots_context = self.create_models_dashboard_plots_contexts_frame(plots)
+        plots_palette = self.create_models_dashboard_plots_palettes_frame(plots)
+        plots_button_frame = ttk.Frame(self.models_dashboard_frame)
+        plots_button_frame.pack(fill="both", expand=True, side="top")
+        plots_button = ttk.Button(plots_button_frame)
+        plots_button["text"] = "Plot"
+        plots_button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
+        plots_button.pack()
+
+    def create_models_dashboard_plots_types_frame(self, plots):
         plots_types_frame = ttk.Frame(self.models_dashboard_frame)
         plots_types_frame.pack(fill="both", expand=True, side="top")
+        plots_types_label = ttk.Label(plots_types_frame)
+        plots_types_label["text"] = "Select a plot type:"
+        plots_types_label.pack(side="top")
         plots_types = plots.get_plots_types_list()
         plots_type = self.create_models_dashboard_radio_buttons(plots_types_frame, "default", plots_types)
+        return plots_type
 
+    def create_models_dashboard_plots_styles_frame(self, plots):
         plots_styles_frame = ttk.Frame(self.models_dashboard_frame)
         plots_styles_frame.pack(fill="both", expand=True, side="top")
+        plots_styles_label = ttk.Label(plots_styles_frame)
+        plots_styles_label["text"] = "Select a plot context:"
+        plots_styles_label.pack(side="top")
         PLOTS_STYLES = plots.get_plots_styles_list()
-        plots_style = self.create_models_dashboard_radio_buttons(plots_styles_frame, "None",  PLOTS_STYLES)
+        plots_style = self.create_models_dashboard_radio_buttons(plots_styles_frame, "notebook",  PLOTS_STYLES)
+        return plots_style
 
+    def create_models_dashboard_plots_contexts_frame(self, plots):
         plots_contexts_frame = ttk.Frame(self.models_dashboard_frame)
         plots_contexts_frame.pack(fill="both", expand=True, side="top")
+        plots_contexts_label = ttk.Label(plots_contexts_frame)
+        plots_contexts_label["text"] = "Select a plot context:"
+        plots_contexts_label.pack(side="top")
         PLOTS_CONTEXTS = plots.get_plots_contexts_list()
         plots_context = self.create_models_dashboard_radio_buttons(plots_contexts_frame, "notebook",  PLOTS_CONTEXTS)
+        return plots_context
 
+    def create_models_dashboard_plots_palettes_frame(self, plots):
         plots_palettes_frame = ttk.Frame(self.models_dashboard_frame)
         plots_palettes_frame.pack(fill="both", expand=True, side="top")
+        plots_palettes_label = ttk.Label(plots_palettes_frame)
+        plots_palettes_label["text"] = "Select a plot context:"
+        plots_palettes_label.pack(side="top")
         PLOTS_PALETTES = plots.get_plots_palettes_list()
-        plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "None", PLOTS_PALETTES)
-
-        button = ttk.Button(plots_palettes_frame)
-        button["text"] = "Plot"
-        button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
-        button.pack()
+        plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "notebook",  PLOTS_PALETTES)
+        return plots_palette
 
     def create_models_dashboard_radio_buttons(self, frame, radio_buttons_var_default, radio_buttons):
         radio_buttons_var = tk.StringVar()
