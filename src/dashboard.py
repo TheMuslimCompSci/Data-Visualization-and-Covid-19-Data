@@ -13,8 +13,7 @@ class Dashboard(object):
         master.state("zoomed")
         self.configure_widgets_style()
         self.create_frames(master)
-        self.dashboard_buttons_info = self.get_main_dashboard_buttons_info()
-        self.create_main_dashboard(self.dashboard_buttons_info)
+        self.create_portal_dashboard()
 
     def configure_widgets_style(self):
         widgets_style = ttk.Style()
@@ -33,14 +32,29 @@ class Dashboard(object):
         widgets_style.configure("Vertical.TScrollbar", background="white")
 
     def create_frames(self, master):
+        self.portal_dashboard_frame = ttk.Frame(master)
         self.main_dashboard_frame = ttk.Frame(master)
         self.data_by_board_dashboard_frame = ttk.Frame(master)
         self.deaths_data_dashboard_frame = ttk.Frame(master)
         self.trends_in_daily_data_dashboard_frame = ttk.Frame(master)
         self.analytics_dashboard_frame = ttk.Frame(master)
-        self.data_dashboard_frame = ttk.Frame(master)
+        self.dynamic_dashboard_frame = ttk.Frame(master)
         self.models_dashboard_frame = ttk.Frame(master)
 
+    def create_portal_dashboard(self):
+        self.initialize_frame(self.portal_dashboard_frame)
+        welcome_text = "COVID-19 Data Visualization App"
+        welcome_label = ttk.Label(self.portal_dashboard_frame)
+        welcome_label["text"] = welcome_text
+        welcome_label.grid(row=0, column=0)
+        main_dashboard_buttons_info = self.get_main_dashboard_buttons_info()
+        start_button = ttk.Button(self.portal_dashboard_frame)
+        start_button["text"] = "START"
+        start_button["command"] = partial(self.create_main_dashboard, main_dashboard_buttons_info)
+        start_button.grid(padx=10, pady=10, row=1, column=0, sticky="nesw")
+        self.configure_grid_layout(self.portal_dashboard_frame)
+
+    
     def get_main_dashboard_buttons_info(self):
         buttons_info = {
             "Data By Board Dashboard": self.create_data_by_board_dashboard,
@@ -116,7 +130,7 @@ class Dashboard(object):
         self.initialize_frame(self.analytics_dashboard_frame)
         buttons_info = {
             "Plot": partial(self.create_models_dashboard, plots),
-            "Data": partial(self.create_data_dashboard, plots),
+            "Data": partial(self.create_dynamic_dashboard, plots),
         }
         row_index = 0
         column_index = 0
@@ -151,9 +165,7 @@ class Dashboard(object):
     def create_models_dashboard_plots_types_frame(self, plots):
         plots_types_frame = ttk.Frame(self.models_dashboard_frame)
         plots_types_frame.pack(fill="both", expand=True, side="top")
-        plots_types_label = ttk.Label(plots_types_frame)
-        plots_types_label["text"] = "Select a plot type:"
-        plots_types_label.pack(side="top")
+        self.create_label(plots_types_frame, "Select a plot type:")
         plots_types = plots.get_plots_types_list()
         plots_type = self.create_models_dashboard_radio_buttons(plots_types_frame, "default", plots_types)
         return plots_type
@@ -161,9 +173,7 @@ class Dashboard(object):
     def create_models_dashboard_plots_styles_frame(self, plots):
         plots_styles_frame = ttk.Frame(self.models_dashboard_frame)
         plots_styles_frame.pack(fill="both", expand=True, side="top")
-        plots_styles_label = ttk.Label(plots_styles_frame)
-        plots_styles_label["text"] = "Select a plot context:"
-        plots_styles_label.pack(side="top")
+        self.create_label(plots_styles_frame, "Select a plot style:")
         PLOTS_STYLES = plots.get_plots_styles_list()
         plots_style = self.create_models_dashboard_radio_buttons(plots_styles_frame, "notebook",  PLOTS_STYLES)
         return plots_style
@@ -171,9 +181,7 @@ class Dashboard(object):
     def create_models_dashboard_plots_contexts_frame(self, plots):
         plots_contexts_frame = ttk.Frame(self.models_dashboard_frame)
         plots_contexts_frame.pack(fill="both", expand=True, side="top")
-        plots_contexts_label = ttk.Label(plots_contexts_frame)
-        plots_contexts_label["text"] = "Select a plot context:"
-        plots_contexts_label.pack(side="top")
+        self.create_label(plots_contexts_frame, "Select a plot context:")
         PLOTS_CONTEXTS = plots.get_plots_contexts_list()
         plots_context = self.create_models_dashboard_radio_buttons(plots_contexts_frame, "notebook",  PLOTS_CONTEXTS)
         return plots_context
@@ -181,12 +189,15 @@ class Dashboard(object):
     def create_models_dashboard_plots_palettes_frame(self, plots):
         plots_palettes_frame = ttk.Frame(self.models_dashboard_frame)
         plots_palettes_frame.pack(fill="both", expand=True, side="top")
-        plots_palettes_label = ttk.Label(plots_palettes_frame)
-        plots_palettes_label["text"] = "Select a plot context:"
-        plots_palettes_label.pack(side="top")
+        self.create_label(plots_palettes_frame, "Select a plot palette:")
         PLOTS_PALETTES = plots.get_plots_palettes_list()
         plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "notebook",  PLOTS_PALETTES)
         return plots_palette
+
+    def create_label(self, frame, text):
+        label = ttk.Label(frame)
+        label["text"] = text
+        label.pack(side="top")
 
     def create_models_dashboard_radio_buttons(self, frame, radio_buttons_var_default, radio_buttons):
         radio_buttons_var = tk.StringVar()
@@ -213,22 +224,20 @@ class Dashboard(object):
             plots_palette = None
         return plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
 
-    def create_data_dashboard(self, plots):
-        self.initialize_frame(self.data_dashboard_frame)
-        self.create_data_dashboard_title_frame(plots)
-        self.create_data_dashboard_data_frame(plots)
-        self.create_data_dashboard_statistics_frame(plots)
+    def create_dynamic_dashboard(self, plots):
+        self.initialize_frame(self.dynamic_dashboard_frame)
+        self.create_dynamic_dashboard_title_frame(plots)
+        self.create_dynamic_dashboard_data_frame(plots)
+        self.create_dynamic_dashboard_statistics_frame(plots)
 
-    def create_data_dashboard_title_frame(self, plots):
-        title_frame = ttk.Frame(self.data_dashboard_frame)
+    def create_dynamic_dashboard_title_frame(self, plots):
+        title_frame = ttk.Frame(self.dynamic_dashboard_frame)
         title_frame.pack()
         plots_title = plots.get_plots_title()
-        title_label = ttk.Label(title_frame)
-        title_label["text"] = plots_title
-        title_label.pack()
+        self.create_label(title_frame, plots_title)
 
-    def create_data_dashboard_data_frame(self, plots):
-        data_frame = ttk.Frame(self.data_dashboard_frame)
+    def create_dynamic_dashboard_data_frame(self, plots):
+        data_frame = ttk.Frame(self.dynamic_dashboard_frame)
         data_frame.pack(fill="both", expand=True, side="top")
         y_scrollbar = ttk.Scrollbar(data_frame, orient="vertical")
         y_scrollbar.pack(side="right", fill="y")
@@ -259,8 +268,8 @@ class Dashboard(object):
                 data.insert(parent="", index="end", values=row, tags=(">=1000",))
         data.pack(fill="both", expand=True)
 
-    def create_data_dashboard_statistics_frame(self, plots):
-        statistics_frame = ttk.Frame(self.data_dashboard_frame)
+    def create_dynamic_dashboard_statistics_frame(self, plots):
+        statistics_frame = ttk.Frame(self.dynamic_dashboard_frame)
         statistics_frame.pack(fill="both", expand=True, side="bottom")
         plots_statistics = plots.get_plots_statistics()
         row_index = 0
@@ -284,9 +293,9 @@ class Dashboard(object):
         frame.pack(fill="both", expand=True)
 
     def hide_all_frames(self):
-        frames = [self.main_dashboard_frame, self.data_by_board_dashboard_frame, self.deaths_data_dashboard_frame,
-                  self.trends_in_daily_data_dashboard_frame, self.analytics_dashboard_frame, self.data_dashboard_frame,
-                  self.models_dashboard_frame]
+        frames = [self.portal_dashboard_frame, self.main_dashboard_frame, self.data_by_board_dashboard_frame, 
+                  self.deaths_data_dashboard_frame, self.trends_in_daily_data_dashboard_frame, 
+                  self.analytics_dashboard_frame, self.dynamic_dashboard_frame, self.models_dashboard_frame]
         for frame in frames:
             frame.pack_forget()
 
