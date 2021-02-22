@@ -8,14 +8,15 @@ from functools import partial
 
 class Dashboard(object):
 
-    def __init__(self, master, button_plots):
+    def __init__(self, master):
         master.title("COVID-19 Data Visualization App")
         master.state("zoomed")
         self.configure_widgets_style()
         self.create_frames(master)
         self.create_portal_dashboard()
 
-    def configure_widgets_style(self):
+    @staticmethod
+    def configure_widgets_style():
         widgets_style = ttk.Style()
         widgets_style.theme_use("clam")
         widgets_style.configure(".", font=("Arial", 12))
@@ -56,7 +57,8 @@ class Dashboard(object):
         start_button.grid(padx=10, pady=10, row=1, column=0, sticky="nesw")
         self.configure_grid_layout(self.portal_dashboard_frame)
     
-    def create_navigation_frame(self, current_frame, create_previous_dashboard, previous_dashboard_arg):
+    @staticmethod
+    def create_navigation_frame(current_frame, create_previous_dashboard, previous_dashboard_arg):
         navigation_frame = ttk.Frame(current_frame)
         navigation_frame.pack()
         back_button = ttk.Button(navigation_frame)
@@ -108,6 +110,7 @@ class Dashboard(object):
         self.initialize_frame(frame)
         plots_buttons_frame = ttk.Frame(frame)
         plots_buttons_frame.pack(fill="both", expand=True, side="top")
+        plots = None
         if frame == self.data_by_board_dashboard_frame:
             plots = DataByBoardPlots()
         elif frame == self.deaths_data_dashboard_frame:
@@ -122,6 +125,7 @@ class Dashboard(object):
         row_index = 0
         column_index = 0
         counter = 0
+        button_plots = None
         for button_text, button_command_values in buttons.items():
             button = ttk.Button(frame)
             button["text"] = button_text
@@ -178,11 +182,13 @@ class Dashboard(object):
         plots_button_frame.pack(fill="both", expand=True, side="top")
         plots_button = ttk.Button(plots_button_frame)
         plots_button["text"] = "Plot"
-        plots_button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(), plots_context.get(), plots_palette.get())
+        plots_button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(),
+                                                                    plots_context.get(), plots_palette.get())
         plots_button.pack()
         self.create_navigation_frame(self.models_dashboard_frame, self.create_analytics_dashboard, plots)
 
-    def plots_button_clicked(self, plots, plots_type, plots_style, plots_context, plots_palette):
+    @staticmethod
+    def plots_button_clicked(plots, plots_type, plots_style, plots_context, plots_palette):
         if plots_style == "None":
             plots_style = None
         if plots_palette == "None":
@@ -221,7 +227,8 @@ class Dashboard(object):
         plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "notebook",  PLOTS_PALETTES)
         return plots_palette
 
-    def create_label(self, frame, text):
+    @staticmethod
+    def create_label(frame, text):
         label = ttk.Label(frame)
         label["text"] = text
         label.pack(side="top")
@@ -237,7 +244,8 @@ class Dashboard(object):
                 self.create_radio_buttons_from_iterable(frame, text, radio_buttons_var, text)
         return radio_buttons_var
 
-    def create_radio_buttons_from_iterable(self, frame, text, radio_buttons_var, value):
+    @staticmethod
+    def create_radio_buttons_from_iterable(frame, text, radio_buttons_var, value):
         radio_button = ttk.Radiobutton(frame)
         radio_button["text"] = text
         radio_button["variable"] = radio_buttons_var
@@ -322,7 +330,8 @@ class Dashboard(object):
             for widget in frame.winfo_children():
                 widget.destroy()
 
-    def configure_grid_layout(self, frame):
+    @staticmethod
+    def configure_grid_layout(frame):
         grid_size = tk.Grid.size(frame)
         for i in range(grid_size[0]):
             tk.Grid.columnconfigure(frame, index=i, weight=1)
