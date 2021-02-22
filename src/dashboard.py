@@ -104,7 +104,6 @@ class Dashboard(object):
                 column_index = 1
         self.configure_grid_layout(frame)
 
-
     def create_plots_dashboard(self, frame):
         self.initialize_frame(frame)
         plots_buttons_frame = ttk.Frame(frame)
@@ -338,8 +337,3 @@ class Dashboard(object):
 
     def create_trends_in_daily_data_dashboard(self):
         self.create_plots_dashboard(self.trends_in_daily_data_dashboard_frame)
-
-
-root = tk.Tk()
-app = Dashboard(root, None)
-root.mainloop()
