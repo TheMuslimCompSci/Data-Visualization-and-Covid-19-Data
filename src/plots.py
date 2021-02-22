@@ -13,7 +13,8 @@ class Plots(object):
         self.plots_axis_column_index = plots_axis_column_index
         self.plots_ylabel = plots_ylabel
 
-    def set_plots_styling(self, plots_style, plots_context, plots_palette):
+    @staticmethod
+    def set_plots_styling(plots_style, plots_context, plots_palette):
         plt.close("all")
         sns.set_style(plots_style)
         sns.set_context(plots_context)
@@ -39,7 +40,8 @@ class Plots(object):
         plots_statistics = PlotsStatistics(plots_data, plot_axis_column_index, self.plots_ylabel)
         return plots_statistics.get_plots_statistics()
 
-    def get_plots_styles_list(self):
+    @staticmethod
+    def get_plots_styles_list():
         PLOTS_STYLES = [
             ("default", "None"),
             ("dark grid", "darkgrid"),
@@ -50,7 +52,8 @@ class Plots(object):
         ]
         return PLOTS_STYLES
 
-    def get_plots_contexts_list(self):
+    @staticmethod
+    def get_plots_contexts_list():
         PLOTS_CONTEXTS = [
             ("default", "notebook"),
             ("paper", "paper"),
@@ -59,7 +62,8 @@ class Plots(object):
         ]
         return PLOTS_CONTEXTS
 
-    def get_plots_palettes_list(self):
+    @staticmethod
+    def get_plots_palettes_list():
         PLOTS_PALETTES = [
             ("default", "None"),
             ("deep", "deep"),

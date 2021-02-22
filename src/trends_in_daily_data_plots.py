@@ -7,7 +7,8 @@ from plots import Plots
 
 class TrendsInDailyDataPlots(Plots):
 
-    def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_y_values=None, plots_type=None, plots_types_list=None, plots_axis_column_index=None):
+    def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_y_values=None,
+                 plots_type=None, plots_types_list=None, plots_axis_column_index=None):
         self.plots_path = plots_path
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
@@ -17,7 +18,8 @@ class TrendsInDailyDataPlots(Plots):
         self.plots_types_list = plots_types_list
         self.plots_axis_column_index = plots_axis_column_index
 
-    def get_plots_info(self):
+    @staticmethod
+    def get_plots_info():
         plots_info = {
             "NHS 24": ["../Trends in daily COVID-19 data 22 July 2020/Table 1 - NHS 24.csv",
                        "Daily number of calls to NHS24 111 and the Coronavirus helpline",
@@ -41,13 +43,15 @@ class TrendsInDailyDataPlots(Plots):
                                       "Number of Attendances (total and COVID-19 suspected)",
                                       "Number of attendances", [y * 200 for y in range(1, 11)],
                                       ["Number of attendances", "Number of COVID-19 suspected attendances"], "line",
-                                      ["default", "kde", "box", "violin", "histogram"], "Number of COVID-19 suspected attendances"],
+                                      ["default", "kde", "box", "violin", "histogram"],
+                                      "Number of COVID-19 suspected attendances"],
 
             "Ambulance To Hospital": ["../Trends in daily COVID-19 data 22 July 2020/Table 3 - Ambulance.csv",
                                       "Number of suspected COVID-19 patients taken to hospital by ambulance",
                                       "Number of patients", [y * 50 for y in range(1, 9)],
                                       "Number of suspected COVID-19 patients taken to hospital", "line",
-                                      ["default", "kde", "box", "violin", "histogram"], "Number of suspected COVID-19 patients taken to hospital"],
+                                      ["default", "kde", "box", "violin", "histogram"],
+                                      "Number of suspected COVID-19 patients taken to hospital"],
 
             "Delayed Discharges": ["../Trends in daily COVID-19 data 22 July 2020/Table 4 - Delayed Discharges.csv",
                                    "Daily Delayed Discharges",
@@ -83,13 +87,15 @@ class TrendsInDailyDataPlots(Plots):
                            "Daily number of new suspected Covid-19 cases reported in Scottish adult care homes",
                            "Number of cases", [y * 50 for y in range(1, 6)],
                            "Daily number of new suspected COVID-19 cases in adult care homes", "bar",
-                           ["default", "kde", "box", "violin", "histogram"], "Daily number of new suspected COVID-19 cases in adult care homes"],
+                           ["default", "kde", "box", "violin", "histogram"],
+                           "Daily number of new suspected COVID-19 cases in adult care homes"],
 
             "Deaths": ["../Trends in daily COVID-19 data 22 July 2020/Table 8 - Deaths.csv",
                        "Number of COVID-19 confirmed deaths registered to date",
                        "Number of deaths", [y * 500 for y in range(1, 7)],
                        "Number of COVID-19 confirmed deaths registered to date", "line",
-                       ["default", "kde", "box", "violin", "histogram"], "Number of COVID-19 confirmed deaths registered to date"],
+                       ["default", "kde", "box", "violin", "histogram"],
+                       "Number of COVID-19 confirmed deaths registered to date"],
         }
         return plots_info
 
@@ -97,27 +103,34 @@ class TrendsInDailyDataPlots(Plots):
         self.set_plots_styling(plots_style, plots_context, plots_palette)
         plots_data = pd.read_csv(self.plots_path)
         plots_titles = self.get_plots_info()
+        ax = None
+        dates = None
         if self.plots_ylabel == plots_titles["Care Homes"][2]:
             if self.plots_title == plots_titles["Daily Positive Cases"][1]:
                 ax = self.create_daily_positive_cases_plot(plots_data, plots_type)
             elif self.plots_title == plots_titles["Care Homes"][1]:
                 ax = self.create_care_homes_plot(plots_data, plots_type)
         else:
-            if self.plots_ylabel == plots_titles["People Tested"][2] or self.plots_ylabel == plots_titles["Workforce"][2]:
+            if self.plots_ylabel == plots_titles["People Tested"][2] \
+                    or self.plots_ylabel == plots_titles["Workforce"][2]:
                 if self.plots_title == plots_titles["People Tested"][1]:
                     ax = self.create_people_tested_plot(plots_data, plots_type)
                 elif self.plots_title == plots_titles["Workforce"][1]:
                     ax = self.create_workforce_plot(plots_data, plots_type)
             else:
-                if self.plots_title == plots_titles["NHS 24"][1] or self.plots_title == plots_titles["Ambulance Attendances"][1]:
+                if self.plots_title == plots_titles["NHS 24"][1] \
+                        or self.plots_title == plots_titles["Ambulance Attendances"][1]:
                     plot = self.create_double_line_plot(plots_data, plots_type)
                     ax = plot[0]
                     dates = plot[1]
-                if self.plots_title == plots_titles["Hospital Confirmed"][1] or self.plots_title == plots_titles["Hospital Care (ICU)"][1]:
+                if self.plots_title == plots_titles["Hospital Confirmed"][1] \
+                        or self.plots_title == plots_titles["Hospital Care (ICU)"][1]:
                     plot = self.create_hospital_care_plot(plots_data, plots_type)
                     ax = plot[0]
                     dates = plot[1]
-                elif self.plots_title == plots_titles["Ambulance To Hospital"][1] or self.plots_title == plots_titles["Delayed Discharges"][1] or self.plots_title == plots_titles["Deaths"][1]:
+                elif self.plots_title == plots_titles["Ambulance To Hospital"][1] \
+                        or self.plots_title == plots_titles["Delayed Discharges"][1] \
+                        or self.plots_title == plots_titles["Deaths"][1]:
                     plot = self.create_single_line_plot(plots_data, plots_type)
                     ax = plot[0]
                     dates = plot[1]
@@ -152,6 +165,7 @@ class TrendsInDailyDataPlots(Plots):
 
     def create_single_line_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
+        ax = None
         if plots_type == "default":
             ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values)
         elif plots_type == "kde" or plots_type == "histogram":
@@ -172,6 +186,7 @@ class TrendsInDailyDataPlots(Plots):
 
     def create_double_line_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
+        ax = None
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values[0])
@@ -203,6 +218,7 @@ class TrendsInDailyDataPlots(Plots):
     def create_hospital_care_plot(self, plots_data, plots_type):
         confirmed_patients = plots_data.iloc[9:]
         dates = confirmed_patients["Date"].tolist()
+        ax = None
         if plots_type == "default":
             ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plots_y_values)
         elif plots_type == "kde" or plots_type == "histogram":
@@ -233,6 +249,7 @@ class TrendsInDailyDataPlots(Plots):
         people_tested_positive = plots_data[self.plots_y_values[0]].tolist()
         people_tested_negative = plots_data[self.plots_y_values[1]].tolist()
         plot = plt.subplot()
+        ax = None
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plt.bar(range(len(dates)), people_tested_positive)
@@ -268,7 +285,7 @@ class TrendsInDailyDataPlots(Plots):
         number_of_tests_nhs_labs = number_of_tests[self.plots_y_values[0]].tolist()
         number_of_tests_regional_testing_centres = number_of_tests[self.plots_y_values[1]].tolist()
         ax = plt.subplot()
-        if plots_type == "default" or plots_type == "kde" or plots_type=="histogram":
+        if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plt.bar(range(len(dates)), number_of_tests_nhs_labs)
                 plt.bar(range(len(dates)), number_of_tests_regional_testing_centres, bottom=number_of_tests_nhs_labs)
@@ -303,6 +320,7 @@ class TrendsInDailyDataPlots(Plots):
         daily_positive_cases = plots_data[self.plots_y_values].tolist()
         weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
         weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
+        plot = None
         if plots_type == "default":
             f, ax = plt.subplots(figsize=(25, 15))
             plt.subplot(1, 2, 1)
@@ -349,13 +367,17 @@ class TrendsInDailyDataPlots(Plots):
         nursing_and_midwifery_absences_average = workforce_absences_average[0]
         medical_and_dental_staff_absences_average = workforce_absences_average[1]
         other_staff_absences_average = workforce_absences_average[2]
-        other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average, medical_and_dental_staff_absences_average)
+        other_staff_absences_average_bottom = np.add(nursing_and_midwifery_absences_average,
+                                                     medical_and_dental_staff_absences_average)
         plot = plt.subplot()
-        if plots_type == "default" or plots_type == "kde" or plots_type=="histogram":
+        ax = None
+        if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
-                plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average, bottom=nursing_and_midwifery_absences_average)
-                plt.bar(range(len(weekly_dates)), other_staff_absences_average, bottom=other_staff_absences_average_bottom)
+                plt.bar(range(len(weekly_dates)), medical_and_dental_staff_absences_average,
+                        bottom=nursing_and_midwifery_absences_average)
+                plt.bar(range(len(weekly_dates)), other_staff_absences_average,
+                        bottom=other_staff_absences_average_bottom)
                 plot.set_xticks(range(len(weekly_dates)))
                 plot.set_xticklabels(weekly_dates, rotation="45")
             elif plots_type == "kde":
@@ -393,6 +415,7 @@ class TrendsInDailyDataPlots(Plots):
         care_homes_cases = plots_data[care_homes_key].tolist()
         weekly_care_home_cases = [care_homes_cases[x:x + 7] for x in range(0, len(care_homes_cases), 7)]
         weekly_care_home_cases_average = [np.average(x) for x in weekly_care_home_cases]
+        plot = None
         if plots_type == "default":
             f, ax = plt.subplots(figsize=(25, 15))
             plt.subplot(1, 2, 1)

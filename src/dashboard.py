@@ -208,7 +208,7 @@ class Dashboard(object):
         plots_styles_frame.pack(fill="both", expand=True, side="top")
         self.create_label(plots_styles_frame, "Select a plot style:")
         PLOTS_STYLES = plots.get_plots_styles_list()
-        plots_style = self.create_models_dashboard_radio_buttons(plots_styles_frame, "notebook",  PLOTS_STYLES)
+        plots_style = self.create_models_dashboard_radio_buttons(plots_styles_frame, "None",  PLOTS_STYLES)
         return plots_style
 
     def create_models_dashboard_plots_contexts_frame(self, plots):
@@ -224,7 +224,7 @@ class Dashboard(object):
         plots_palettes_frame.pack(fill="both", expand=True, side="top")
         self.create_label(plots_palettes_frame, "Select a plot palette:")
         PLOTS_PALETTES = plots.get_plots_palettes_list()
-        plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "notebook",  PLOTS_PALETTES)
+        plots_palette = self.create_models_dashboard_radio_buttons(plots_palettes_frame, "None",  PLOTS_PALETTES)
         return plots_palette
 
     @staticmethod

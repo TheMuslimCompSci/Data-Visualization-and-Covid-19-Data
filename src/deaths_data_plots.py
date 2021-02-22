@@ -7,7 +7,8 @@ from plots import Plots
 
 class DeathsDataPlots(Plots):
 
-    def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_y_values=None, plots_types_list=None, plots_axis_column_index=None):
+    def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_y_values=None,
+                 plots_types_list=None, plots_axis_column_index=None):
         self.plots_path = plots_path
         self.plots_title = plots_title
         self.plots_ylabel = plots_ylabel
@@ -16,7 +17,8 @@ class DeathsDataPlots(Plots):
         self.plots_types_list = plots_types_list
         self.plots_axis_column_index = plots_axis_column_index
 
-    def get_plots_info(self):
+    @staticmethod
+    def get_plots_info():
         plots_info = {
             "Cumulative Deaths": ["../covid deaths data week 30/Figure 1 data.csv",
                                   "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
@@ -25,7 +27,8 @@ class DeathsDataPlots(Plots):
 
             "Cumulative Deaths Different Data": ["../covid deaths data week 30/Figure 2 data.csv",
                                                  "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020",
-                                                 "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Cumulative Count",
+                                                 "Cumulative number of deaths", [y * 500 for y in range(1, 10)],
+                                                 "Cumulative Count",
                                                  ["default", "kde", "box", "violin", "histogram"], "Cumulative Count"],
 
             "COVID Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
@@ -45,7 +48,8 @@ class DeathsDataPlots(Plots):
 
             "Deaths By Week": ["../covid deaths data week 30/Figure 5 data.csv",
                                "Deaths by week of registration, Scotland, 2020",
-                               "Number of deaths", [y * 500 for y in range(1, 6)], ["Total deaths 2020", "Average for previous 5 years", "COVID-19 deaths 2020"],
+                               "Number of deaths", [y * 500 for y in range(1, 6)],
+                               ["Total deaths 2020", "Average for previous 5 years", "COVID-19 deaths 2020"],
                                ["default", "kde", "box", "violin", "histogram"], "COVID-19 deaths 2020"],
 
             "Deaths By Cause": ["../covid deaths data week 30/Figure 6 data.csv",
@@ -60,8 +64,12 @@ class DeathsDataPlots(Plots):
 
             "Deaths By Date Of Death vs Date Of Registration": ["../covid deaths data week 30/Figure 8 data.csv",
                                                                 "Deaths involving COVID-19, date of death vs date of registration",
-                                                                "Cumulative number of deaths", [y * 500 for y in range(1, 10)], ["Cumulative deaths by date of death", "Cumulative deaths by date of registration"],
-                                                                ["default", "kde", "box", "violin", "histogram"], "Cumulative deaths by date of registration"]
+                                                                "Cumulative number of deaths",
+                                                                [y * 500 for y in range(1, 10)],
+                                                                ["Cumulative deaths by date of death",
+                                                                 "Cumulative deaths by date of registration"],
+                                                                ["default", "kde", "box", "violin", "histogram"],
+                                                                "Cumulative deaths by date of registration"]
         }
         return plots_info
 
@@ -69,6 +77,9 @@ class DeathsDataPlots(Plots):
         self.set_plots_styling(plots_style, plots_context, plots_palette)
         plots_data = pd.read_csv(self.plots_path)
         plots_titles = self.get_plots_info()
+        ax = None
+        dates = None
+        plot = None
         if self.plots_title == plots_titles["Deaths By Cause"][1]:
             plot = self.create_death_by_cause_plot(plots_data, plots_type)
         else:
@@ -90,7 +101,8 @@ class DeathsDataPlots(Plots):
                     ax.set_xticks(weekly_dates)
                     ax.set_xticklabels(weekly_dates, rotation="vertical")
             elif self.plots_ylabel == "Number of deaths":
-                if self.plots_title == plots_titles["COVID Deaths By Age"][1] or self.plots_title == plots_titles["All Deaths By Age"][1]:
+                if self.plots_title == plots_titles["COVID Deaths By Age"][1] \
+                        or self.plots_title == plots_titles["All Deaths By Age"][1]:
                     ax = self.create_deaths_by_age_plot(plots_data, plots_type)
                 elif self.plots_title == plots_titles["Deaths By Board"][1]:
                     ax = self.create_deaths_by_board_plot(plots_data, plots_type)
@@ -107,6 +119,7 @@ class DeathsDataPlots(Plots):
 
     def create_cumulative_deaths_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
+        ax = None
         if plots_type == "default":
             ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values)
         elif plots_type == "kde" or plots_type == "histogram":
@@ -128,8 +141,8 @@ class DeathsDataPlots(Plots):
     def create_cumulative_deaths_different_data_plot(self, plots_data, plots_type):
         hps_source_data = plots_data.iloc[:int(len(plots_data) / 2)]
         nrs_source_data = plots_data.iloc[int(len(plots_data) / 2):]
-        print(hps_source_data)
         dates = hps_source_data["Date"].tolist()
+        ax = None
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plots_y_values)
@@ -159,6 +172,7 @@ class DeathsDataPlots(Plots):
         return plot
 
     def create_deaths_by_age_plot(self, plots_data, plots_type):
+        plot = None
         if plots_type == "default":
             plot = sns.barplot(data=plots_data, x="Age group", y=self.plots_y_values)
         elif plots_type == "kde":
@@ -178,6 +192,7 @@ class DeathsDataPlots(Plots):
         return plot
 
     def create_deaths_by_board_plot(self, plots_data, plots_type):
+        plot = None
         if plots_type == "default":
             plot = sns.barplot(data=plots_data, x="Health board", y=self.plots_y_values)
             health_boards = plots_data["Health board"].tolist()
@@ -201,6 +216,7 @@ class DeathsDataPlots(Plots):
 
     def create_death_by_week_plot(self, plots_data, plots_type):
         week_numbers = plots_data["Week number"].tolist()
+        plot = None
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plot = sns.lineplot(data=plots_data, x="Week number", y=self.plots_y_values[0])
@@ -222,8 +238,10 @@ class DeathsDataPlots(Plots):
         else:
             rows = len(week_numbers)
             deaths_data = pd.DataFrame({
-                "label": [self.plots_y_values[0]] * rows + [self.plots_y_values[1]] * rows + [self.plots_y_values[2]] * rows,
-                "value": np.concatenate([plots_data[self.plots_y_values[0]], plots_data[self.plots_y_values[1]], plots_data[self.plots_y_values[2]]])
+                "label": [self.plots_y_values[0]] * rows + [self.plots_y_values[1]] * rows +
+                         [self.plots_y_values[2]] * rows,
+                "value": np.concatenate([plots_data[self.plots_y_values[0]], plots_data[self.plots_y_values[1]],
+                                         plots_data[self.plots_y_values[2]]])
             })
             if plots_type == "box":
                 plot = sns.boxplot(data=deaths_data, x="label", y="value")
@@ -234,20 +252,30 @@ class DeathsDataPlots(Plots):
         return plot
 
     def create_death_by_cause_plot(self, plots_data, plots_type):
-        plots_values = self.format_death_by_cause_data(plots_data, plots_type)
+        plots_values = self.format_death_by_cause_data(plots_data)
         registered_deaths_2020_list = plots_values[0]
         registered_deaths_five_year_avg_list = plots_values[1]
         location_of_death_list = plots_values[2]
         cause_of_death_list = plots_values[3]
         if plots_type == "default":
-            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020", plots_type, plots_data)
-            plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, five year average", plots_type, plots_data)
+            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list,
+                                                   cause_of_death_list,
+                                                   "Deaths by underlying cause of death and location, week 12 to 30, 2020",
+                                                   plots_type, plots_data)
+            plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list,
+                                                   cause_of_death_list,
+                                                   "Deaths by underlying cause of death and location, five year average",
+                                                   plots_type, plots_data)
         else:
-            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list, cause_of_death_list, "Deaths by underlying cause of death and location, week 12 to 30, 2020", plots_type, plots_data)
+            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list,
+                                                   cause_of_death_list,
+                                                   "Deaths by underlying cause of death and location, week 12 to 30, 2020",
+                                                   plots_type, plots_data)
         plt.subplots_adjust(wspace=1, hspace=1)
         return plot
 
-    def format_death_by_cause_data(self, plots_data, plots_type):
+    @staticmethod
+    def format_death_by_cause_data(plots_data):
         cause_of_death_column = plots_data["Location of death"]
         cause_of_death_column = cause_of_death_column.iloc[6:13]
         cause_of_death_column_list = cause_of_death_column.tolist()
@@ -260,16 +288,20 @@ class DeathsDataPlots(Plots):
         location_of_death_list = location_of_death_columns * 7
         registered_deaths_five_year_avg_covid_19_row = pd.DataFrame([[0, 0, 0, 0]], columns=location_of_death_columns)
         registered_deaths_five_year_avg_data = location_of_death_data.iloc[0:6]
-        registered_deaths_five_year_avg_data = registered_deaths_five_year_avg_data.append(registered_deaths_five_year_avg_covid_19_row, ignore_index=True)
+        registered_deaths_five_year_avg_data = registered_deaths_five_year_avg_data.append(
+            registered_deaths_five_year_avg_covid_19_row, ignore_index=True)
         registered_deaths_five_year_avg_list = registered_deaths_five_year_avg_data.values.tolist()
-        registered_deaths_five_year_avg_list = [item for sublist in registered_deaths_five_year_avg_list for item in sublist]
+        registered_deaths_five_year_avg_list = [item for sublist in registered_deaths_five_year_avg_list
+                                                for item in sublist]
         registered_deaths_2020_data = location_of_death_data.iloc[6:13]
         registered_deaths_2020_list = registered_deaths_2020_data.values.tolist()
         registered_deaths_2020_list = [item for sublist in registered_deaths_2020_list for item in sublist]
-        plots_values = [registered_deaths_2020_list, registered_deaths_five_year_avg_list, location_of_death_list, cause_of_death_list]
+        plots_values = [registered_deaths_2020_list, registered_deaths_five_year_avg_list, location_of_death_list,
+                        cause_of_death_list]
         return plots_values
 
-    def format_death_by_cause_plot(self, subplots_index, plots_x_values, plots_y_values, plots_hue, plots_title, plots_type, plots_data):
+    def format_death_by_cause_plot(self, subplots_index, plots_x_values, plots_y_values, plots_hue, plots_title,
+                                   plots_type, plots_data):
         if plots_type == "default":
             plt.subplot(1, 2, subplots_index)
             ax = sns.barplot(x=plots_x_values, y=plots_y_values, hue=plots_hue)
@@ -281,7 +313,6 @@ class DeathsDataPlots(Plots):
         else:
             f, ax = plt.subplots(figsize=(25, 15))
             locations = plots_data.columns.tolist()
-            locations_totals = []
             causes_labels = plots_data["Location of death"].iloc[6:13]
             causes_labels.drop([11], inplace=True)
             locations_causes_labels = causes_labels.values.tolist()
@@ -310,6 +341,7 @@ class DeathsDataPlots(Plots):
         home_deaths = home_deaths[1:]
         hospital_deaths = plots_data.loc[2].values.tolist()
         hospital_deaths = hospital_deaths[1:]
+        plot = None
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plot = sns.lineplot(x=week_numbers, y=care_home_deaths)
@@ -349,6 +381,7 @@ class DeathsDataPlots(Plots):
 
     def create_deaths_by_dates_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
+        ax = None
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values[0])
