@@ -1,7 +1,5 @@
 # This is the main Python script for the program.
 
-# This provides a simple way of launching the app.
-
 
 import tkinter as tk
 from dashboard import Dashboard
