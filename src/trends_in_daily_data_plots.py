@@ -5,6 +5,10 @@ import numpy as np
 from plots import Plots
 
 
+"""TrendsInDailyPlots is one of 3 child classes of Plots. It builds and displays the visualizations for each dataset.
+"""
+
+
 class TrendsInDailyDataPlots(Plots):
 
     def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_y_values=None,
@@ -18,6 +22,8 @@ class TrendsInDailyDataPlots(Plots):
         self.plots_types_list = plots_types_list
         self.plots_axis_column_index = plots_axis_column_index
 
+    # Get iterable with information for each plot: file path, title, y axis label, ticks and values, type, available
+    # types and the column in dataset with the plot data.
     @staticmethod
     def get_plots_info():
         plots_info = {
@@ -99,12 +105,15 @@ class TrendsInDailyDataPlots(Plots):
         }
         return plots_info
 
+    # Build the visualization and display it on screen.
     def create_visualization(self, plots_type, plots_style, plots_context, plots_palette):
         self.set_plots_styling(plots_style, plots_context, plots_palette)
         plots_data = pd.read_csv(self.plots_path)
         plots_titles = self.get_plots_info()
+        # Initialize plots variables.
         ax = None
         dates = None
+        # Invoke plotting method corresponding to given plot information.
         if self.plots_ylabel == plots_titles["Care Homes"][2]:
             if self.plots_title == plots_titles["Daily Positive Cases"][1]:
                 ax = self.create_daily_positive_cases_plot(plots_data, plots_type)
@@ -120,7 +129,7 @@ class TrendsInDailyDataPlots(Plots):
             else:
                 if self.plots_title == plots_titles["NHS 24"][1] \
                         or self.plots_title == plots_titles["Ambulance Attendances"][1]:
-                    plot = self.create_double_line_plot(plots_data, plots_type)
+                    plot = self.create_double_variable_plot(plots_data, plots_type)
                     ax = plot[0]
                     dates = plot[1]
                 if self.plots_title == plots_titles["Hospital Confirmed"][1] \
@@ -131,7 +140,7 @@ class TrendsInDailyDataPlots(Plots):
                 elif self.plots_title == plots_titles["Ambulance To Hospital"][1] \
                         or self.plots_title == plots_titles["Delayed Discharges"][1] \
                         or self.plots_title == plots_titles["Deaths"][1]:
-                    plot = self.create_single_line_plot(plots_data, plots_type)
+                    plot = self.create_single_variable_plot(plots_data, plots_type)
                     ax = plot[0]
                     dates = plot[1]
                 elif self.plots_title == plots_titles["Number Of Tests"][1]:
@@ -157,15 +166,18 @@ class TrendsInDailyDataPlots(Plots):
             sns.despine(top=True, right=True)
         plt.show()
 
+    # Configure labels, ticks, grid and spine of plot axis.
     def format_plots_axis(self, plot):
         plot.set_yticks(self.plots_yticks)
         plot.set_ylabel(self.plots_ylabel)
         plot.yaxis.grid(True)
         sns.despine(top=True, right=True)
 
-    def create_single_line_plot(self, plots_data, plots_type):
+    # Build visualization for univariate data.
+    def create_single_variable_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values)
         elif plots_type == "kde" or plots_type == "histogram":
@@ -184,9 +196,11 @@ class TrendsInDailyDataPlots(Plots):
         plot = [ax, dates]
         return plot
 
-    def create_double_line_plot(self, plots_data, plots_type):
+    # Build visualization for bivariate data.
+    def create_double_variable_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values[0])
@@ -215,10 +229,12 @@ class TrendsInDailyDataPlots(Plots):
         plot = [ax, dates]
         return plot
 
+    # Build visualization for Hospital Care datasets.
     def create_hospital_care_plot(self, plots_data, plots_type):
         confirmed_patients = plots_data.iloc[9:]
         dates = confirmed_patients["Date"].tolist()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             ax = sns.barplot(data=confirmed_patients, x="Date", y=self.plots_y_values)
         elif plots_type == "kde" or plots_type == "histogram":
@@ -243,6 +259,7 @@ class TrendsInDailyDataPlots(Plots):
         plot = [ax, dates]
         return plot
 
+    # Build visualization for People Tested dataset.
     def create_people_tested_plot(self, plots_data, plots_type):
         dates = plots_data["Date notified"].tolist()
         dates[1::2] = ["" for date in dates[1::2]]
@@ -250,6 +267,7 @@ class TrendsInDailyDataPlots(Plots):
         people_tested_negative = plots_data[self.plots_y_values[1]].tolist()
         plot = plt.subplot()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plt.bar(range(len(dates)), people_tested_positive)
@@ -279,12 +297,14 @@ class TrendsInDailyDataPlots(Plots):
             ax.set_xlabel("Result")
         return plot
 
+    # Build visualization for Number Of Tests dataset.
     def create_number_of_tests_plot(self, plots_data, plots_type):
         number_of_tests = plots_data.iloc[30:]
         dates = number_of_tests["Date notified"].tolist()
         number_of_tests_nhs_labs = number_of_tests[self.plots_y_values[0]].tolist()
         number_of_tests_regional_testing_centres = number_of_tests[self.plots_y_values[1]].tolist()
         ax = plt.subplot()
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plt.bar(range(len(dates)), number_of_tests_nhs_labs)
@@ -313,6 +333,7 @@ class TrendsInDailyDataPlots(Plots):
         plot = [ax, dates]
         return plot
 
+    # Build visualization for Daily Positive Cases dataset.
     def create_daily_positive_cases_plot(self, plots_data, plots_type):
         dates = plots_data["Date notified"].tolist()
         weekly_dates = [""] * len(dates)
@@ -321,6 +342,7 @@ class TrendsInDailyDataPlots(Plots):
         weekly_positive_cases = [daily_positive_cases[x:x + 7] for x in range(0, len(daily_positive_cases), 7)]
         weekly_positive_cases_average = [np.average(x) for x in weekly_positive_cases]
         plot = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             f, ax = plt.subplots(figsize=(25, 15))
             plt.subplot(1, 2, 1)
@@ -354,11 +376,13 @@ class TrendsInDailyDataPlots(Plots):
             sns.despine(top=True, right=True)
         return plot
 
+    # Build visualization for Workforce dataset.
     def create_workforce_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
         weekly_dates = dates[::7]
         absences = plots_data.columns.tolist()
         workforce_absences_average = []
+        # Calculate weekly averages for all staff absences data.
         for i in range(1, len(absences)):
             staff_absences = plots_data[absences[i]].tolist()
             weekly_staff_absences = [staff_absences[x:x + 7] for x in range(0, len(staff_absences), 7)]
@@ -371,6 +395,7 @@ class TrendsInDailyDataPlots(Plots):
                                                      medical_and_dental_staff_absences_average)
         plot = plt.subplot()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plt.bar(range(len(weekly_dates)), nursing_and_midwifery_absences_average)
@@ -407,6 +432,7 @@ class TrendsInDailyDataPlots(Plots):
             ax.set_xlabel("Staff")
         return plot
 
+    # Build visualization for Care Homes dataset.
     def create_care_homes_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
         x_values = [""] * len(dates)
@@ -416,6 +442,7 @@ class TrendsInDailyDataPlots(Plots):
         weekly_care_home_cases = [care_homes_cases[x:x + 7] for x in range(0, len(care_homes_cases), 7)]
         weekly_care_home_cases_average = [np.average(x) for x in weekly_care_home_cases]
         plot = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             f, ax = plt.subplots(figsize=(25, 15))
             plt.subplot(1, 2, 1)

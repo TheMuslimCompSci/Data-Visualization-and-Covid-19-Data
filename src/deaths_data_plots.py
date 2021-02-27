@@ -4,6 +4,9 @@ import seaborn as sns
 import numpy as np
 from plots import Plots
 
+"""DeathsDataPlots is one of 3 child classes of Plots. It builds and displays the visualizations for each dataset.
+"""
+
 
 class DeathsDataPlots(Plots):
 
@@ -17,6 +20,8 @@ class DeathsDataPlots(Plots):
         self.plots_types_list = plots_types_list
         self.plots_axis_column_index = plots_axis_column_index
 
+    # Get iterable with information for each plot: file path, title, y axis label, ticks and values, available types and
+    # the column in dataset with the plot data.
     @staticmethod
     def get_plots_info():
         plots_info = {
@@ -73,15 +78,18 @@ class DeathsDataPlots(Plots):
         }
         return plots_info
 
+    # Build the visualization and display it on screen.
     def create_visualization(self, plots_type, plots_style, plots_context, plots_palette):
         self.set_plots_styling(plots_style, plots_context, plots_palette)
         plots_data = pd.read_csv(self.plots_path)
         plots_titles = self.get_plots_info()
+        # Initialize plots variables.
         ax = None
         dates = None
         plot = None
+        # Invoke plotting method corresponding to given plot information.
         if self.plots_title == plots_titles["Deaths By Cause"][1]:
-            plot = self.create_death_by_cause_plot(plots_data, plots_type)
+            plot = self.create_deaths_by_cause_plot(plots_data, plots_type)
         else:
             if self.plots_ylabel == "Cumulative number of deaths":
                 if self.plots_title == plots_titles["Cumulative Deaths"][1]:
@@ -107,9 +115,9 @@ class DeathsDataPlots(Plots):
                 elif self.plots_title == plots_titles["Deaths By Board"][1]:
                     ax = self.create_deaths_by_board_plot(plots_data, plots_type)
                 elif self.plots_title == plots_titles["Deaths By Week"][1]:
-                    ax = self.create_death_by_week_plot(plots_data, plots_type)
+                    ax = self.create_deaths_by_week_plot(plots_data, plots_type)
                 elif self.plots_title == plots_titles["Deaths By Location"][1]:
-                    ax = self.create_death_by_location_plot(plots_data, plots_type)
+                    ax = self.create_deaths_by_location_plot(plots_data, plots_type)
             if plots_type == "default":
                 ax.set_yticks(self.plots_yticks)
                 ax.set_ylabel(self.plots_ylabel)
@@ -117,9 +125,11 @@ class DeathsDataPlots(Plots):
             sns.despine(top=True, right=True)
         plt.show()
 
+    # Build visualization for Cumulative Deaths dataset.
     def create_cumulative_deaths_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values)
         elif plots_type == "kde" or plots_type == "histogram":
@@ -138,11 +148,13 @@ class DeathsDataPlots(Plots):
         plot = [ax, dates]
         return plot
 
+    # Build visualization for Cumulative Deaths Different Data dataset.
     def create_cumulative_deaths_different_data_plot(self, plots_data, plots_type):
         hps_source_data = plots_data.iloc[:int(len(plots_data) / 2)]
         nrs_source_data = plots_data.iloc[int(len(plots_data) / 2):]
         dates = hps_source_data["Date"].tolist()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 ax = sns.lineplot(data=hps_source_data, x="Date", y=self.plots_y_values)
@@ -171,8 +183,10 @@ class DeathsDataPlots(Plots):
         plot = [ax, dates]
         return plot
 
+    # Build visualization for Deaths By Age dataset.
     def create_deaths_by_age_plot(self, plots_data, plots_type):
         plot = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             plot = sns.barplot(data=plots_data, x="Age group", y=self.plots_y_values)
         elif plots_type == "kde":
@@ -191,8 +205,10 @@ class DeathsDataPlots(Plots):
             plot.set_ylabel(self.plots_ylabel)
         return plot
 
+    # Build visualization for Deaths By Board dataset.
     def create_deaths_by_board_plot(self, plots_data, plots_type):
         plot = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             plot = sns.barplot(data=plots_data, x="Health board", y=self.plots_y_values)
             health_boards = plots_data["Health board"].tolist()
@@ -214,9 +230,11 @@ class DeathsDataPlots(Plots):
             plot.set_ylabel(self.plots_ylabel)
         return plot
 
-    def create_death_by_week_plot(self, plots_data, plots_type):
+    # Build visualization for Deaths By Week dataset.
+    def create_deaths_by_week_plot(self, plots_data, plots_type):
         week_numbers = plots_data["Week number"].tolist()
         plot = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plot = sns.lineplot(data=plots_data, x="Week number", y=self.plots_y_values[0])
@@ -251,31 +269,35 @@ class DeathsDataPlots(Plots):
             plot.set_ylabel(self.plots_ylabel)
         return plot
 
-    def create_death_by_cause_plot(self, plots_data, plots_type):
-        plots_values = self.format_death_by_cause_data(plots_data)
+    # Build visualization for Deaths By Cause dataset.
+    def create_deaths_by_cause_plot(self, plots_data, plots_type):
+        plots_values = self.format_deaths_by_cause_data(plots_data)
         registered_deaths_2020_list = plots_values[0]
         registered_deaths_five_year_avg_list = plots_values[1]
         location_of_death_list = plots_values[2]
         cause_of_death_list = plots_values[3]
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
-            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list,
-                                                   cause_of_death_list,
-                                                   "Deaths by underlying cause of death and location, week 12 to 30, 2020",
-                                                   plots_type, plots_data)
-            plot = self.format_death_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list,
-                                                   cause_of_death_list,
-                                                   "Deaths by underlying cause of death and location, five year average",
-                                                   plots_type, plots_data)
+            plot = self.format_deaths_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list,
+                                                    cause_of_death_list,
+                                                    "Deaths by underlying cause of death and location, week 12 to 30, 2020",
+                                                    plots_type, plots_data)
+            plot = self.format_deaths_by_cause_plot(2, registered_deaths_five_year_avg_list, location_of_death_list,
+                                                    cause_of_death_list,
+                                                    "Deaths by underlying cause of death and location, five year average",
+                                                    plots_type, plots_data)
         else:
-            plot = self.format_death_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list,
-                                                   cause_of_death_list,
-                                                   "Deaths by underlying cause of death and location, week 12 to 30, 2020",
-                                                   plots_type, plots_data)
+            plot = self.format_deaths_by_cause_plot(1, registered_deaths_2020_list, location_of_death_list,
+                                                    cause_of_death_list,
+                                                    "Deaths by underlying cause of death and location, week 12 to 30, 2020",
+                                                    plots_type, plots_data)
         plt.subplots_adjust(wspace=1, hspace=1)
         return plot
 
+    # Prepare data in Deaths By Week dataset for plotting.
     @staticmethod
-    def format_death_by_cause_data(plots_data):
+    def format_deaths_by_cause_data(plots_data):
+        # Format data in dataset for each variable in plot.
         cause_of_death_column = plots_data["Location of death"]
         cause_of_death_column = cause_of_death_column.iloc[6:13]
         cause_of_death_column_list = cause_of_death_column.tolist()
@@ -300,8 +322,10 @@ class DeathsDataPlots(Plots):
                         cause_of_death_list]
         return plots_values
 
-    def format_death_by_cause_plot(self, subplots_index, plots_x_values, plots_y_values, plots_hue, plots_title,
-                                   plots_type, plots_data):
+    # Prepare plots in Deaths By Week dataset.
+    def format_deaths_by_cause_plot(self, subplots_index, plots_x_values, plots_y_values, plots_hue, plots_title,
+                                    plots_type, plots_data):
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default":
             plt.subplot(1, 2, subplots_index)
             ax = sns.barplot(x=plots_x_values, y=plots_y_values, hue=plots_hue)
@@ -328,11 +352,11 @@ class DeathsDataPlots(Plots):
                 plt.title(location)
                 counter += 1
             f.suptitle(self.plots_title)
-
         sns.despine(top=True, right=True)
         return ax
 
-    def create_death_by_location_plot(self, plots_data, plots_type):
+    # Build visualization for Deaths By Location dataset.
+    def create_deaths_by_location_plot(self, plots_data, plots_type):
         week_numbers = plots_data.columns.tolist()
         week_numbers = week_numbers[1:]
         care_home_deaths = plots_data.loc[0].values.tolist()
@@ -342,6 +366,7 @@ class DeathsDataPlots(Plots):
         hospital_deaths = plots_data.loc[2].values.tolist()
         hospital_deaths = hospital_deaths[1:]
         plot = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 plot = sns.lineplot(x=week_numbers, y=care_home_deaths)
@@ -379,9 +404,11 @@ class DeathsDataPlots(Plots):
             plot.set_ylabel(self.plots_ylabel)
         return plot
 
+    # Build visualization for Deaths By Dates dataset.
     def create_deaths_by_dates_plot(self, plots_data, plots_type):
         dates = plots_data["Date"].tolist()
         ax = None
+        # Invoke plotting method corresponding to given plot type.
         if plots_type == "default" or plots_type == "kde" or plots_type == "histogram":
             if plots_type == "default":
                 ax = sns.lineplot(data=plots_data, x="Date", y=self.plots_y_values[0])

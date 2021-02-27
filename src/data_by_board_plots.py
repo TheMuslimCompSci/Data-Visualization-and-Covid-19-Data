@@ -4,6 +4,10 @@ import seaborn as sns
 from plots import Plots
 
 
+"""DataByBoardPlots is one of 3 child classes of Plots. It builds and displays the visualizations for each dataset.
+"""
+
+
 class DataByBoardPlots(Plots):
 
     def __init__(self, plots_path=None, plots_title=None, plots_ylabel=None, plots_yticks=None, plots_types_list=None,
@@ -15,6 +19,8 @@ class DataByBoardPlots(Plots):
         self.plots_types_list = plots_types_list
         self.plots_axis_column_index = plots_axis_column_index
 
+    # Get iterable with information for each plot: file path, title, y axis label and ticks, available types and the
+    # column in dataset with the plot data.
     @staticmethod
     def get_plots_info():
         plots_info = {
@@ -45,14 +51,17 @@ class DataByBoardPlots(Plots):
         }
         return plots_info
 
+    # Build the visualization and display it on screen.
     def create_visualization(self, plots_type, plots_style, plots_context, plots_palette):
+        # Configure plots style, context, palette and size
         self.set_plots_styling(plots_style, plots_context, plots_palette)
+        f, ax = plt.subplots(figsize=(25, 15))
         plots_data = pd.read_csv(self.plots_path)
         boards = plots_data.columns.tolist()
         dates = plots_data["Date"].tolist()
         weekly_dates = [""] * len(dates)
         weekly_dates[::7] = dates[::7]
-        f, ax = plt.subplots(figsize=(25, 15))
+        # Implementation of pie chart.
         if plots_type == "pie":
             board_totals = []
             for i in range(1, len(boards) - 1):
@@ -71,21 +80,27 @@ class DataByBoardPlots(Plots):
                 plt.subplot(4, 4, i)
                 if plots_type == "default":
                     if self.plots_ylabel == "Cumulative Cases":
+                        # Implementation of line plot.
                         ax = sns.lineplot(data=plots_data, x="Date", y=board)
                     else:
+                        # Implementation of bar plot.
                         ax = sns.barplot(data=plots_data, x="Date", y=board)
                     ax.axes.xaxis.set_ticklabels([])
                     ax.set_ylabel(self.plots_ylabel)
                 elif plots_type == "kde" or plots_type == "histogram":
                     if plots_type == "kde":
+                        # Implementation of KDE plot.
                         ax = sns.kdeplot(data=plots_data[board], shade=True)
                     elif plots_type == "histogram":
+                        # Implementation of histogram.
                         ax = sns.histplot(data=plots_data[board])
                     ax.set_xlabel(self.plots_ylabel)
                 else:
                     if plots_type == "box":
+                        # Implementation of box plot.
                         ax = sns.boxplot(data=plots_data[board])
                     elif plots_type == "violin":
+                        # Implementation of violin plot.
                         ax = sns.violinplot(data=plots_data[board])
                     ax.axes.xaxis.set_ticks([])
                     ax.set_ylabel(self.plots_ylabel)
