@@ -2,7 +2,7 @@
 
 
 import tkinter as tk
-from dashboard import Dashboard
+from .dashboard import Dashboard
 
 # Launch the COVID-19 Data Visualization App
 def launch_app():
