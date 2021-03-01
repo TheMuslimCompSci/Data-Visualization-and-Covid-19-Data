@@ -1,7 +1,8 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
-from .plots_statistics import PlotsStatistics
+from src.main.plots_statistics import PlotsStatistics
+
 
 """Plots is the parent class of the 3 plots classes with static methods to set the styling of plots and accessor methods
 to get various plot parameters. 
