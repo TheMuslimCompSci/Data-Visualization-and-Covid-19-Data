@@ -88,44 +88,42 @@ class TestPlots(unittest.TestCase):
 
     def test_create_cumulative_deaths_plot(self):
         with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+            self.deaths_data_plots.create_cumulative_deaths_plot(range(10), "test type")
 
     def test_create_cumulative_deaths_different_data_plot(self):
-        with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+        with self.assertRaises(AttributeError):
+            self.deaths_data_plots.create_cumulative_deaths_different_data_plot(range(10), "test type")
 
     def test_create_deaths_by_age_plot(self):
-        with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+        with self.assertRaises(AttributeError):
+            self.deaths_data_plots.create_deaths_by_age_plot(range(10), "test type")
 
     def test_create_deaths_by_board_plot(self):
-        with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+        with self.assertRaises(AttributeError):
+            self.deaths_data_plots.create_deaths_by_board_plot(range(10), "test type")
 
     def test_create_deaths_by_week_plot(self):
         with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+            self.deaths_data_plots.create_deaths_by_week_plot(range(10), "test type")
 
     def test_create_deaths_by_cause_plot(self):
         with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+            self.deaths_data_plots.create_deaths_by_cause_plot(range(10), "test type")
 
     def test_format_deaths_by_cause_data(self):
         with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+            self.deaths_data_plots.format_deaths_by_cause_data(range(10))
 
     def test_format_deaths_by_cause_plot(self):
         with self.assertRaises(AttributeError):
             self.deaths_data_plots.format_deaths_by_cause_plot(1, range(10), range(20), range(30), "test title",
                                                                "test type", range(100))
-        with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
 
-    def test_deaths_by_location_plot(self):
-        with self.assertRaises(TypeError):
-            self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
+    def test_create_deaths_by_location_plot(self):
+        with self.assertRaises(AttributeError):
+            self.deaths_data_plots.create_deaths_by_location_plot(range(10), "test type")
 
-    def test_deaths_by_dates_plot(self):
+    def test_create_deaths_by_dates_plot(self):
         with self.assertRaises(TypeError):
             self.deaths_data_plots.create_deaths_by_dates_plot(range(10), "test type")
 
