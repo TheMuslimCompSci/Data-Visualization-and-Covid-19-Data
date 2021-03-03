@@ -25,49 +25,49 @@ class DeathsDataPlots(Plots):
     @staticmethod
     def get_plots_info():
         plots_info = {
-            "Cumulative Deaths": ["../covid deaths data week 30/Figure 1 data.csv",
+            "Cumulative Deaths": ["../../covid deaths data week 30/Figure 1 data.csv",
                                   "Cumulative number of deaths involving COVID-19 by date of registration, Scotland, 2020",
                                   "Cumulative number of deaths", [y * 500 for y in range(1, 10)], "Count",
                                   ["default", "kde", "box", "violin", "histogram"], "Count"],
 
-            "Cumulative Deaths Different Data": ["../covid deaths data week 30/Figure 2 data.csv",
+            "Cumulative Deaths Different Data": ["../../covid deaths data week 30/Figure 2 data.csv",
                                                  "Cumulative number of deaths involving COVID-19 in Scotland using different data sources 2020",
                                                  "Cumulative number of deaths", [y * 500 for y in range(1, 10)],
                                                  "Cumulative Count",
                                                  ["default", "kde", "box", "violin", "histogram"], "Cumulative Count"],
 
-            "COVID Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
+            "COVID Deaths By Age": ["../../covid deaths data week 30/Figure 3a and 3b data.csv",
                                     "COVID-19 deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
                                     "Number of deaths", [y * 200 for y in range(1, 11)], "Covid deaths to date",
                                     ["default", "kde", "box", "violin", "histogram", "pie"], "Covid deaths to date"],
 
-            "All Deaths By Age": ["../covid deaths data week 30/Figure 3a and 3b data.csv",
+            "All Deaths By Age": ["../../covid deaths data week 30/Figure 3a and 3b data.csv",
                                   "All deaths registered between weeks 1 and 30, 2020 by age group, Scotland",
                                   "Number of deaths", [y * 2000 for y in range(1, 8)], "Total deaths to date",
                                   ["default", "kde", "box", "violin", "histogram", "pie"], "Total deaths to date"],
 
-            "Deaths By Board": ["../covid deaths data week 30/Figure 4 data.csv",
+            "Deaths By Board": ["../../covid deaths data week 30/Figure 4 data.csv",
                                 "COVID-19 deaths registered between weeks 1 and 30 of 2020, by health board of residence, Scotland",
                                 "Number of deaths", [y * 200 for y in range(1, 8)], "COVID-19 deaths to date",
                                 ["default", "kde", "box", "violin", "histogram", "pie"], "COVID-19 deaths to date"],
 
-            "Deaths By Week": ["../covid deaths data week 30/Figure 5 data.csv",
+            "Deaths By Week": ["../../covid deaths data week 30/Figure 5 data.csv",
                                "Deaths by week of registration, Scotland, 2020",
                                "Number of deaths", [y * 500 for y in range(1, 6)],
                                ["Total deaths 2020", "Average for previous 5 years", "COVID-19 deaths 2020"],
                                ["default", "kde", "box", "violin", "histogram"], "COVID-19 deaths 2020"],
 
-            "Deaths By Cause": ["../covid deaths data week 30/Figure 6 data.csv",
+            "Deaths By Cause": ["../../covid deaths data week 30/Figure 6 data.csv",
                                 "Excess Deaths by underlying cause of death and location, week 12 to 30, 2020",
                                 "Number of deaths", [y * 5000 for y in range(1, 6)], "",
                                 ["default", "pie"], "Hospital"],
 
-            "Deaths By Location": ["../covid deaths data week 30/Figure 7 data.csv",
+            "Deaths By Location": ["../../covid deaths data week 30/Figure 7 data.csv",
                                    "Deaths involving COVID-19 by location of death, weeks 12 to 30, 2020",
                                    "Number of deaths", [y * 50 for y in range(1, 9)], "",
                                    ["default", "kde", "box", "violin", "histogram", "pie"], "week 30"],
 
-            "Deaths By Date Of Death vs Date Of Registration": ["../covid deaths data week 30/Figure 8 data.csv",
+            "Deaths By Date Of Death vs Date Of Registration": ["../../covid deaths data week 30/Figure 8 data.csv",
                                                                 "Deaths involving COVID-19, date of death vs date of registration",
                                                                 "Cumulative number of deaths",
                                                                 [y * 500 for y in range(1, 10)],
