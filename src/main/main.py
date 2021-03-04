@@ -10,6 +10,7 @@ def launch_app():
     Dashboard(root)
     root.mainloop()
 
+
 # Gets run after Shift+F10 is pressed to execute code
 if __name__ == '__main__':
     launch_app()

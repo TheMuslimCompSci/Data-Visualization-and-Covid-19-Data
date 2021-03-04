@@ -28,12 +28,14 @@ class TestPlotsStatistics(unittest.TestCase):
              "Mean value of test: nan", "Standard Deviation value of test: nan",
              "Variance value of test: nan"]]
 
+    # Check that method passes when class is initialised correctly.
     def test_init(self):
         self.assertIs(type(self.plots_statistics), PlotsStatistics)
         self.assertIs(self.plots_statistics.plot_data, self.plot_data)
         self.assertEqual(self.plots_statistics.plot_axis_column_index, 0)
         self.assertEqual(self.plots_statistics.plot_ylabel, "test")
 
+    # Check that method passes when returned values equals expected values.
     def test_get_plots_statistics(self):
         for i in range(5):
             expected_result = self.expected_results[i]
