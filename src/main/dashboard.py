@@ -271,8 +271,6 @@ class Dashboard(object):
         plots_button_frame.pack(fill="both", expand=True, side="top")
         plots_button = ttk.Button(plots_button_frame)
         plots_button["text"] = "Plot"
-        print(type(plots_type))
-        print(type(plots_type.get()))
         plots_button["command"] = lambda: self.plots_button_clicked(plots, plots_type.get(), plots_style.get(),
                                                                     plots_context.get(), plots_palette.get())
         plots_button.pack()

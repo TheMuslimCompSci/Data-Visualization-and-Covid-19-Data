@@ -94,16 +94,12 @@ class DeathsDataPlots(Plots):
             if self.plots_ylabel == "Cumulative number of deaths":
                 if self.plots_title == plots_titles["Cumulative Deaths"][1]:
                     plot = self.create_cumulative_deaths_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
                 elif self.plots_title == plots_titles["Cumulative Deaths Different Data"][1]:
                     plot = self.create_cumulative_deaths_different_data_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
                 elif self.plots_title == plots_titles["Deaths By Date Of Death vs Date Of Registration"][1]:
                     plot = self.create_deaths_by_dates_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
+                ax = plot[0]
+                dates = plot[1]
                 weekly_dates = dates[::7]
                 if plots_type == "default":
                     ax.set_xticks(weekly_dates)

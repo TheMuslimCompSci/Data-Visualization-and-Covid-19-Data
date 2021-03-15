@@ -130,23 +130,17 @@ class TrendsInDailyDataPlots(Plots):
                 if self.plots_title == plots_titles["NHS 24"][1] \
                         or self.plots_title == plots_titles["Ambulance Attendances"][1]:
                     plot = self.create_double_variable_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
-                if self.plots_title == plots_titles["Hospital Confirmed"][1] \
+                elif self.plots_title == plots_titles["Hospital Confirmed"][1] \
                         or self.plots_title == plots_titles["Hospital Care (ICU)"][1]:
                     plot = self.create_hospital_care_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
                 elif self.plots_title == plots_titles["Ambulance To Hospital"][1] \
                         or self.plots_title == plots_titles["Delayed Discharges"][1] \
                         or self.plots_title == plots_titles["Deaths"][1]:
                     plot = self.create_single_variable_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
                 elif self.plots_title == plots_titles["Number Of Tests"][1]:
                     plot = self.create_number_of_tests_plot(plots_data, plots_type)
-                    ax = plot[0]
-                    dates = plot[1]
+                ax = plot[0]
+                dates = plot[1]
                 if self.plots_type == "line":
                     weekly_dates = dates[::7]
                     if plots_type == "default":
