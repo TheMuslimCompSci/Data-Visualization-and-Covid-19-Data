@@ -113,6 +113,7 @@ class TrendsInDailyDataPlots(Plots):
         # Initialize plots variables.
         ax = None
         dates = None
+        plot = None
         # Invoke plotting method corresponding to given plot information.
         if self.plots_ylabel == plots_titles["Care Homes"][2]:
             if self.plots_title == plots_titles["Daily Positive Cases"][1]:

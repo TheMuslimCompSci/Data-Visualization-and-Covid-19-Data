@@ -344,7 +344,7 @@ class Dashboard(object):
             plots_style = None
         if plots_palette == "None":
             plots_palette = None
-        return plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
+        plots.create_visualization(plots_type, plots_style, plots_context, plots_palette)
 
     """ ---------- Implementation of Dynamic Dashboard methods ---------- """
 
