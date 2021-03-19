@@ -403,9 +403,12 @@ class Dashboard(object):
     def create_dynamic_dashboard_statistics_frame(self, plots):
         statistics_frame = ttk.Frame(self.dynamic_dashboard_frame)
         statistics_frame.pack(fill="both", expand=True, side="top")
+        table_legend_label = ttk.Label(statistics_frame)
+        table_legend_label["text"] = "green: value < 10    yellow: 10 <= value < 100    orange: 100 <= value < 1000    red: value >= 1000"
+        table_legend_label.grid(row=0, sticky="nesw")
         plots_statistics = plots.get_plots_statistics()
         # Initialize loop counters.
-        row_index = 0
+        row_index = 1
         column_index = 0
         counter = 0
         # Create a label for each statistic and arrange in an n rows, 2 columns grid.
