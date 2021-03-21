@@ -86,7 +86,7 @@ class DataByBoardPlots(Plots):
                         # Implementation of bar plot.
                         ax = sns.barplot(data=plots_data, x="Date", y=board)
                     ax.axes.xaxis.set_ticklabels([])
-                    ax.set_ylabel(self.plots_ylabel)
+                    ax.set_ylabel("")
                 elif plots_type == "kde" or plots_type == "histogram":
                     if plots_type == "kde":
                         # Implementation of KDE plot.
@@ -94,7 +94,7 @@ class DataByBoardPlots(Plots):
                     elif plots_type == "histogram":
                         # Implementation of histogram.
                         ax = sns.histplot(data=plots_data[board])
-                    ax.set_xlabel(self.plots_ylabel)
+                    ax.set_xlabel("")
                 else:
                     if plots_type == "box":
                         # Implementation of box plot.
@@ -103,7 +103,7 @@ class DataByBoardPlots(Plots):
                         # Implementation of violin plot.
                         ax = sns.violinplot(data=plots_data[board])
                     ax.axes.xaxis.set_ticks([])
-                    ax.set_ylabel(self.plots_ylabel)
+                    ax.set_ylabel("")
                 ax.set_title(board)
             plt.subplots_adjust(wspace=1, hspace=1)
             f.suptitle(self.plots_title)

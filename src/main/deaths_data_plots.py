@@ -209,7 +209,7 @@ class DeathsDataPlots(Plots):
             plot = sns.barplot(data=plots_data, x="Health board", y=self.plots_y_values)
             health_boards = plots_data["Health board"].tolist()
             plot.set_xticks(range(len(health_boards)))
-            plot.set_xticklabels(health_boards, rotation="45")
+            plot.set_xticklabels(health_boards, rotation="vertical")
         elif plots_type == "kde":
             plot = sns.kdeplot(data=plots_data[self.plots_y_values], shade=True)
         elif plots_type == "histogram":

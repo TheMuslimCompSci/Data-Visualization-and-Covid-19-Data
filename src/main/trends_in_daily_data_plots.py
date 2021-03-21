@@ -153,7 +153,7 @@ class TrendsInDailyDataPlots(Plots):
                     weekly_dates[::7] = dates[::7]
                     if plots_type == "default":
                         ax.set_xticks(range(len(weekly_dates)))
-                        ax.set_xticklabels(weekly_dates, rotation="45")
+                        ax.set_xticklabels(weekly_dates, rotation="vertical")
             ax.set_title(self.plots_title)
             if plots_type == "default":
                 self.format_plots_axis(ax)
@@ -343,13 +343,13 @@ class TrendsInDailyDataPlots(Plots):
             plt.subplot(1, 2, 1)
             plot = sns.barplot(data=plots_data, x="Date notified", y=self.plots_y_values)
             plot.set_xticks(range(len(weekly_dates)))
-            plot.set_xticklabels(weekly_dates, rotation="45")
+            plot.set_xticklabels(weekly_dates, rotation="vertical")
             self.format_plots_axis(plot)
             plt.subplot(1, 2, 2)
             plot = sns.lineplot(x=dates[::7], y=weekly_positive_cases_average)
             plot.legend(["7 day average"])
             plot.set_xticks(dates[::7])
-            plot.set_xticklabels(dates[::7], rotation="45")
+            plot.set_xticklabels(dates[::7], rotation="vertical")
             self.format_plots_axis(plot)
             f.suptitle(self.plots_title)
         else:
@@ -399,7 +399,7 @@ class TrendsInDailyDataPlots(Plots):
                 plt.bar(range(len(weekly_dates)), other_staff_absences_average,
                         bottom=other_staff_absences_average_bottom)
                 plot.set_xticks(range(len(weekly_dates)))
-                plot.set_xticklabels(weekly_dates, rotation="45")
+                plot.set_xticklabels(weekly_dates, rotation="vertical")
             elif plots_type == "kde":
                 ax = sns.kdeplot(data=nursing_and_midwifery_absences_average, shade=True)
                 ax = sns.kdeplot(data=medical_and_dental_staff_absences_average, shade=True)
@@ -443,13 +443,13 @@ class TrendsInDailyDataPlots(Plots):
             plt.subplot(1, 2, 1)
             plot = sns.barplot(data=plots_data, x="Date", y=care_homes_key)
             plot.set_xticks(range(len(x_values)))
-            plot.set_xticklabels(x_values, rotation="45")
+            plot.set_xticklabels(x_values, rotation="vertical")
             self.format_plots_axis(plot)
             plt.subplot(1, 2, 2)
             plot = sns.lineplot(x=dates[::7], y=weekly_care_home_cases_average)
             plot.legend(["7 day average"])
             plot.set_xticks(dates[::7])
-            plot.set_xticklabels(dates[::7], rotation="45")
+            plot.set_xticklabels(dates[::7], rotation="vertical")
             self.format_plots_axis(plot)
             f.suptitle(self.plots_title)
         else:
