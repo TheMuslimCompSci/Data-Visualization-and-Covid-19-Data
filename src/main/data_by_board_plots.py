@@ -1,7 +1,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
-from src.main.plots import Plots
+from plots import Plots
 
 
 """DataByBoardPlots is one of 3 child classes of Plots. It builds and displays the visualizations for each dataset.
