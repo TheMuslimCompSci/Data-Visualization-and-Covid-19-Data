@@ -1,7 +1,9 @@
 # This is the main Python script for the program.
 import sys
+sys.path.append(".")
+
 import tkinter as tk
-from src.main.dashboard import Dashboard
+from dashboard import Dashboard
 
 # Launch the COVID-19 Data Visualization App
 def launch_app():

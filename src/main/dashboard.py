@@ -1,8 +1,11 @@
+import sys
+sys.path.append(".")
+
 import tkinter as tk
 from tkinter import ttk
-from .data_by_board_plots import DataByBoardPlots
-from .deaths_data_plots import DeathsDataPlots
-from .trends_in_daily_data_plots import TrendsInDailyDataPlots
+from data_by_board_plots import DataByBoardPlots
+from deaths_data_plots import DeathsDataPlots
+from trends_in_daily_data_plots import TrendsInDailyDataPlots
 from functools import partial
 
 
