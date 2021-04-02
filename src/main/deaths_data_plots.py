@@ -1,11 +1,8 @@
-import sys
-sys.path.append(".")
-
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import numpy as np
-from plots import Plots
+from .plots import Plots
 
 """DeathsDataPlots is one of 3 child classes of Plots. It builds and displays the visualizations for each dataset.
 """

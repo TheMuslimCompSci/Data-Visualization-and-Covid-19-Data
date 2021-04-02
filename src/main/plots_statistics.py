@@ -1,6 +1,3 @@
-import sys
-sys.path.append(".")
-
 import numpy as np
 
 """PlotsStatistics is a small utility class with a static method to calculate numerous statistical metrics for a given 
