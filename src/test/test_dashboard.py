@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+
 import unittest
 import tkinter as tk
-from src.main.dashboard import Dashboard
+from main.dashboard import Dashboard
 
 
 class TestDashboard(unittest.TestCase):

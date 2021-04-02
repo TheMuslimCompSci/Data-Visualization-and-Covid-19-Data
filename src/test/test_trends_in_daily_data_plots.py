@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+
 import unittest
 import pandas as pd
-from src.main.trends_in_daily_data_plots import TrendsInDailyDataPlots
+from main.trends_in_daily_data_plots import TrendsInDailyDataPlots
 
 
 class TestTrendsInDailyDataPlots(unittest.TestCase):

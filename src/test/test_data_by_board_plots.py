@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+
 import unittest
 import pandas as pd
-from src.main.data_by_board_plots import DataByBoardPlots
+from main.data_by_board_plots import DataByBoardPlots
 
 
 class TestDataByBoardPlots(unittest.TestCase):

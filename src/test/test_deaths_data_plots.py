@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+
 import unittest
 import pandas as pd
-from src.main.deaths_data_plots import DeathsDataPlots
+from main.deaths_data_plots import DeathsDataPlots
 
 
 class TestDeathsDataPlots(unittest.TestCase):

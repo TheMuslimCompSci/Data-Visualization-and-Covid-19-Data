@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+
 import unittest
 import pandas as pd
-from src.main.plots import Plots
+from main.plots import Plots
 
 
 class TestPlots(unittest.TestCase):

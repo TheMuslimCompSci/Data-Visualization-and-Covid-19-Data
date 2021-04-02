@@ -1,5 +1,7 @@
 # This is the main Python script for the program.
 
+import sys
+sys.path.append(".")
 
 import tkinter as tk
 from dashboard import Dashboard

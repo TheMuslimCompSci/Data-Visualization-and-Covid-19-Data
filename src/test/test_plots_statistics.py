@@ -1,7 +1,10 @@
+import sys
+sys.path.append("..")
+
 import unittest
 import pandas as pd
 import numpy as np
-from src.main.plots_statistics import PlotsStatistics
+from main.plots_statistics import PlotsStatistics
 
 
 class TestPlotsStatistics(unittest.TestCase):

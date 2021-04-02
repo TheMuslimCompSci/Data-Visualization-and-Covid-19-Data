@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 import tkinter as tk
 from tkinter import ttk
 from data_by_board_plots import DataByBoardPlots
